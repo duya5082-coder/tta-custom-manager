@@ -1,1 +1,34 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  set,
+  get,
+  child,
+  push,
+  update,
+  remove,
+  onValue
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
+const firebaseConfig = {
+  apiKey: "AIzaSyC5053lsBtGbC8rWll-8TRlAXf5lxENbPY",
+  authDomain: "tta-custom-manager.firebaseapp.com",
+  databaseURL: "https://tta-custom-manager-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "tta-custom-manager",
+  storageBucket: "tta-custom-manager.firebasestorage.app",
+  messagingSenderId: "1042103585902",
+  appId: "1:1042103585902:web:d2fc07315553340d4eaa7f"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+console.log("✅ Firebase Connected");
+
+document.getElementById("app").innerHTML = `
+<div style="text-align:center;padding:40px;">
+    <h2>🔥 TTA CUSTOM MANAGER</h2>
+    <p>Đã kết nối Firebase thành công.</p>
+</div>
+`;
