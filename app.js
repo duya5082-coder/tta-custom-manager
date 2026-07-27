@@ -1,84 +1,89 @@
-import { 
-db,
-ref,
-push,
-set,
-onValue,
-remove,
-update
+import {
+    db,
+    ref,
+    push,
+    set,
+    onValue,
+    remove,
+    update
 } from "./firebase.js";
 
 
-// THÊM TEAM
-
+// Thêm team
 window.addTeam = function(){
 
-    let name = document.getElementById("name").value;
-    let time = document.getElementById("time").value;
+    const name = document.getElementById("name").value;
+    const time = document.getElementById("time").value;
 
 
-    if(name==""){
-        alert("Nhập tên team!");
+    if(name === ""){
+        alert("Vui lòng nhập tên team");
         return;
     }
 
 
-    let teamRef = push(ref(db,"teams"));
+    const teamRef = push(ref(db, "teams"));
 
 
     set(teamRef,{
-        name:name,
-        time:time,
-        box:"BOX 1",
-        paid:false
+        name: name,
+        time: time,
+        box: "BOX 1",
+        paid: false
     });
 
 
-    document.getElementById("name").value="";
-}
+    document.getElementById("name").value = "";
+    document.getElementById("time").value = "";
+
+};
 
 
 
-// HIỂN THỊ TEAM
+// Hiển thị danh sách team
 
-let list = document.getElementById("list");
+const list = document.getElementById("list");
 
 
 onValue(ref(db,"teams"),(snapshot)=>{
 
-    list.innerHTML="";
+
+    list.innerHTML = "";
 
 
-    snapshot.forEach((child)=>{
+    snapshot.forEach((item)=>{
 
 
-        let data = child.val();
+        const team = item.val();
 
 
         list.innerHTML += `
 
         <div class="team">
 
-        <b>${data.paid ? "💸 " : ""}${data.name}</b>
-        <br>
+            <h3>
+            ${team.paid ? "💸 " : ""}
+            ${team.name}
+            </h3>
 
-        ⏰ ${data.time}
-
-        <br>
-
-        <button onclick="payTeam('${child.key}')">
-        Thanh toán
-        </button>
+            <p>
+            ⏰ ${team.time}
+            </p>
 
 
-        <button onclick="deleteTeam('${child.key}')">
-        Xóa
-        </button>
+            <button onclick="payTeam('${item.key}')">
+            Thanh toán
+            </button>
 
+
+            <button onclick="deleteTeam('${item.key}')">
+            Xóa
+            </button>
 
         </div>
 
         `;
+
 
     });
 
@@ -88,22 +93,25 @@ onValue(ref(db,"teams"),(snapshot)=>{
 
 
 
-// THANH TOÁN
+// Đánh dấu thanh toán
 
-window.payTeam=function(id){
+window.payTeam = function(id){
 
-update(ref(db,"teams/"+id),{
-    paid:true
-});
+    update(ref(db,"teams/"+id),{
 
-}
+        paid:true
+
+    });
+
+};
 
 
 
-// XÓA
 
-window.deleteTeam=function(id){
+// Xóa team
 
-remove(ref(db,"teams/"+id));
+window.deleteTeam = function(id){
 
-}
+    remove(ref(db,"teams/"+id));
+
+};
