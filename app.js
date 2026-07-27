@@ -21,9 +21,9 @@ from "./firebase.js";
 
 
 
-// =================
+// =======================
 // THÊM TEAM
-// =================
+// =======================
 
 
 window.addTeam = function(){
@@ -39,7 +39,7 @@ let box = document.getElementById("box").value;
 
 if(name.trim()==""){
 
-alert("Vui lòng nhập tên team");
+alert("Nhập tên team!");
 
 return;
 
@@ -47,11 +47,11 @@ return;
 
 
 
-let teamRef = push(ref(db,"teams"));
+let team = push(ref(db,"teams"));
 
 
 
-set(teamRef,{
+set(team,{
 
 name:name,
 
@@ -80,21 +80,30 @@ document.getElementById("time").value="";
 
 
 
-// =================
-// HIỂN THỊ TEAM
-// =================
+// =======================
+// HIỂN THỊ 10 BOX
+// =======================
 
 
 onValue(ref(db,"teams"),(snapshot)=>{
 
 
-let box1="";
+let boxes={};
 
-let box2="";
 
 let total=0;
 
 let paid=0;
+
+
+
+// tạo BOX 1 - BOX 10
+
+for(let i=1;i<=10;i++){
+
+boxes["BOX "+i]="";
+
+}
 
 
 
@@ -115,7 +124,8 @@ paid++;
 
 
 
-let html = `
+
+let html=`
 
 
 <div class="team">
@@ -132,17 +142,13 @@ ${team.name}
 
 
 <p>
-
 ⏰ ${team.time}
-
 </p>
 
 
 
 <p>
-
 ${team.box}
-
 </p>
 
 
@@ -150,7 +156,7 @@ ${team.box}
 <p>
 
 ${team.paid 
-? "✅ Đã thanh toán" 
+? "✅ Đã thanh toán"
 : "❌ Chưa thanh toán"}
 
 </p>
@@ -165,13 +171,12 @@ ${team.paid
 
 
 
-<button class="delete"
-
-onclick="deleteTeam('${item.key}')">
+<button class="delete" onclick="deleteTeam('${item.key}')">
 
 ❌ Xóa
 
 </button>
+
 
 
 </div>
@@ -182,15 +187,9 @@ onclick="deleteTeam('${item.key}')">
 
 
 
-if(team.box=="BOX 2"){
+if(boxes[team.box] !== undefined){
 
-box2 += html;
-
-}
-
-else{
-
-box1 += html;
+boxes[team.box] += html;
 
 }
 
@@ -201,41 +200,53 @@ box1 += html;
 
 
 
-document.getElementById("list").innerHTML=`
+let output="";
+
+
+
+for(let i=1;i<=10;i++){
+
+
+output += `
+
 
 <h2>
-🔥 BOX 1
+🔥 BOX ${i}
 </h2>
 
-${box1}
+
+${boxes["BOX "+i]}
+
+
+`;
 
 
 
-<h2>
-🔥 BOX 2
-</h2>
+}
 
-${box2}
 
+
+output += `
 
 
 <hr>
 
 
 <h3>
-
 👥 Tổng team: ${total}
-
 </h3>
 
 
 <h3>
-
 💸 Đã thanh toán: ${paid}
-
 </h3>
 
+
 `;
+
+
+
+document.getElementById("list").innerHTML=output;
 
 
 
@@ -248,9 +259,9 @@ ${box2}
 
 
 
-// =================
+// =======================
 // THANH TOÁN
-// =================
+// =======================
 
 
 window.payTeam=function(id){
@@ -271,10 +282,9 @@ paid:true
 
 
 
-
-// =================
+// =======================
 // XÓA TEAM
-// =================
+// =======================
 
 
 window.deleteTeam=function(id){
