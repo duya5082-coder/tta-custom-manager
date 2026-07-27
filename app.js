@@ -12,6 +12,8 @@ update
 
 
 
+// THÊM TEAM
+
 window.addTeam=function(){
 
 
@@ -23,7 +25,7 @@ let time=document.getElementById("time").value;
 
 
 
-if(name==""){
+if(name.trim()==""){
 
 alert("Nhập tên team");
 
@@ -33,11 +35,11 @@ return;
 
 
 
-let team=push(ref(db,"teams"));
+let teamRef=push(ref(db,"teams"));
 
 
 
-set(team,{
+set(teamRef,{
 
 name:name,
 
@@ -45,9 +47,7 @@ box:box,
 
 time:time,
 
-paid:false,
-
-table:"A"
+paid:false
 
 });
 
@@ -62,6 +62,10 @@ document.getElementById("name").value="";
 
 
 
+
+// HIỂN THỊ
+
+
 onValue(ref(db,"teams"),(snapshot)=>{
 
 
@@ -69,52 +73,27 @@ let html="";
 
 
 
-let boxes={};
+let data=[];
 
 
 
 snapshot.forEach(item=>{
 
 
-let t=item.val();
+data.push({
 
+id:item.key,
 
-let key=t.time;
+...item.val()
 
-
-
-if(!boxes[key]){
-
-boxes[key]=[];
-
-}
-
-
-
-boxes[key].push(t);
-
+});
 
 
 });
 
 
 
-
-
-Object.keys(boxes).forEach(time=>{
-
-
-html+=`
-
-<h2>${time}</h2>
-
-<h3>🔥 BẢNG A</h3>
-
-`;
-
-
-
-boxes[time].forEach((team,index)=>{
+data.forEach((team,index)=>{
 
 
 html+=`
@@ -122,11 +101,21 @@ html+=`
 <div class="team">
 
 
-${String(index+1).padStart(2,"0")}️⃣
+<h3>
 
 ${team.box}
 
 ${team.name}
+
+</h3>
+
+
+<p>
+
+${team.time}
+
+</p>
+
 
 
 <p>
@@ -136,9 +125,18 @@ ${team.paid ? "💸 Đã thanh toán" : "❌ Chưa thanh toán"}
 </p>
 
 
-<button onclick="pay('${team.name}')">
+
+<button onclick="pay('${team.id}')">
 
 💸 Thanh toán
+
+</button>
+
+
+
+<button onclick="del('${team.id}')">
+
+❌ Xóa
 
 </button>
 
@@ -152,23 +150,43 @@ ${team.paid ? "💸 Đã thanh toán" : "❌ Chưa thanh toán"}
 });
 
 
-});
-
-
 
 document.getElementById("list").innerHTML=html;
 
 
+
 });
 
 
 
 
 
-window.pay=function(name){
 
 
-alert("Đã thanh toán: "+name);
+// THANH TOÁN
+
+window.pay=function(id){
+
+
+update(ref(db,"teams/"+id),{
+
+paid:true
+
+});
+
+
+};
+
+
+
+
+
+// XÓA
+
+window.del=function(id){
+
+
+remove(ref(db,"teams/"+id));
 
 
 };
