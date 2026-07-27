@@ -1,31 +1,35 @@
 *{
-    box-sizing:border-box;
+
+box-sizing:border-box;
+
 }
+
 
 
 body{
 
-    margin:0;
+margin:0;
 
-    background:#0b0b0b;
+background:#080808;
 
-    color:white;
+color:white;
 
-    font-family:Arial, Helvetica, sans-serif;
+font-family:Arial, Helvetica, sans-serif;
 
 }
+
 
 
 
 .container{
 
-    width:95%;
+width:95%;
 
-    max-width:1200px;
+max-width:1300px;
 
-    margin:auto;
+margin:auto;
 
-    padding:20px;
+padding:20px;
 
 }
 
@@ -34,11 +38,11 @@ body{
 
 h1{
 
-    text-align:center;
+text-align:center;
 
-    color:#00ff88;
+color:#00ff88;
 
-    font-size:32px;
+font-size:35px;
 
 }
 
@@ -46,7 +50,7 @@ h1{
 
 h2{
 
-    color:#ffd700;
+color:#ffd700;
 
 }
 
@@ -54,16 +58,15 @@ h2{
 
 
 
-.form-box{
+.register{
 
+background:#151515;
 
-    background:#181818;
+padding:20px;
 
-    padding:20px;
+border-radius:15px;
 
-    border-radius:15px;
-
-    margin-bottom:20px;
+margin-bottom:20px;
 
 }
 
@@ -73,19 +76,17 @@ h2{
 input,
 select{
 
+width:100%;
 
-    width:100%;
+padding:13px;
 
-    padding:12px;
+margin:8px 0;
 
-    margin:8px 0;
+border-radius:8px;
 
-    border-radius:8px;
+border:none;
 
-    border:none;
-
-    font-size:16px;
-
+font-size:16px;
 
 }
 
@@ -95,21 +96,19 @@ select{
 
 button{
 
+padding:12px 18px;
 
-    padding:12px 18px;
+background:#00aa66;
 
-    border:none;
+border:none;
 
-    border-radius:10px;
+border-radius:10px;
 
-    background:#00a86b;
+color:white;
 
-    color:white;
+cursor:pointer;
 
-    cursor:pointer;
-
-    margin:5px;
-
+margin:5px;
 
 }
 
@@ -117,7 +116,7 @@ button{
 
 button:hover{
 
-    opacity:0.8;
+opacity:0.8;
 
 }
 
@@ -125,14 +124,14 @@ button:hover{
 
 
 
-.columns{
+.layout{
 
 
-    display:grid;
+display:grid;
 
-    grid-template-columns:1fr 1fr;
+grid-template-columns:1fr 1fr;
 
-    gap:20px;
+gap:20px;
 
 
 }
@@ -140,15 +139,14 @@ button:hover{
 
 
 
+.panel{
 
-.box{
 
+background:#141414;
 
-    background:#151515;
+padding:15px;
 
-    padding:15px;
-
-    border-radius:15px;
+border-radius:15px;
 
 
 }
@@ -160,26 +158,28 @@ button:hover{
 .team{
 
 
-    background:#222;
+background:#202020;
 
-    border:1px solid #333;
+border-radius:12px;
 
-    padding:15px;
+padding:12px;
 
-    margin:10px 0;
+margin:10px 0;
 
-    border-radius:12px;
+border:1px solid #333;
 
 
 }
 
 
 
+
 .team h3{
 
-    margin:0;
+margin:0;
 
-    color:#00ff88;
+color:#00ff88;
+
 
 }
 
@@ -190,16 +190,40 @@ button:hover{
 .time-title{
 
 
-    background:#252525;
+background:#252525;
 
-    padding:12px;
+padding:12px;
 
-    border-radius:10px;
+margin-top:15px;
 
-    color:#ffd700;
+border-radius:10px;
 
-    margin-top:20px;
+color:#ffd700;
 
+font-size:18px;
+
+
+}
+
+
+
+
+
+.paid{
+
+color:#00ff00;
+
+font-weight:bold;
+
+}
+
+
+
+.unpaid{
+
+color:#ff4444;
+
+font-weight:bold;
 
 }
 
@@ -210,13 +234,14 @@ button:hover{
 .table-box{
 
 
-    background:#181818;
+background:#1b1b1b;
 
-    padding:15px;
+padding:15px;
 
-    margin:15px 0;
+margin:15px 0;
 
-    border-radius:12px;
+border-radius:12px;
+
 
 }
 
@@ -224,7 +249,7 @@ button:hover{
 
 .table-box h3{
 
-    color:#00ff88;
+color:#00ff88;
 
 }
 
@@ -235,13 +260,13 @@ button:hover{
 .slot{
 
 
-    background:#222;
+background:#252525;
 
-    padding:8px;
+padding:10px;
 
-    margin:5px 0;
+margin:5px 0;
 
-    border-radius:8px;
+border-radius:8px;
 
 
 }
@@ -249,30 +274,21 @@ button:hover{
 
 
 
-.paid{
+.slot span{
 
-    color:#00ff00;
-
-}
-
-
-
-.unpaid{
-
-    color:#ff5555;
+color:#ffd700;
 
 }
 
 
 
 
+@media(max-width:900px){
 
-@media(max-width:800px){
 
+.layout{
 
-.columns{
-
-    grid-template-columns:1fr;
+grid-template-columns:1fr;
 
 }
 
