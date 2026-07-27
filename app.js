@@ -10,16 +10,20 @@ update
 
 
 
-// THÊM TEAM
+const MAX_TEAM = 12;
+
+
+
+// thêm team
 
 window.addTeam = function(){
 
 
 let name = document.getElementById("name").value;
 
-let time = document.getElementById("time").value;
-
 let box = document.getElementById("box").value;
+
+let time = document.getElementById("time").value;
 
 
 
@@ -33,21 +37,27 @@ return;
 
 
 
-let team = push(ref(db,"teams"));
+let data = push(ref(db,"teams"));
 
 
 
-set(team,{
+set(data,{
 
 name:name,
 
-time:time,
-
 box:box,
 
-paid:false
+time:time,
+
+paid:false,
+
+created:Date.now()
 
 });
+
+
+
+document.getElementById("name").value="";
 
 
 };
@@ -57,83 +67,133 @@ paid:false
 
 
 
-// HIỂN THỊ 10 BOX
+// tìm bảng hiện tại
+
+function getTable(number){
 
 
-onValue(ref(db,"teams"),(snapshot)=>{
+return String.fromCharCode(65 + number);
 
-
-let boxes={};
-
-
-for(let i=1;i<=10;i++){
-
-boxes["BOX "+i]="";
 
 }
 
 
 
-let total=0;
+
+// hiển thị
+
+
+onValue(ref(db,"teams"),(snapshot)=>{
+
+
+let groups={};
+
 
 
 snapshot.forEach((item)=>{
 
 
-let data=item.val();
+let t=item.val();
 
 
-total++;
+let key=t.time;
+
+
+if(!groups[key]){
+
+groups[key]={};
+
+}
+
+
+if(!groups[key][t.table]){
+
+groups[key][t.table]=[];
+
+}
 
 
 
-let currentBox=data.box || "BOX 1";
+groups[key][t.table].push({
+
+...t,
+
+id:item.key
+
+});
+
+
+});
 
 
 
-boxes[currentBox]+=`
+let html="";
+
+
+
+Object.keys(groups).forEach(time=>{
+
+
+html+=`
+
+<h2>${time}</h2>
+
+`;
+
+
+
+Object.keys(groups[time]).forEach(table=>{
+
+
+html+=`
+
+<h3>
+BẢNG ${table}
+</h3>
+
+`;
+
+
+
+groups[time][table].forEach((team,index)=>{
+
+
+html+=`
 
 <div class="team">
 
 
-<h3>
+<b>
+${String(index+1).padStart(2,"0")}️⃣
+</b>
 
-${data.paid ? "💸 " : ""}
+${team.box}
 
-${data.name}
-
-</h3>
-
-
-<p>
-
-⏰ ${data.time}
-
-</p>
+${team.name}
 
 
-<p>
-
-${data.paid ? "✅ Đã thanh toán" : "❌ Chưa thanh toán"}
-
-</p>
+<br>
 
 
-<button onclick="payTeam('${item.key}')">
+${team.paid ? "💸" : ""}
 
-💸 Thanh toán
+
+<button onclick="pay('${team.id}')">
+
+Thanh toán
 
 </button>
 
 
-<button onclick="deleteTeam('${item.key}')">
+<button onclick="del('${team.id}')">
 
-❌ Xóa
+Xóa
 
 </button>
 
 
 </div>
+
 
 `;
 
@@ -143,43 +203,11 @@ ${data.paid ? "✅ Đã thanh toán" : "❌ Chưa thanh toán"}
 
 
 
-
-
-let html="";
-
-
-
-for(let i=1;i<=10;i++){
-
-
-html += `
-
-
-<h2>
-
-🔥 BOX ${i}
-
-</h2>
-
-
-${boxes["BOX "+i]}
-
-
-`;
+});
 
 
 
-}
-
-
-
-html += `
-
-<h3>
-👥 Tổng team: ${total}
-</h3>
-
-`;
+});
 
 
 
@@ -195,10 +223,9 @@ document.getElementById("list").innerHTML=html;
 
 
 
+// thanh toán
 
-// THANH TOÁN
-
-window.payTeam=function(id){
+window.pay=function(id){
 
 
 update(ref(db,"teams/"+id),{
@@ -213,13 +240,10 @@ paid:true
 
 
 
+// xóa
 
-// XÓA
-
-window.deleteTeam=function(id){
-
+window.del=function(id){
 
 remove(ref(db,"teams/"+id));
-
 
 };
