@@ -12,7 +12,7 @@ update
 
 
 
-console.log("TTA MANAGER RUN");
+console.log("🔥 APP TTA MANAGER RUN");
 
 
 
@@ -20,38 +20,28 @@ let editID = null;
 
 
 
-const nameInput =
-document.getElementById("name");
-
-
-const boxInput =
-document.getElementById("box");
-
-
-const timeInput =
-document.getElementById("time");
-
-
-const addBtn =
-document.getElementById("add");
+const nameInput = document.getElementById("name");
+const boxInput = document.getElementById("box");
+const timeInput = document.getElementById("time");
+const addBtn = document.getElementById("add");
 
 
 
 
 
-// THÊM / SỬA
+// =======================
+// THÊM / SỬA TEAM
+// =======================
 
 
 addBtn.onclick = async ()=>{
 
 
-let name=nameInput.value.trim();
+let name = nameInput.value.trim();
 
+let box = boxInput.value;
 
-let box=boxInput.value;
-
-
-let time=timeInput.value;
+let time = timeInput.value;
 
 
 
@@ -65,7 +55,8 @@ return;
 
 
 
-let data={
+
+let data = {
 
 name:name,
 
@@ -75,20 +66,27 @@ time:time,
 
 paid:false,
 
+created:Date.now()
+
 };
+
+
+
 
 
 if(editID){
 
 
 await update(
+
 ref(db,"teams/"+editID),
+
 data
+
 );
 
 
 editID=null;
-
 
 addBtn.innerHTML="➕ THÊM TEAM";
 
@@ -99,8 +97,11 @@ else{
 
 
 await set(
+
 push(ref(db,"teams")),
+
 data
+
 );
 
 
@@ -119,42 +120,79 @@ nameInput.value="";
 
 
 
-// HIỂN THỊ
+
+
+// =======================
+// ĐỌC FIREBASE
+// =======================
 
 
 onValue(ref(db,"teams"),(snap)=>{
 
 
-let html="";
-
-
-let groups={};
+let teams=[];
 
 
 
 snap.forEach(item=>{
 
 
-let t=item.val();
+teams.push({
+
+id:item.key,
+
+...item.val()
+
+});
+
+
+});
 
 
 
-if(!groups[t.time]){
+renderList(teams);
 
-groups[t.time]=[];
+renderTable(teams);
+
+
+
+});
+
+
+
+
+
+
+
+
+
+// =======================
+// DANH SÁCH ĐĂNG KÝ
+// =======================
+
+
+function renderList(teams){
+
+
+let html="";
+
+
+
+let times={};
+
+
+
+teams.forEach(t=>{
+
+
+if(!times[t.time]){
+
+times[t.time]=[];
 
 }
 
 
-
-groups[t.time].push({
-
-id:item.key,
-
-...t
-
-});
-
+times[t.time].push(t);
 
 
 });
@@ -163,24 +201,22 @@ id:item.key,
 
 
 
-Object.keys(groups).forEach(time=>{
+Object.keys(times).forEach(time=>{
 
 
 html+=`
 
-<div class="time-box">
-
-<h2>
+<div class="time-title">
 
 ${time}
 
-</h2>
+</div>
 
 `;
 
 
 
-groups[time].forEach((t,index)=>{
+times[time].forEach((t,index)=>{
 
 
 html+=`
@@ -190,21 +226,14 @@ html+=`
 
 <h3>
 
-${index+1}️⃣
-
-${t.box}
-
-${t.name}
+${index+1}️⃣ ${t.box} ${t.name}
 
 </h3>
 
 
+<p class="${t.paid?'paid':'unpaid'}">
 
-<p>
-
-${t.paid 
-?"💸 ĐÃ THANH TOÁN"
-:"❌ CHƯA THANH TOÁN"}
+${t.paid?"💸 ĐÃ THANH TOÁN":"❌ CHƯA THANH TOÁN"}
 
 </p>
 
@@ -218,7 +247,7 @@ ${t.paid
 
 
 
-<button onclick="edit('${t.id}','${t.name}','${t.box}','${t.time}')">
+<button onclick="editTeam('${t.id}')">
 
 ✏️ Sửa
 
@@ -226,7 +255,7 @@ ${t.paid
 
 
 
-<button onclick="del('${t.id}')">
+<button onclick="deleteTeam('${t.id}')">
 
 🗑 Xóa
 
@@ -235,15 +264,11 @@ ${t.paid
 
 </div>
 
-
 `;
 
 
+
 });
-
-
-
-html+=`</div>`;
 
 
 });
@@ -253,15 +278,173 @@ html+=`</div>`;
 document.getElementById("list").innerHTML=html;
 
 
+}
+
+
+
+
+
+
+
+
+
+
+// =======================
+// BẢNG THI ĐẤU A B C D
+// =======================
+
+
+function renderTable(teams){
+
+
+let html="";
+
+
+
+let times={};
+
+
+
+teams.forEach(t=>{
+
+
+if(!times[t.time]){
+
+times[t.time]=[];
+
+}
+
+
+times[t.time].push(t);
+
+
 });
 
 
 
 
 
+Object.keys(times).forEach(time=>{
 
 
+html+=`
+
+<div class="time-title">
+
+${time}
+
+</div>
+
+`;
+
+
+
+let current=0;
+
+let table=0;
+
+
+
+while(current < times[time].length){
+
+
+
+let letter =
+
+String.fromCharCode(65+table);
+
+
+
+let group =
+
+times[time].slice(current,current+12);
+
+
+
+if(group.length>0){
+
+
+
+html+=`
+
+<div class="table-box">
+
+
+<h3>
+
+🔥 BẢNG ${letter}
+
+</h3>
+
+
+`;
+
+
+
+group.forEach((t,i)=>{
+
+
+html+=`
+
+<div class="slot">
+
+${String(i+1).padStart(2,"0")}️⃣
+
+${t.box}
+
+${t.name}
+
+</div>
+
+`;
+
+
+});
+
+
+
+html+=`
+
+</div>
+
+`;
+
+
+
+}
+
+
+
+current +=12;
+
+table++;
+
+
+}
+
+
+
+});
+
+
+
+
+document.getElementById("match").innerHTML=html;
+
+
+}
+
+
+
+
+
+
+
+
+
+// =======================
 // THANH TOÁN
+// =======================
 
 
 window.pay=function(id){
@@ -286,16 +469,24 @@ paid:true
 
 
 
+
+
+// =======================
 // XÓA
+// =======================
 
 
-window.del=function(id){
+window.deleteTeam=function(id){
 
 
 if(confirm("Xóa team này?")){
 
 
-remove(ref(db,"teams/"+id));
+remove(
+
+ref(db,"teams/"+id)
+
+);
 
 
 }
@@ -309,26 +500,52 @@ remove(ref(db,"teams/"+id));
 
 
 
+
+// =======================
 // SỬA
+// =======================
 
 
-window.edit=function(id,name,box,time){
+window.editTeam=function(id){
+
+
+
+onValue(
+
+ref(db,"teams/"+id),
+
+(snapshot)=>{
+
+
+let t=snapshot.val();
+
+
+
+nameInput.value=t.name;
+
+boxInput.value=t.box;
+
+timeInput.value=t.time;
+
 
 
 editID=id;
 
 
-nameInput.value=name;
-
-
-boxInput.value=box;
-
-
-timeInput.value=time;
-
-
 
 addBtn.innerHTML="💾 LƯU SỬA";
+
+
+},
+
+{
+
+onlyOnce:true
+
+}
+
+);
+
 
 
 };
