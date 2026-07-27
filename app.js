@@ -1,5 +1,4 @@
 import {
-
 db,
 ref,
 push,
@@ -7,37 +6,41 @@ set,
 onValue,
 remove,
 update
-
 } from "./firebase.js";
 
 
-console.log("APP MỚI ĐÃ CHẠY");
+console.log("APP ĐÃ CHẠY");
+
+
+// bắt nút thêm
+
+let button = document.getElementById("add");
+
+
+console.log("BUTTON:", button);
 
 
 
-// THÊM TEAM
-
-document.getElementById("add").onclick = function(){
+button.addEventListener("click", async ()=>{
 
 
-console.log("ĐÃ BẤM THÊM TEAM");
+console.log("ĐÃ BẤM NÚT");
 
 
 
-let name =
-document.getElementById("name").value;
+let name = document.getElementById("name").value;
 
+let box = document.getElementById("box").value;
 
-let box =
-document.getElementById("box").value;
-
-
-let time =
-document.getElementById("time").value;
+let time = document.getElementById("time").value;
 
 
 
-if(name.trim()==""){
+console.log(name, box, time);
+
+
+
+if(name==""){
 
 alert("Chưa nhập tên team");
 
@@ -47,11 +50,11 @@ return;
 
 
 
-let teamRef = push(ref(db,"teams"));
+let newRef = push(ref(db,"teams"));
 
 
 
-set(teamRef,{
+await set(newRef,{
 
 name:name,
 
@@ -61,41 +64,26 @@ time:time,
 
 paid:false
 
-})
+});
 
 
-.then(()=>{
 
-
-alert("Đã thêm team");
-
-
-document.getElementById("name").value="";
-
-
-})
-
-
-.catch((error)=>{
-
-
-alert(error.message);
+alert("THÊM TEAM THÀNH CÔNG");
 
 
 });
 
 
-};
 
 
 
-
-
-
-// HIỂN THỊ
+// đọc dữ liệu
 
 
 onValue(ref(db,"teams"),(snapshot)=>{
+
+
+let list=document.getElementById("list");
 
 
 let html="";
@@ -111,85 +99,37 @@ let team=item.val();
 
 html += `
 
+<div>
 
-<div class="team">
+<h3>${team.box} ${team.name}</h3>
 
+<p>${team.time}</p>
 
-<h3>
-
-${team.box}
-
-${team.name}
-
-</h3>
-
-
-<p>
-
-${team.time}
-
-</p>
-
-
-<p>
-
-${team.paid ? "💸 Đã thanh toán":"❌ Chưa thanh toán"}
-
-</p>
-
-
-<button onclick="pay('${item.key}')">
-
-💸 Thanh toán
-
-</button>
-
-
-<button onclick="del('${item.key}')">
-
-❌ Xóa
-
+<button onclick="xoa('${item.key}')">
+Xóa
 </button>
 
 
 </div>
 
-
 `;
 
 
-});
-
-
-
-document.getElementById("list").innerHTML = html;
-
 
 });
 
 
 
+list.innerHTML=html;
 
-
-
-
-window.pay=function(id){
-
-
-update(ref(db,"teams/"+id),{
-
-paid:true
 
 });
 
 
-};
 
 
 
-
-
-window.del=function(id){
+window.xoa=function(id){
 
 
 remove(ref(db,"teams/"+id));
