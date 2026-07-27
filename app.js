@@ -1,4 +1,5 @@
 import {
+
 db,
 ref,
 push,
@@ -6,43 +7,57 @@ set,
 onValue,
 remove,
 update
+
 } from "./firebase.js";
 
 
-console.log("APP ĐÃ CHẠY");
 
-
-// bắt nút thêm
-
-let button = document.getElementById("add");
-
-
-console.log("BUTTON:", button);
+console.log("TTA MANAGER RUN");
 
 
 
-button.addEventListener("click", async ()=>{
-
-
-console.log("ĐÃ BẤM NÚT");
+let editID = null;
 
 
 
-let name = document.getElementById("name").value;
-
-let box = document.getElementById("box").value;
-
-let time = document.getElementById("time").value;
+const nameInput =
+document.getElementById("name");
 
 
+const boxInput =
+document.getElementById("box");
 
-console.log(name, box, time);
+
+const timeInput =
+document.getElementById("time");
+
+
+const addBtn =
+document.getElementById("add");
+
+
+
+
+
+// THÊM / SỬA
+
+
+addBtn.onclick = async ()=>{
+
+
+let name=nameInput.value.trim();
+
+
+let box=boxInput.value;
+
+
+let time=timeInput.value;
 
 
 
 if(name==""){
 
-alert("Chưa nhập tên team");
+alert("Nhập tên team");
 
 return;
 
@@ -50,11 +65,7 @@ return;
 
 
 
-let newRef = push(ref(db,"teams"));
-
-
-
-await set(newRef,{
+let data={
 
 name:name,
 
@@ -62,65 +73,184 @@ box:box,
 
 time:time,
 
-paid:false
+paid:false,
 
-});
-
-
-
-alert("THÊM TEAM THÀNH CÔNG");
+};
 
 
-});
+if(editID){
+
+
+await update(
+ref(db,"teams/"+editID),
+data
+);
+
+
+editID=null;
+
+
+addBtn.innerHTML="➕ THÊM TEAM";
+
+
+}
+
+else{
+
+
+await set(
+push(ref(db,"teams")),
+data
+);
+
+
+}
+
+
+
+nameInput.value="";
+
+
+};
 
 
 
 
 
-// đọc dữ liệu
 
 
-onValue(ref(db,"teams"),(snapshot)=>{
+// HIỂN THỊ
 
 
-let list=document.getElementById("list");
+onValue(ref(db,"teams"),(snap)=>{
 
 
 let html="";
 
 
-
-snapshot.forEach((item)=>{
-
-
-let team=item.val();
+let groups={};
 
 
 
-html += `
-
-<div>
-
-<h3>${team.box} ${team.name}</h3>
-
-<p>${team.time}</p>
-
-<button onclick="xoa('${item.key}')">
-Xóa
-</button>
+snap.forEach(item=>{
 
 
-</div>
+let t=item.val();
+
+
+
+if(!groups[t.time]){
+
+groups[t.time]=[];
+
+}
+
+
+
+groups[t.time].push({
+
+id:item.key,
+
+...t
+
+});
+
+
+
+});
+
+
+
+
+
+Object.keys(groups).forEach(time=>{
+
+
+html+=`
+
+<div class="time-box">
+
+<h2>
+
+${time}
+
+</h2>
 
 `;
 
 
 
+groups[time].forEach((t,index)=>{
+
+
+html+=`
+
+<div class="team">
+
+
+<h3>
+
+${index+1}️⃣
+
+${t.box}
+
+${t.name}
+
+</h3>
+
+
+
+<p>
+
+${t.paid 
+?"💸 ĐÃ THANH TOÁN"
+:"❌ CHƯA THANH TOÁN"}
+
+</p>
+
+
+
+<button onclick="pay('${t.id}')">
+
+💸 Thanh toán
+
+</button>
+
+
+
+<button onclick="edit('${t.id}','${t.name}','${t.box}','${t.time}')">
+
+✏️ Sửa
+
+</button>
+
+
+
+<button onclick="del('${t.id}')">
+
+🗑 Xóa
+
+</button>
+
+
+</div>
+
+
+`;
+
+
 });
 
 
 
-list.innerHTML=html;
+html+=`</div>`;
+
+
+});
+
+
+
+document.getElementById("list").innerHTML=html;
 
 
 });
@@ -129,10 +259,76 @@ list.innerHTML=html;
 
 
 
-window.xoa=function(id){
+
+
+// THANH TOÁN
+
+
+window.pay=function(id){
+
+
+update(
+
+ref(db,"teams/"+id),
+
+{
+
+paid:true
+
+}
+
+);
+
+
+};
+
+
+
+
+
+// XÓA
+
+
+window.del=function(id){
+
+
+if(confirm("Xóa team này?")){
 
 
 remove(ref(db,"teams/"+id));
+
+
+}
+
+
+};
+
+
+
+
+
+
+
+// SỬA
+
+
+window.edit=function(id,name,box,time){
+
+
+editID=id;
+
+
+nameInput.value=name;
+
+
+boxInput.value=box;
+
+
+timeInput.value=time;
+
+
+
+addBtn.innerHTML="💾 LƯU SỬA";
 
 
 };
