@@ -1,5 +1,4 @@
 import {
-
 db,
 ref,
 push,
@@ -7,22 +6,21 @@ set,
 onValue,
 remove,
 update
-
 } from "./firebase.js";
 
 
+console.log("APP FIREBASE OK");
 
 
-// THÊM TEAM
 
-window.addTeam=function(){
+// thêm team
+
+document.getElementById("add").onclick=function(){
 
 
 let name=document.getElementById("name").value;
 
-
 let box=document.getElementById("box").value;
-
 
 let time=document.getElementById("time").value;
 
@@ -38,11 +36,11 @@ return;
 
 
 
-let teamRef=push(ref(db,"teams"));
+let newTeam = push(ref(db,"teams"));
 
 
 
-set(teamRef,{
+set(newTeam,{
 
 name:name,
 
@@ -52,11 +50,21 @@ time:time,
 
 paid:false
 
-});
+})
 
+.then(()=>{
 
+alert("Đã thêm team");
 
 document.getElementById("name").value="";
+
+})
+
+.catch(error=>{
+
+alert(error.message);
+
+});
 
 
 };
@@ -66,8 +74,7 @@ document.getElementById("name").value="";
 
 
 
-
-// HIỂN THỊ
+// hiển thị dữ liệu
 
 
 onValue(ref(db,"teams"),(snapshot)=>{
@@ -77,14 +84,14 @@ let html="";
 
 
 
-snapshot.forEach(item=>{
+snapshot.forEach((item)=>{
 
 
 let team=item.val();
 
 
 
-html+=`
+html += `
 
 <div class="team">
 
@@ -98,7 +105,6 @@ ${team.name}
 </h3>
 
 
-
 <p>
 
 ${team.time}
@@ -106,10 +112,9 @@ ${team.time}
 </p>
 
 
-
 <p>
 
-${team.paid ? "💸 Đã thanh toán" : "❌ Chưa thanh toán"}
+${team.paid ? "💸 Đã thanh toán":"❌ Chưa thanh toán"}
 
 </p>
 
@@ -122,7 +127,6 @@ ${team.paid ? "💸 Đã thanh toán" : "❌ Chưa thanh toán"}
 </button>
 
 
-
 <button onclick="del('${item.key}')">
 
 ❌ Xóa
@@ -132,7 +136,9 @@ ${team.paid ? "💸 Đã thanh toán" : "❌ Chưa thanh toán"}
 
 </div>
 
+
 `;
+
 
 
 });
@@ -142,15 +148,12 @@ ${team.paid ? "💸 Đã thanh toán" : "❌ Chưa thanh toán"}
 document.getElementById("list").innerHTML=html;
 
 
-
 });
 
 
 
 
 
-
-// THANH TOÁN
 
 
 window.pay=function(id){
@@ -166,12 +169,6 @@ paid:true
 };
 
 
-
-
-
-
-
-// XÓA
 
 
 window.del=function(id){
