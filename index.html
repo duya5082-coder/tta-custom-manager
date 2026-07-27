@@ -1756,5 +1756,252 @@ MAIN SCRIPT
 <script type="module" src="js/settings.js"></script>
 <script type="module" src="js/app.js"></script>
 
+// =======================================
+// FILE 8A
+// INDEX.HTML CONNECT SYSTEM
+// DÁN TRƯỚC </body>
+// =======================================
+
+
+<link rel="manifest" href="manifest.json">
+
+
+<link rel="stylesheet" href="mobile.css">
+
+
+
+<!-- FIREBASE + CORE -->
+
+<script 
+type="module" 
+src="firebase.js">
+</script>
+
+
+<script 
+type="module" 
+src="auth.js">
+</script>
+
+
+<script 
+type="module" 
+src="app.js">
+</script>
+
+
+
+<!-- FUNCTION -->
+
+<script 
+type="module" 
+src="export.js">
+</script>
+
+
+<script 
+type="module" 
+src="reset.js">
+</script>
+
+
+<script 
+type="module" 
+src="notification.js">
+</script>
+
+
+<script 
+type="module" 
+src="messenger.js">
+</script>
+
+
+<script 
+type="module" 
+src="backup.js">
+</script>
+
+
+
+
+
+<!-- PWA SERVICE WORKER -->
+
+<script>
+
+
+if("serviceWorker" in navigator){
+
+
+window.addEventListener(
+
+"load",
+
+()=>{
+
+
+navigator.serviceWorker.register(
+
+"./service-worker.js"
+
+)
+
+.then(()=>{
+
+
+console.log(
+
+"🔥 CUSTOM TTA PWA READY"
+
+);
+
+
+})
+
+.catch(err=>{
+
+
+console.log(
+
+"Service Worker lỗi",
+
+err
+
+);
+
+
+});
+
+
+});
+
+
+}
+
+
+</script>
+
+
+
+<link rel="manifest" href="manifest.json">
+
+
+<link rel="stylesheet" href="mobile.css">
+
+
+
+<!-- FIREBASE + CORE -->
+
+<script 
+type="module" 
+src="firebase.js">
+</script>
+
+
+<script 
+type="module" 
+src="auth.js">
+</script>
+
+
+<script 
+type="module" 
+src="app.js">
+</script>
+
+
+
+<!-- FUNCTION -->
+
+<script 
+type="module" 
+src="export.js">
+</script>
+
+
+<script 
+type="module" 
+src="reset.js">
+</script>
+
+
+<script 
+type="module" 
+src="notification.js">
+</script>
+
+
+<script 
+type="module" 
+src="messenger.js">
+</script>
+
+
+<script 
+type="module" 
+src="backup.js">
+</script>
+
+
+
+
+
+<!-- PWA SERVICE WORKER -->
+
+<script>
+
+
+if("serviceWorker" in navigator){
+
+
+window.addEventListener(
+
+"load",
+
+()=>{
+
+
+navigator.serviceWorker.register(
+
+"./service-worker.js"
+
+)
+
+.then(()=>{
+
+
+console.log(
+
+"🔥 CUSTOM TTA PWA READY"
+
+);
+
+
+})
+
+.catch(err=>{
+
+
+console.log(
+
+"Service Worker lỗi",
+
+err
+
+);
+
+
+});
+
+
+});
+
+
+}
+
+
+</script>
+
 </body>
 </html>
