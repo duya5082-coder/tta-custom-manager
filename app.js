@@ -1,95 +1,292 @@
 import {
-    db,
-    ref,
-    push,
-    set,
-    onValue,
-    remove,
-    update
-} from "./firebase.js";
+
+db,
+
+ref,
+
+push,
+
+set,
+
+onValue,
+
+remove,
+
+update
+
+}
+
+from "./firebase.js";
+
+
+
+
+// =================
+// THÊM TEAM
+// =================
 
 
 window.addTeam = function(){
 
-    let name = document.getElementById("name").value;
-    let time = document.getElementById("time").value;
 
-    if(name === ""){
-        alert("Nhập tên team");
-        return;
-    }
+let name = document.getElementById("name").value;
 
-    let team = push(ref(db,"teams"));
+let time = document.getElementById("time").value;
 
-    set(team,{
-        name:name,
-        time:time,
-        paid:false
-    });
-
-    document.getElementById("name").value="";
-    document.getElementById("time").value="";
-};
+let box = document.getElementById("box").value;
 
 
 
-onValue(ref(db,"teams"),(snapshot)=>{
+if(name.trim()==""){
 
-    let list = document.getElementById("list");
+alert("Vui lòng nhập tên team");
 
-    list.innerHTML="";
+return;
 
-
-    snapshot.forEach((item)=>{
-
-        let data = item.val();
+}
 
 
-        list.innerHTML += `
 
-        <div class="team">
-
-            <h3>
-            ${data.paid ? "💸 " : ""}${data.name}
-            </h3>
-
-            <p>
-            ⏰ ${data.time}
-            </p>
+let teamRef = push(ref(db,"teams"));
 
 
-            <button onclick="payTeam('${item.key}')">
-            Thanh toán
-            </button>
 
+set(teamRef,{
 
-            <button onclick="deleteTeam('${item.key}')">
-            Xóa
-            </button>
+name:name,
 
-        </div>
+time:time,
 
-        `;
+box:box,
 
+paid:false,
 
-    });
+created:Date.now()
 
 });
 
 
 
-window.payTeam = function(id){
+document.getElementById("name").value="";
 
-    update(ref(db,"teams/"+id),{
-        paid:true
-    });
+document.getElementById("time").value="";
+
 
 };
 
 
 
-window.deleteTeam = function(id){
 
-    remove(ref(db,"teams/"+id));
+
+
+
+// =================
+// HIỂN THỊ TEAM
+// =================
+
+
+onValue(ref(db,"teams"),(snapshot)=>{
+
+
+let box1="";
+
+let box2="";
+
+let total=0;
+
+let paid=0;
+
+
+
+snapshot.forEach((item)=>{
+
+
+let team=item.val();
+
+
+total++;
+
+
+if(team.paid){
+
+paid++;
+
+}
+
+
+
+let html = `
+
+
+<div class="team">
+
+
+<h3>
+
+${team.paid ? "💸 " : ""}
+
+${team.name}
+
+</h3>
+
+
+
+<p>
+
+⏰ ${team.time}
+
+</p>
+
+
+
+<p>
+
+${team.box}
+
+</p>
+
+
+
+<p>
+
+${team.paid 
+? "✅ Đã thanh toán" 
+: "❌ Chưa thanh toán"}
+
+</p>
+
+
+
+<button onclick="payTeam('${item.key}')">
+
+💸 Thanh toán
+
+</button>
+
+
+
+<button class="delete"
+
+onclick="deleteTeam('${item.key}')">
+
+❌ Xóa
+
+</button>
+
+
+</div>
+
+
+`;
+
+
+
+
+if(team.box=="BOX 2"){
+
+box2 += html;
+
+}
+
+else{
+
+box1 += html;
+
+}
+
+
+
+});
+
+
+
+
+document.getElementById("list").innerHTML=`
+
+<h2>
+🔥 BOX 1
+</h2>
+
+${box1}
+
+
+
+<h2>
+🔥 BOX 2
+</h2>
+
+${box2}
+
+
+
+<hr>
+
+
+<h3>
+
+👥 Tổng team: ${total}
+
+</h3>
+
+
+<h3>
+
+💸 Đã thanh toán: ${paid}
+
+</h3>
+
+`;
+
+
+
+});
+
+
+
+
+
+
+
+
+// =================
+// THANH TOÁN
+// =================
+
+
+window.payTeam=function(id){
+
+
+update(ref(db,"teams/"+id),{
+
+paid:true
+
+});
+
+
+};
+
+
+
+
+
+
+
+
+// =================
+// XÓA TEAM
+// =================
+
+
+window.deleteTeam=function(id){
+
+
+if(confirm("Xóa team này?")){
+
+
+remove(ref(db,"teams/"+id));
+
+
+}
+
 
 };
