@@ -1,39 +1,83 @@
-body {
-    background: #111;
-    color: white;
-    font-family: Arial, sans-serif;
+body{
+
+background:#111;
+
+color:white;
+
+font-family:Arial;
+
 }
 
-.container {
-    width: 400px;
-    margin: auto;
-    text-align: center;
+
+.container{
+
+width:400px;
+
+margin:auto;
+
+text-align:center;
+
+padding-top:40px;
+
 }
 
-h1 {
-    color: #00ff88;
+
+h1{
+
+color:#00ff88;
+
 }
 
-input {
-    width: 90%;
-    padding: 12px;
-    margin: 5px;
-    border-radius: 8px;
-    border: none;
+
+input{
+
+width:90%;
+
+padding:12px;
+
+margin:8px;
+
+border-radius:8px;
+
+border:none;
+
 }
 
-button {
-    padding: 10px 20px;
-    margin: 5px;
-    background: #00ff88;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+
+button{
+
+padding:10px 20px;
+
+margin:5px;
+
+border:none;
+
+border-radius:8px;
+
+background:#00ff88;
+
+cursor:pointer;
+
 }
 
-.team {
-    background: #222;
-    padding: 15px;
-    margin: 10px;
-    border-radius: 10px;
+
+.team{
+
+background:#222;
+
+padding:15px;
+
+margin:10px;
+
+border-radius:10px;
+
+}
+
+
+.delete{
+
+background:red;
+
+color:white;
+
 }
