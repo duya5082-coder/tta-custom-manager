@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>CUSTOM TTA</title>
+<title>🔥 CUSTOM TTA 🔥</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -17,9 +17,13 @@
 <body>
 
 
-<!-- MÀN HÌNH CHÀO -->
 
-<div id="welcome" class="welcome">
+<!-- =====================
+     MÀN HÌNH GIỚI THIỆU
+===================== -->
+
+
+<div id="welcome">
 
 
 <h1>
@@ -33,7 +37,7 @@ HỆ THỐNG QUẢN LÍ BOX HÀNG ĐẦU
 
 
 
-<div class="menu-home">
+<div class="home-menu">
 
 
 <div>
@@ -48,12 +52,10 @@ Thống kê
 </div>
 
 
-
 <div>
 🎮<br>
 Bảng đấu
 </div>
-
 
 
 <div>
@@ -68,10 +70,7 @@ Danh sách
 
 
 
-<button 
-class="start-btn"
-onclick="startManager()"
->
+<button id="startBtn">
 
 🔥 VÀO CÔNG VIỆC THÔI NÀO 🔥
 
@@ -80,10 +79,10 @@ onclick="startManager()"
 
 
 
-
-<p class="contact">
+<p>
 
 Liên hệ Zalo:
+
 <br>
 
 <b>
@@ -108,28 +107,27 @@ Liên hệ Zalo:
 
 
 
-<!-- HỆ THỐNG QUẢN LÝ -->
+
+<!-- =====================
+     HỆ THỐNG QUẢN LÝ
+===================== -->
 
 
-<div id="manager" style="display:none;">
+<div id="manager">
 
 
 
 <div class="container">
 
 
+
 <h1>
-
 🔥 TTA CUSTOM MANAGER 🔥
-
 </h1>
 
 
 
 
-
-
-<!-- THỐNG KÊ -->
 
 <div class="panel">
 
@@ -168,8 +166,6 @@ Doanh thu: 0K
 
 
 
-<!-- ĐĂNG KÝ -->
-
 
 <div class="panel">
 
@@ -179,10 +175,9 @@ Doanh thu: 0K
 </h2>
 
 
-
 <input 
 id="name"
-placeholder="Nhập tên team"
+placeholder="Tên team"
 >
 
 
@@ -190,51 +185,41 @@ placeholder="Nhập tên team"
 
 <select id="box">
 
-
 <option value="1">
 🔥 BOX 1
 </option>
-
 
 <option value="2">
 🔥 BOX 2
 </option>
 
-
 <option value="3">
 🔥 BOX 3
 </option>
-
 
 <option value="4">
 🔥 BOX 4
 </option>
 
-
 <option value="5">
 🔥 BOX 5
 </option>
-
 
 <option value="6">
 🔥 BOX 6
 </option>
 
-
 <option value="7">
 🔥 BOX 7
 </option>
-
 
 <option value="8">
 🔥 BOX 8
 </option>
 
-
 <option value="9">
 🔥 BOX 9
 </option>
-
 
 <option value="10">
 🔥 BOX 10
@@ -247,40 +232,31 @@ placeholder="Nhập tên team"
 
 
 
-
-
 <select id="time">
-
 
 <option>
 ⏰10H00⏰ 💸5K💸
 </option>
 
-
 <option>
 ⏰13H00⏰ 💸5K💸
 </option>
-
 
 <option>
 ⏰15H00⏰ 💸5K💸
 </option>
 
-
 <option>
 ⏰18H00⏰ 💸5K💸
 </option>
-
 
 <option>
 ⏰20H00⏰ 💸5K💸
 </option>
 
-
 <option>
 ⏰22H00⏰ 💸5K💸
 </option>
-
 
 <option>
 ⏰23H50⏰ 💸5K💸
@@ -293,7 +269,6 @@ placeholder="Nhập tên team"
 
 
 
-
 <button id="add">
 
 ➕ THÊM TEAM
@@ -301,9 +276,7 @@ placeholder="Nhập tên team"
 </button>
 
 
-
 </div>
-
 
 
 
@@ -317,8 +290,6 @@ placeholder="Nhập tên team"
 
 
 
-
-
 <div class="panel">
 
 
@@ -327,13 +298,10 @@ placeholder="Nhập tên team"
 </h2>
 
 
-<div id="list">
-
-</div>
+<div id="list"></div>
 
 
 </div>
-
 
 
 
@@ -347,9 +315,7 @@ placeholder="Nhập tên team"
 </h2>
 
 
-<div id="paidList">
-
-</div>
+<div id="paidList"></div>
 
 
 </div>
@@ -364,9 +330,6 @@ placeholder="Nhập tên team"
 
 
 
-
-
-<!-- BẢNG ĐẤU -->
 
 
 <div class="panel">
@@ -377,9 +340,7 @@ placeholder="Nhập tên team"
 </h2>
 
 
-<div id="match">
-
-</div>
+<div id="match"></div>
 
 
 </div>
@@ -387,7 +348,9 @@ placeholder="Nhập tên team"
 
 
 
+
 </div>
+
 
 
 </div>
@@ -403,16 +366,34 @@ placeholder="Nhập tên team"
 <script>
 
 
-function startManager(){
+const startBtn =
+document.getElementById("startBtn");
 
 
-document.getElementById("welcome").style.display="none";
+const welcome =
+document.getElementById("welcome");
 
 
-document.getElementById("manager").style.display="block";
+const manager =
+document.getElementById("manager");
 
 
-}
+
+manager.style.display="none";
+
+
+
+startBtn.onclick=function(){
+
+
+welcome.style.display="none";
+
+
+manager.style.display="block";
+
+
+};
+
 
 
 </script>
@@ -420,6 +401,7 @@ document.getElementById("manager").style.display="block";
 
 
 <script type="module" src="app.js"></script>
+
 
 
 </body>
