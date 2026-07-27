@@ -9,30 +9,43 @@ update
 } from "./firebase.js";
 
 
-
-console.log("🔥 TTA MANAGER ONLINE");
-
+console.log("🔥 TTA CUSTOM MANAGER ONLINE");
 
 
 let editID = null;
 
 
 
-const nameInput=document.getElementById("name");
-const boxInput=document.getElementById("box");
-const timeInput=document.getElementById("time");
-const addBtn=document.getElementById("add");
+const nameInput = document.getElementById("name");
+const boxInput = document.getElementById("box");
+const timeInput = document.getElementById("time");
+const addBtn = document.getElementById("add");
 
 
 
+const slots = [
+"0️⃣1️⃣",
+"0️⃣2️⃣",
+"0️⃣3️⃣",
+"0️⃣4️⃣",
+"0️⃣5️⃣",
+"0️⃣6️⃣",
+"0️⃣7️⃣",
+"0️⃣8️⃣",
+"0️⃣9️⃣",
+"1️⃣0️⃣",
+"1️⃣1️⃣",
+"1️⃣2️⃣"
+];
 
 
-// ======================
+
+// =====================
 // THÊM TEAM
-// ======================
+// =====================
 
 
-addBtn.onclick=async()=>{
+addBtn.onclick = async()=>{
 
 
 let name=nameInput.value.trim();
@@ -43,14 +56,13 @@ let time=timeInput.value;
 
 
 
-if(!name){
+if(name==""){
 
 alert("Nhập tên team");
 
 return;
 
 }
-
 
 
 
@@ -64,9 +76,9 @@ time:time,
 
 paid:false,
 
-created:Date.now(),
+order:Date.now(),
 
-order:Date.now()
+created:Date.now()
 
 };
 
@@ -119,17 +131,16 @@ nameInput.value="";
 
 
 
-
-
-// ======================
-// ĐỌC DATABASE
-// ======================
+// =====================
+// LOAD DATA
+// =====================
 
 
 onValue(ref(db,"teams"),snap=>{
 
 
 let teams=[];
+
 
 
 snap.forEach(item=>{
@@ -161,6 +172,7 @@ renderMatch(teams);
 renderStats(teams);
 
 
+
 });
 
 
@@ -169,17 +181,16 @@ renderStats(teams);
 
 
 
-
-
-// ======================
-// CHƯA THANH TOÁN
-// ======================
+// =====================
+// DANH SÁCH CHƯA THANH TOÁN
+// =====================
 
 
 function renderList(teams){
 
 
 let html="";
+
 
 
 teams.filter(t=>!t.paid)
@@ -190,7 +201,6 @@ teams.filter(t=>!t.paid)
 html+=`
 
 <div class="team">
-
 
 <h3>
 
@@ -221,13 +231,11 @@ ${t.time}
 </button>
 
 
-
 <button onclick="editTeam('${t.id}')">
 
 ✏️ Sửa
 
 </button>
-
 
 
 <button onclick="deleteTeam('${t.id}')">
@@ -237,13 +245,15 @@ ${t.time}
 </button>
 
 
-
 </div>
+
 
 `;
 
 
+
 });
+
 
 
 document.getElementById("list").innerHTML=html;
@@ -257,15 +267,12 @@ document.getElementById("list").innerHTML=html;
 
 
 
-
-
-// ======================
+// =====================
 // ĐÃ THANH TOÁN
-// ======================
+// =====================
 
 
 function renderPaid(teams){
-
 
 
 let html="";
@@ -289,16 +296,10 @@ ${i+1}️⃣ ${t.name}(${t.box})💸
 </h3>
 
 
+
 <p>
 
 ${t.time}
-
-</p>
-
-
-<p class="paid">
-
-💸 ĐÃ THANH TOÁN
 
 </p>
 
@@ -314,8 +315,8 @@ ${t.time}
 
 </div>
 
-
 `;
+
 
 
 });
@@ -333,18 +334,16 @@ document.getElementById("paidList").innerHTML=html;
 
 
 
-
-
-// ======================
-// BẢNG THI ĐẤU COPY MESS
-// ======================
+// =====================
+// TẠO BẢNG MESSENGER
+// =====================
 
 
 function renderMatch(teams){
 
 
 
-let text="";
+let html="";
 
 
 
@@ -365,20 +364,20 @@ times[t.time]=[];
 times[t.time].push(t);
 
 
-
 });
 
 
 
 
 
+let id=0;
+
+
 
 Object.keys(times).forEach(time=>{
 
 
-
 let list=times[time];
-
 
 
 let table=0;
@@ -388,14 +387,14 @@ let table=0;
 for(let i=0;i<list.length;i+=12){
 
 
-
 table++;
 
 
-text+=`
+id++;
 
-${time} Bảng ${String.fromCharCode(64+table)}
 
+let tableText=
+`${time} Bảng ${String.fromCharCode(64+table)}
 
 `;
 
@@ -408,33 +407,15 @@ let group=list.slice(i,i+12);
 for(let x=0;x<12;x++){
 
 
-let slot=group[x];
+let t=group[x];
 
 
-
-let num=[
-"0️⃣1️⃣",
-"0️⃣2️⃣",
-"0️⃣3️⃣",
-"0️⃣4️⃣",
-"0️⃣5️⃣",
-"0️⃣6️⃣",
-"0️⃣7️⃣",
-"0️⃣8️⃣",
-"0️⃣9️⃣",
-"1️⃣0️⃣",
-"1️⃣1️⃣",
-"1️⃣2️⃣"
-];
+if(t){
 
 
+tableText +=
 
-if(slot){
-
-
-text+=
-
-`${num[x]} ${slot.name}(${slot.box})${slot.paid?"💸":""}
+`${slots[x]} ${t.name}(${t.box})${t.paid?"💸":""}
 `;
 
 
@@ -443,19 +424,51 @@ text+=
 else{
 
 
-text+=`${num[x]}
+tableText +=
+
+`${slots[x]}
 `;
 
 
 }
 
 
-
 }
 
 
 
-text+="\n____\n\n";
+tableText+="\n____";
+
+
+
+
+
+html+=`
+
+<div class="table-box">
+
+
+<h3>
+
+🔥 Bảng ${String.fromCharCode(64+table)}
+
+</h3>
+
+
+<pre id="copy${id}">${tableText}</pre>
+
+
+<button onclick="copyTable('${id}')">
+
+📋 COPY BẢNG ${String.fromCharCode(64+table)}
+
+</button>
+
+
+
+</div>
+
+`;
 
 
 
@@ -467,54 +480,7 @@ text+="\n____\n\n";
 
 
 
-document.getElementById("match").value=text;
-
-
-
-}
-
-
-
-
-
-
-
-
-// ======================
-// THỐNG KÊ
-// ======================
-
-
-function renderStats(teams){
-
-
-let total=teams.length;
-
-
-let paid=teams.filter(t=>t.paid).length;
-
-
-let unpaid=total-paid;
-
-
-
-document.getElementById("total").innerHTML=
-"Tổng team: "+total;
-
-
-
-document.getElementById("paidCount").innerHTML=
-"Đã thanh toán: "+paid;
-
-
-
-document.getElementById("unpaidCount").innerHTML=
-"Chưa thanh toán: "+unpaid;
-
-
-
-document.getElementById("money").innerHTML=
-"Doanh thu: "+(paid*5)+"K";
+document.getElementById("match").innerHTML=html;
 
 
 }
@@ -526,9 +492,41 @@ document.getElementById("money").innerHTML=
 
 
 
-// ======================
+
+// =====================
+// COPY TỪNG BẢNG
+// =====================
+
+
+window.copyTable=function(id){
+
+
+let text=document
+.getElementById("copy"+id)
+.innerText;
+
+
+
+navigator.clipboard.writeText(text);
+
+
+
+alert("✅ Đã copy bảng đấu");
+
+
+};
+
+
+
+
+
+
+
+
+
+// =====================
 // THANH TOÁN
-// ======================
+// =====================
 
 
 window.pay=function(id){
@@ -547,7 +545,7 @@ paid:true
 );
 
 
-}
+};
 
 
 
@@ -556,9 +554,9 @@ paid:true
 
 
 
-// ======================
+// =====================
 // XÓA
-// ======================
+// =====================
 
 
 window.deleteTeam=function(id){
@@ -567,13 +565,17 @@ window.deleteTeam=function(id){
 if(confirm("Xóa team này?")){
 
 
-remove(ref(db,"teams/"+id));
+remove(
+
+ref(db,"teams/"+id)
+
+);
 
 
 }
 
 
-}
+};
 
 
 
@@ -581,10 +583,9 @@ remove(ref(db,"teams/"+id));
 
 
 
-
-// ======================
+// =====================
 // SỬA
-// ======================
+// =====================
 
 
 window.editTeam=function(id){
@@ -613,12 +614,11 @@ timeInput.value=t.time;
 editID=id;
 
 
-
-addBtn.innerHTML="💾 LƯU SỬA";
-
+addBtn.innerHTML="💾 LƯU";
 
 
 },
+
 
 {
 
@@ -626,34 +626,53 @@ onlyOnce:true
 
 }
 
+
 );
 
 
-
-}
-
+};
 
 
 
 
 
 
-// ======================
-// COPY MESS
-// ======================
 
 
-window.copyMatch=function(){
+// =====================
+// THỐNG KÊ
+// =====================
 
 
-let text=document.getElementById("match");
-
-text.select();
-
-navigator.clipboard.writeText(text.value);
+function renderStats(teams){
 
 
-alert("✅ Đã copy bảng đấu");
+let total=teams.length;
+
+
+let paid=teams.filter(t=>t.paid).length;
+
+
+let unpaid=total-paid;
+
+
+document.getElementById("total").innerHTML=
+"Tổng team: "+total;
+
+
+
+document.getElementById("paidCount").innerHTML=
+"Đã thanh toán: "+paid;
+
+
+
+document.getElementById("unpaidCount").innerHTML=
+"Chưa thanh toán: "+unpaid;
+
+
+
+document.getElementById("money").innerHTML=
+"Doanh thu: "+(paid*5)+"K";
 
 
 }
