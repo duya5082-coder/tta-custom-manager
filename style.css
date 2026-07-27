@@ -11,19 +11,20 @@ font-family:Arial;
 
 .container{
 
-max-width:450px;
+width:90%;
+
+max-width:900px;
 
 margin:auto;
 
-text-align:center;
-
-padding:30px;
+padding:20px;
 
 }
 
 
-
 h1{
+
+text-align:center;
 
 color:#00ff88;
 
@@ -31,17 +32,17 @@ color:#00ff88;
 
 
 
-input,select{
+input,select,button{
 
-width:90%;
 
 padding:12px;
 
-margin:6px;
+margin:5px;
 
 border-radius:8px;
 
 border:none;
+
 
 }
 
@@ -49,15 +50,11 @@ border:none;
 
 button{
 
-padding:10px 15px;
-
-margin:5px;
-
-border:none;
-
-border-radius:8px;
-
 cursor:pointer;
+
+background:#00aa66;
+
+color:white;
 
 }
 
@@ -65,22 +62,40 @@ cursor:pointer;
 
 .team{
 
+
 background:#222;
 
 padding:15px;
 
-margin:15px 0;
+margin:10px 0;
 
 border-radius:12px;
+
+border:1px solid #333;
+
 
 }
 
 
 
-.delete{
+.time-box{
 
-background:red;
 
-color:white;
+background:#181818;
+
+padding:15px;
+
+margin-top:20px;
+
+border-radius:15px;
+
+
+}
+
+
+
+.time-box h2{
+
+color:#ffd700;
 
 }
