@@ -1,54 +1,71 @@
-// Kết nối Firebase App
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-// Kết nối Firebase Realtime Database
-import { 
-    getDatabase,
-    ref,
-    push,
-    set,
-    onValue,
-    remove,
-    update
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
-// Thông tin Firebase của TTA CUSTOM MANAGER
+import {
+
+getDatabase,
+
+ref,
+
+push,
+
+set,
+
+onValue,
+
+remove,
+
+update
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+
+
 const firebaseConfig = {
 
-    apiKey: "AIzaSyC5053lsBtGbC8rWll-8TRlAXf5lxENbPY",
 
-    authDomain: "tta-custom-manager.firebaseapp.com",
+apiKey: "AIzaSyC5053lsBtGbC8rWll-8TRlAXf5lxENbPY",
 
-    databaseURL: "https://tta-custom-manager-default-rtdb.asia-southeast1.firebasedatabase.app",
+authDomain: "tta-custom-manager.firebaseapp.com",
 
-    projectId: "tta-custom-manager",
+databaseURL: "https://tta-custom-manager-default-rtdb.asia-southeast1.firebasedatabase.app",
 
-    storageBucket: "tta-custom-manager.firebasestorage.app",
+projectId: "tta-custom-manager",
 
-    messagingSenderId: "1042103585902",
+storageBucket: "tta-custom-manager.firebasestorage.app",
 
-    appId: "1:1042103585902:web:d2fc07315553340d4eaa7f",
+messagingSenderId: "1042103585902",
 
-    measurementId: "G-REF95HDMCQ"
+appId: "1:1042103585902:web:d2fc07315553340d4eaa7f"
+
 };
 
 
-// Khởi tạo Firebase
+
 const app = initializeApp(firebaseConfig);
 
 
-// Khởi tạo Database
 const db = getDatabase(app);
 
 
-// Xuất dữ liệu cho app.js sử dụng
+
 export {
-    db,
-    ref,
-    push,
-    set,
-    onValue,
-    remove,
-    update
+
+db,
+
+ref,
+
+push,
+
+set,
+
+onValue,
+
+remove,
+
+update
+
 };
