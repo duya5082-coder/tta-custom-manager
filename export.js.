@@ -1,0 +1,2452 @@
+// =======================================
+// FILE 6A
+// export.js
+// XUẤT EXCEL + BÁO CÁO CUSTOM TTA
+// =======================================
+
+
+import {
+
+TEAMS,
+
+DEBTS,
+
+SALARY
+
+} from "./app.js";
+
+
+import {
+
+money
+
+} from "./firebase.js";
+
+
+
+// =======================================
+// EXPORT EXCEL
+// =======================================
+
+export function exportExcel(){
+
+
+let data=[];
+
+
+
+// HEADER
+
+data.push([
+
+"STT",
+
+"TEAM",
+
+"BOX",
+
+"KHUNG GIỜ",
+
+"SLOT",
+
+"TRẠNG THÁI",
+
+"CTV",
+
+"GHI CHÚ"
+
+]);
+
+
+
+// DATA
+
+TEAMS.forEach((team,index)=>{
+
+
+data.push([
+
+
+index+1,
+
+
+team.name,
+
+
+team.box,
+
+
+team.time,
+
+
+team.slot,
+
+
+team.paid
+
+?
+
+"Đã thanh toán"
+
+:
+
+"Chưa thanh toán",
+
+
+team.ctv||"",
+
+
+team.note||""
+
+
+]);
+
+
+});
+
+
+
+// TẠO CSV
+
+let csv=
+
+data
+
+.map(row=>
+
+row.join(",")
+
+)
+
+.join("\n");
+
+
+
+// DOWNLOAD
+
+const blob=
+
+new Blob(
+
+[
+
+"\ufeff"+csv
+
+],
+
+{
+
+type:
+
+"text/csv;charset=utf-8;"
+
+}
+
+);
+
+
+
+const url=
+
+URL.createObjectURL(blob);
+
+
+
+const a=
+
+document.createElement("a");
+
+
+
+a.href=url;
+
+
+
+a.download=
+
+"CUSTOM_TTA_"+
+
+new Date()
+
+.toLocaleDateString()
+
++".csv";
+
+
+
+a.click();
+
+
+
+URL.revokeObjectURL(url);
+
+
+
+}
+
+
+
+// =======================================
+// EXPORT DOANH THU
+// =======================================
+
+export function exportRevenue(){
+
+
+
+const total=
+
+TEAMS.length;
+
+
+
+const paid=
+
+TEAMS.filter(
+
+x=>x.paid
+
+).length;
+
+
+
+const revenue=
+
+paid*5000;
+
+
+
+const report=[
+
+
+[
+
+"TỔNG TEAM",
+
+total
+
+],
+
+
+[
+
+"ĐÃ THANH TOÁN",
+
+paid
+
+],
+
+
+[
+
+"CHƯA THANH TOÁN",
+
+total-paid
+
+],
+
+
+[
+
+"DOANH THU",
+
+money(revenue)
+
+]
+
+
+];
+
+
+
+downloadFile(
+
+report,
+
+"DOANH_THU_CUSTOM_TTA"
+
+);
+
+
+
+}
+
+
+
+// =======================================
+// EXPORT CÔNG CTV
+// =======================================
+
+export function exportSalary(){
+
+
+
+let data=[
+
+[
+
+"CTV",
+
+"SỐ TEAM",
+
+"LƯƠNG"
+
+]
+
+];
+
+
+
+SALARY.forEach(item=>{
+
+
+data.push([
+
+
+item.username,
+
+
+item.teams,
+
+
+item.salary
+
+
+
+]);
+
+
+});
+
+
+
+downloadFile(
+
+data,
+
+"LUONG_CTV"
+
+);
+
+
+
+}
+
+
+
+// =======================================
+// EXPORT DƯ TIỀN
+// =======================================
+
+export function exportDebt(){
+
+
+
+let data=[
+
+[
+
+"TÊN",
+
+"SỐ DƯ"
+
+]
+
+];
+
+
+
+DEBTS.forEach(item=>{
+
+
+data.push([
+
+
+item.name,
+
+
+item.money
+
+
+]);
+
+
+});
+
+
+
+downloadFile(
+
+data,
+
+"DU_TIEN"
+
+);
+
+
+
+}
+
+
+
+// =======================================
+// DOWNLOAD FILE
+// =======================================
+
+function downloadFile(data,name){
+
+
+
+let text=
+
+data
+
+.map(x=>
+
+x.join(",")
+
+)
+
+.join("\n");
+
+
+
+const blob=
+
+new Blob(
+
+[
+
+"\ufeff"+text
+
+],
+
+{
+
+type:
+
+"text/csv"
+
+}
+
+);
+
+
+
+const url=
+
+URL.createObjectURL(blob);
+
+
+
+const link=
+
+document.createElement("a");
+
+
+
+link.href=url;
+
+
+
+link.download=
+
+name+".csv";
+
+
+
+link.click();
+
+
+
+URL.revokeObjectURL(url);
+
+
+
+}
+
+
+
+// =======================================
+// BUTTON EVENT
+// =======================================
+
+
+document
+
+.getElementById(
+
+"exportExcelBtn"
+
+)
+
+?.addEventListener(
+
+"click",
+
+()=>{
+
+
+exportExcel();
+
+
+});
+
+
+
+document
+
+.getElementById(
+
+"exportRevenueBtn"
+
+)
+
+?.addEventListener(
+
+"click",
+
+()=>{
+
+
+exportRevenue();
+
+
+});
+
+
+
+document
+
+.getElementById(
+
+"exportSalaryBtn"
+
+)
+
+?.addEventListener(
+
+"click",
+
+()=>{
+
+
+exportSalary();
+
+
+});
+
+
+
+document
+
+.getElementById(
+
+"exportDebtBtn"
+
+)
+
+?.addEventListener(
+
+"click",
+
+()=>{
+
+
+exportDebt();
+
+
+});
+
+
+
+// =======================================
+// END FILE 6A
+// =======================================// =======================================
+// FILE 6B
+// reset.js
+// TỰ ĐỘNG RESET SLOT MỖI NGÀY
+// =======================================
+
+
+import {
+
+db,
+
+COLLECTIONS,
+
+collection,
+
+getDocs,
+
+deleteDoc,
+
+doc,
+
+setDoc,
+
+serverTimestamp
+
+} from "./firebase.js";
+
+import {
+
+todayKey
+
+} from "./firebase.js";
+
+
+
+// =======================================
+// TIME RESET
+// =======================================
+
+const RESET_TIME = "00:00";
+
+
+
+// =======================================
+// CHECK NGÀY MỚI
+// =======================================
+
+export async function checkAutoReset(){
+
+
+const lastDay=
+
+localStorage.getItem(
+
+"tta_last_reset"
+
+);
+
+
+
+const today=
+
+todayKey();
+
+
+
+if(lastDay!==today){
+
+
+
+await resetAllSlot();
+
+
+
+localStorage.setItem(
+
+"tta_last_reset",
+
+today
+
+);
+
+
+
+console.log(
+
+"🔥 Đã reset bảng đấu ngày mới"
+
+);
+
+
+
+}
+
+
+
+}
+
+
+
+// =======================================
+// RESET TEAM
+// =======================================
+
+export async function resetAllSlot(){
+
+
+
+try{
+
+
+
+const teamPath=
+
+collection(
+
+db,
+
+COLLECTIONS.teams,
+
+todayKey(),
+
+"list"
+
+);
+
+
+
+const snap=
+
+await getDocs(teamPath);
+
+
+
+for(const item of snap.docs){
+
+
+
+await deleteDoc(
+
+doc(
+
+teamPath,
+
+item.id
+
+)
+
+);
+
+
+
+}
+
+
+
+// Tạo lịch sử reset
+
+await setDoc(
+
+doc(
+
+db,
+
+COLLECTIONS.settings,
+
+"reset"
+
+),
+
+{
+
+
+lastReset:
+
+serverTimestamp(),
+
+
+message:
+
+"Reset slot thành công"
+
+
+}
+
+
+);
+
+
+
+}catch(e){
+
+
+
+console.error(
+
+"Reset lỗi:",
+
+e
+
+);
+
+
+
+}
+
+
+
+}
+
+
+
+// =======================================
+// AUTO RUN
+// =======================================
+
+export function startAutoReset(){
+
+
+
+setInterval(()=>{
+
+
+
+const now=
+
+new Date();
+
+
+
+const hour=
+
+String(
+
+now.getHours()
+
+)
+
+.padStart(2,"0");
+
+
+
+const minute=
+
+String(
+
+now.getMinutes()
+
+)
+
+.padStart(2,"0");
+
+
+
+const time=
+
+hour+":"+minute;
+
+
+
+if(time===RESET_TIME){
+
+
+
+checkAutoReset();
+
+
+
+}
+
+
+
+},60000);
+
+
+
+}
+
+
+
+// =======================================
+// RESET CACHE
+// =======================================
+
+export function clearLocalData(){
+
+
+
+localStorage.removeItem(
+
+"tta_today_cache"
+
+);
+
+
+
+localStorage.removeItem(
+
+"tta_slot"
+
+);
+
+
+
+}
+
+
+
+// =======================================
+// START
+// =======================================
+
+window.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+
+
+checkAutoReset();
+
+
+
+startAutoReset();
+
+
+
+});
+
+
+
+// =======================================
+// END FILE 6B
+// =======================================// =======================================
+// FILE 6C
+// notification.js
+// HỆ THỐNG THÔNG BÁO CUSTOM TTA
+// =======================================
+
+
+import {
+
+TEAMS
+
+} from "./app.js";
+
+import {
+
+TIME_LIST
+
+} from "./firebase.js";
+
+
+
+// =======================================
+// CREATE NOTIFICATION
+// =======================================
+
+export function createNotification(
+
+title,
+
+message,
+
+type="info"
+
+){
+
+
+
+const area=
+
+document.getElementById(
+
+"notificationList"
+
+);
+
+
+
+if(!area)return;
+
+
+
+const div=
+
+document.createElement(
+
+"div"
+
+);
+
+
+
+div.className=
+
+"notificationItem";
+
+
+
+div.innerHTML=`
+
+<div>
+
+
+<h4>
+
+${title}
+
+</h4>
+
+
+<p>
+
+${message}
+
+</p>
+
+
+</div>
+
+
+<span>
+
+${getIcon(type)}
+
+</span>
+
+`;
+
+
+
+area.prepend(div);
+
+
+
+// AUTO REMOVE
+
+setTimeout(()=>{
+
+
+div.remove();
+
+
+},10000);
+
+
+
+}
+
+
+
+// =======================================
+// ICON
+// =======================================
+
+function getIcon(type){
+
+
+
+switch(type){
+
+
+case "full":
+
+return "🔥";
+
+
+case "success":
+
+return "✅";
+
+
+case "warning":
+
+return "⚠️";
+
+
+case "error":
+
+return "❌";
+
+
+default:
+
+return "🔔";
+
+
+}
+
+
+
+}
+
+
+
+// =======================================
+// CHECK FULL SLOT
+// =======================================
+
+export function checkFullSlot(){
+
+
+
+TIME_LIST.forEach(time=>{
+
+
+const teams=
+
+TEAMS.filter(
+
+x=>
+
+x.time===time
+
+);
+
+
+
+if(teams.length>=12){
+
+
+
+createNotification(
+
+"🔥 FULL KHUNG GIỜ",
+
+`${time} đã đủ 12 đội`,
+
+"full"
+
+);
+
+
+
+}
+
+
+
+});
+
+
+
+}
+
+
+
+// =======================================
+// CHECK FULL BOX
+// =======================================
+
+export function checkFullBox(){
+
+
+
+const boxList={};
+
+
+
+TEAMS.forEach(team=>{
+
+
+
+if(!boxList[team.box]){
+
+boxList[team.box]=[];
+
+}
+
+
+
+boxList[team.box].push(team);
+
+
+
+});
+
+
+
+Object.keys(boxList)
+
+.forEach(box=>{
+
+
+
+if(boxList[box].length>=12){
+
+
+
+createNotification(
+
+"📦 BOX ĐẦY",
+
+`BOX ${box} đã đủ 12 team`,
+
+"full"
+
+);
+
+
+
+}
+
+
+
+});
+
+
+
+}
+
+
+
+// =======================================
+// TEAM SUCCESS
+// =======================================
+
+export function notifyTeamSuccess(team){
+
+
+
+createNotification(
+
+"🎮 TEAM MỚI",
+
+`${team.name} đã đăng ký ${team.time}`,
+
+"success"
+
+);
+
+
+
+}
+
+
+
+// =======================================
+// PAYMENT NOTICE
+// =======================================
+
+export function notifyPayment(team){
+
+
+
+createNotification(
+
+"💸 THANH TOÁN",
+
+`${team.name} đã thanh toán`,
+
+"success"
+
+);
+
+
+
+}
+
+
+
+// =======================================
+// DELETE NOTICE
+// =======================================
+
+export function notifyDelete(name){
+
+
+
+createNotification(
+
+"🗑 XÓA TEAM",
+
+`Đã xóa ${name}`,
+
+"warning"
+
+);
+
+
+
+}
+
+
+
+// =======================================
+// REALTIME CHECK
+// =======================================
+
+export function startNotification(){
+
+
+
+setInterval(()=>{
+
+
+checkFullSlot();
+
+
+checkFullBox();
+
+
+
+},30000);
+
+
+
+}
+
+
+
+// =======================================
+// START
+// =======================================
+
+window.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+
+startNotification();
+
+
+
+});
+
+
+
+// =======================================
+// END FILE 6C
+// =======================================// =======================================
+// FILE 6D
+// messenger.js
+// TẠO NỘI DUNG COPY MESSENGER
+// =======================================
+
+
+import {
+
+TEAMS,
+
+} from "./app.js";
+
+import {
+
+TIME_LIST
+
+} from "./firebase.js";
+
+
+// =======================================
+// ICON SLOT
+// =======================================
+
+function slotIcon(number){
+
+
+const icons=[
+
+"",
+
+"1️⃣",
+
+"2️⃣",
+
+"3️⃣",
+
+"4️⃣",
+
+"5️⃣",
+
+"6️⃣",
+
+"7️⃣",
+
+"8️⃣",
+
+"9️⃣",
+
+"🔟",
+
+"1️⃣1️⃣",
+
+"1️⃣2️⃣"
+
+];
+
+
+return icons[number]||number;
+
+
+}
+
+
+
+// =======================================
+// TẠO BẢNG COPY
+// =======================================
+
+export function createMessengerText(){
+
+
+let text="🔥 CUSTOM TTA 🔥\n\n";
+
+
+
+TIME_LIST.forEach(time=>{
+
+
+const teams=
+
+TEAMS.filter(
+
+x=>x.time===time
+
+);
+
+
+
+if(teams.length===0)return;
+
+
+
+text+=
+
+"================\n";
+
+
+text+=
+
+`⏰ ${time} ⏰ 💸5K💸\n\n`;
+
+
+
+let table=0;
+
+
+
+for(
+
+let i=0;
+
+i<teams.length;
+
+i+=12
+
+){
+
+
+
+table++;
+
+
+
+text+=
+
+`🔥 BẢNG ${String.fromCharCode(64+table)}\n\n`;
+
+
+
+const list=
+
+teams.slice(
+
+i,
+
+i+12
+
+);
+
+
+
+for(
+
+let s=1;
+
+s<=12;
+
+s++
+
+){
+
+
+
+const team=
+
+list.find(
+
+x=>x.slot===s
+
+);
+
+
+
+text+=slotIcon(s)+" ";
+
+
+
+if(team){
+
+
+
+text+=
+
+team.name;
+
+
+
+if(team.box){
+
+
+
+text+=
+
+` (${team.box})`;
+
+
+
+}
+
+
+
+if(team.paid){
+
+
+
+text+=" 💸";
+
+
+
+}
+
+
+
+}else{
+
+
+text+="(Trống)";
+
+
+}
+
+
+
+text+="\n";
+
+
+}
+
+
+
+text+="\n";
+
+
+
+}
+
+
+
+});
+
+
+
+text+=
+
+"📋 COPY BẢNG ĐẤU";
+
+
+return text;
+
+
+}
+
+
+
+// =======================================
+// COPY TO CLIPBOARD
+// =======================================
+
+export async function copyMessenger(){
+
+
+const text=
+
+createMessengerText();
+
+
+
+await navigator.clipboard.writeText(text);
+
+
+
+showCopyToast();
+
+
+
+}
+
+
+
+// =======================================
+// COPY RIÊNG KHUNG GIỜ
+// =======================================
+
+export async function copyTimeTable(time){
+
+
+
+const teams=
+
+TEAMS.filter(
+
+x=>x.time===time
+
+);
+
+
+
+let text=
+
+`⏰ ${time} ⏰ 💸5K💸\n\n`;
+
+
+
+let table=0;
+
+
+
+for(
+
+let i=0;
+
+i<teams.length;
+
+i+=12
+
+){
+
+
+table++;
+
+
+
+text+=
+
+`🔥 BẢNG ${String.fromCharCode(64+table)}\n`;
+
+
+
+const list=
+
+teams.slice(
+
+i,
+
+i+12
+
+);
+
+
+
+list.forEach((team,index)=>{
+
+
+text+=
+
+slotIcon(index+1)
+
++" "
+
++
+
+team.name
+
++
+
+(team.paid?" 💸":"")+
+
+"\n";
+
+
+
+});
+
+
+
+text+="\n";
+
+
+}
+
+
+
+await navigator.clipboard.writeText(text);
+
+
+
+showCopyToast();
+
+
+
+}
+
+
+
+// =======================================
+// NÚT COPY TẤT CẢ
+// =======================================
+
+document
+
+.getElementById(
+
+"copyAllBtn"
+
+)
+
+?.addEventListener(
+
+"click",
+
+()=>{
+
+
+copyMessenger();
+
+
+});
+
+
+
+// =======================================
+// TOAST
+// =======================================
+
+function showCopyToast(){
+
+
+
+const toast=
+
+document.getElementById(
+
+"toast"
+
+);
+
+
+
+if(!toast)return;
+
+
+
+toast.innerHTML=
+
+"📋 Đã copy bảng đấu Messenger";
+
+
+
+toast.classList.add(
+
+"show"
+
+);
+
+
+
+setTimeout(()=>{
+
+
+toast.classList.remove(
+
+"show"
+
+);
+
+
+},2000);
+
+
+
+}
+
+
+
+// =======================================
+// END FILE 6D
+// =======================================// =======================================
+// FILE 6E
+// backup.js
+// SAO LƯU + KHÔI PHỤC DỮ LIỆU CUSTOM TTA
+// =======================================
+
+
+import {
+
+db,
+
+COLLECTIONS,
+
+collection,
+
+getDocs,
+
+setDoc,
+
+doc,
+
+serverTimestamp
+
+} from "./firebase.js";
+
+
+
+// =======================================
+// EXPORT BACKUP JSON
+// =======================================
+
+export async function backupData(){
+
+
+
+const backup={
+
+
+
+time:new Date().toISOString(),
+
+
+
+teams:[],
+
+
+debts:[],
+
+
+salary:[],
+
+
+history:[]
+
+
+
+};
+
+
+
+// ================================
+// TEAM
+// ================================
+
+
+const teams=
+
+await getDocs(
+
+collection(
+
+db,
+
+COLLECTIONS.teams
+
+)
+
+);
+
+
+
+teams.forEach(item=>{
+
+
+backup.teams.push({
+
+
+id:item.id,
+
+
+...item.data()
+
+
+});
+
+
+});
+
+
+
+// ================================
+// DEBT
+// ================================
+
+
+const debts=
+
+await getDocs(
+
+collection(
+
+db,
+
+COLLECTIONS.debts
+
+)
+
+);
+
+
+
+debts.forEach(item=>{
+
+
+backup.debts.push({
+
+
+id:item.id,
+
+
+...item.data()
+
+
+});
+
+
+});
+
+
+
+// ================================
+// SALARY
+// ================================
+
+
+const salary=
+
+await getDocs(
+
+collection(
+
+db,
+
+COLLECTIONS.salary
+
+)
+
+);
+
+
+
+salary.forEach(item=>{
+
+
+backup.salary.push({
+
+
+id:item.id,
+
+
+...item.data()
+
+
+});
+
+
+});
+
+
+
+
+// DOWNLOAD
+
+
+downloadJSON(
+
+backup,
+
+"CUSTOM_TTA_BACKUP"
+
+);
+
+
+
+}
+
+
+
+// =======================================
+// DOWNLOAD JSON
+// =======================================
+
+function downloadJSON(data,name){
+
+
+
+const blob=
+
+new Blob(
+
+[
+
+JSON.stringify(
+
+data,
+
+null,
+
+2
+
+)
+
+],
+
+{
+
+
+type:
+
+"application/json"
+
+
+}
+
+);
+
+
+
+const url=
+
+URL.createObjectURL(blob);
+
+
+
+const a=
+
+document.createElement(
+
+"a"
+
+);
+
+
+
+a.href=url;
+
+
+
+a.download=
+
+name+
+
+".json";
+
+
+
+a.click();
+
+
+
+URL.revokeObjectURL(url);
+
+
+
+}
+
+
+
+// =======================================
+// SAVE BACKUP ONLINE
+// =======================================
+
+export async function saveCloudBackup(){
+
+
+
+const data={
+
+
+
+backupTime:
+
+serverTimestamp(),
+
+
+
+device:
+
+navigator.userAgent
+
+
+
+};
+
+
+
+await setDoc(
+
+doc(
+
+db,
+
+COLLECTIONS.settings,
+
+"backup"
+
+),
+
+data,
+
+{
+
+merge:true
+
+}
+
+);
+
+
+
+}
+
+
+
+// =======================================
+// AUTO BACKUP
+// =======================================
+
+export function autoBackup(){
+
+
+
+const last=
+
+localStorage.getItem(
+
+"tta_backup"
+
+);
+
+
+
+const today=
+
+new Date()
+
+.toLocaleDateString();
+
+
+
+if(last!==today){
+
+
+
+backupData();
+
+
+
+localStorage.setItem(
+
+"tta_backup",
+
+today
+
+);
+
+
+
+}
+
+
+
+}
+
+
+
+// =======================================
+// RESTORE CHECK
+// =======================================
+
+export function checkBackup(){
+
+
+
+const file=
+
+document.getElementById(
+
+"restoreFile"
+
+);
+
+
+
+if(!file)return;
+
+
+
+file.onchange=(e)=>{
+
+
+
+const reader=
+
+new FileReader();
+
+
+
+reader.onload=()=>{
+
+
+
+const data=
+
+JSON.parse(
+
+reader.result
+
+);
+
+
+
+localStorage.setItem(
+
+"tta_restore",
+
+JSON.stringify(data)
+
+);
+
+
+
+alert(
+
+"✅ Đã đọc file backup"
+
+);
+
+
+
+};
+
+
+
+reader.readAsText(
+
+e.target.files[0]
+
+);
+
+
+
+};
+
+
+
+}
+
+
+
+// =======================================
+// BUTTON
+// =======================================
+
+
+document
+
+.getElementById(
+
+"backupBtn"
+
+)
+
+?.addEventListener(
+
+"click",
+
+()=>{
+
+
+backupData();
+
+
+});
+
+
+
+window.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+
+autoBackup();
+
+
+checkBackup();
+
+
+});
+
+
+
+// =======================================
+// END FILE 6E
+// =======================================// =======================================
+// FILE 6F
+// firebase.rules
+// BẢO MẬT FIREBASE CUSTOM TTA
+// =======================================
+
+
+rules_version = '2';
+
+
+service cloud.firestore {
+
+
+match /databases/{database}/documents {
+
+
+
+//
+// USER SESSION
+//
+
+match /users/{userId} {
+
+
+allow read, write:
+
+if request.auth != null;
+
+
+}
+
+
+
+
+
+//
+// TEAM DATA
+//
+
+match /teams/{teamId} {
+
+
+allow read:
+
+if request.auth != null;
+
+
+
+allow create, update, delete:
+
+if request.auth != null;
+
+
+}
+
+
+
+
+
+//
+// DEBT MONEY
+//
+
+match /debts/{debtId} {
+
+
+allow read:
+
+if request.auth != null;
+
+
+
+allow create, update, delete:
+
+if request.auth != null;
+
+
+}
+
+
+
+
+
+//
+// HISTORY LOG
+//
+
+match /history/{historyId} {
+
+
+allow read:
+
+if request.auth != null;
+
+
+
+allow create:
+
+if request.auth != null;
+
+
+
+allow update, delete:
+
+if false;
+
+
+}
+
+
+
+
+
+//
+// SALARY
+// CHỈ ADMIN ĐƯỢC XEM
+//
+
+match /salary/{salaryId} {
+
+
+allow read:
+
+if request.auth != null
+
+&&
+
+request.auth.token.role == "admin";
+
+
+
+allow write:
+
+if request.auth != null;
+
+
+}
+
+
+
+
+
+//
+// SETTINGS
+//
+
+match /settings/{settingId} {
+
+
+allow read, write:
+
+if request.auth != null;
+
+
+}
+
+
+
+
+
+// DEFAULT BLOCK
+
+match /{document=**} {
+
+
+allow read, write:
+
+if false;
+
+
+}
+
+
+
+}
+
+}
+
+
+// =======================================
+// END FILE 6F
+// =======================================
