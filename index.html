@@ -18,10 +18,7 @@
 
 
 
-<!-- =====================
-     MÀN HÌNH GIỚI THIỆU
-===================== -->
-
+<!-- TRANG CHÀO -->
 
 <div id="welcome">
 
@@ -40,32 +37,31 @@ HỆ THỐNG QUẢN LÍ BOX HÀNG ĐẦU
 <div class="home-menu">
 
 
-<div>
+<button onclick="go('stats')">
 📊<br>
 Thống kê
-</div>
+</button>
 
 
-<div>
+<button onclick="go('register')">
 ➕<br>
 Đăng ký
-</div>
+</button>
 
 
-<div>
+<button onclick="go('match')">
 🎮<br>
 Bảng đấu
-</div>
+</button>
 
 
-<div>
+<button onclick="go('list')">
 📋<br>
 Danh sách
-</div>
+</button>
 
 
 </div>
-
 
 
 
@@ -78,16 +74,12 @@ Danh sách
 
 
 
-
 <p>
 
 Liên hệ Zalo:
-
 <br>
 
-<b>
-0395395057
-</b>
+<b>0395395057</b>
 
 <br>
 
@@ -106,15 +98,9 @@ Liên hệ Zalo:
 
 
 
-
-
-<!-- =====================
-     HỆ THỐNG QUẢN LÝ
-===================== -->
-
+<!-- HỆ THỐNG -->
 
 <div id="manager">
-
 
 
 <div class="container">
@@ -129,7 +115,45 @@ Liên hệ Zalo:
 
 
 
-<div class="panel">
+<!-- MENU NHANH -->
+
+
+<div class="app-menu">
+
+
+<button onclick="go('stats')">
+📊 Thống kê
+</button>
+
+
+<button onclick="go('register')">
+➕ Đăng ký
+</button>
+
+
+<button onclick="go('list')">
+📋 Danh sách
+</button>
+
+
+<button onclick="go('match')">
+🎮 Bảng đấu
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- THỐNG KÊ -->
+
+
+<div class="panel section" id="stats">
 
 
 <h2>
@@ -157,6 +181,7 @@ Doanh thu: 0K
 </p>
 
 
+
 </div>
 
 
@@ -167,12 +192,16 @@ Doanh thu: 0K
 
 
 
-<div class="panel">
+<!-- ĐĂNG KÝ -->
+
+
+<div class="panel section" id="register">
 
 
 <h2>
 ➕ ĐĂNG KÝ TEAM
 </h2>
+
 
 
 <input 
@@ -234,29 +263,36 @@ placeholder="Tên team"
 
 <select id="time">
 
+
 <option>
 ⏰10H00⏰ 💸5K💸
 </option>
+
 
 <option>
 ⏰13H00⏰ 💸5K💸
 </option>
 
+
 <option>
 ⏰15H00⏰ 💸5K💸
 </option>
+
 
 <option>
 ⏰18H00⏰ 💸5K💸
 </option>
 
+
 <option>
 ⏰20H00⏰ 💸5K💸
 </option>
 
+
 <option>
 ⏰22H00⏰ 💸5K💸
 </option>
+
 
 <option>
 ⏰23H50⏰ 💸5K💸
@@ -268,7 +304,6 @@ placeholder="Tên team"
 
 
 
-
 <button id="add">
 
 ➕ THÊM TEAM
@@ -276,6 +311,7 @@ placeholder="Tên team"
 </button>
 
 
+
 </div>
 
 
@@ -286,11 +322,10 @@ placeholder="Tên team"
 
 
 
-<div class="layout">
+<!-- DANH SÁCH -->
 
 
-
-<div class="panel">
+<div class="panel section" id="list">
 
 
 <h2>
@@ -298,13 +333,22 @@ placeholder="Tên team"
 </h2>
 
 
-<div id="list"></div>
+<div id="list">
+
+</div>
+
 
 
 </div>
 
 
 
+
+
+
+
+
+<!-- THANH TOÁN -->
 
 
 <div class="panel">
@@ -315,24 +359,26 @@ placeholder="Tên team"
 </h2>
 
 
-<div id="paidList"></div>
+<div id="paidList">
+
+</div>
+
 
 
 </div>
 
 
 
-</div>
 
 
 
 
 
 
+<!-- BẢNG ĐẤU -->
 
 
-
-<div class="panel">
+<div class="panel section" id="match">
 
 
 <h2>
@@ -340,20 +386,24 @@ placeholder="Tên team"
 </h2>
 
 
-<div id="match"></div>
 
-
-</div>
-
-
-
-
+<div id="match">
 
 </div>
 
 
 
 </div>
+
+
+
+
+
+</div>
+
+
+</div>
+
 
 
 
@@ -364,10 +414,6 @@ placeholder="Tên team"
 
 
 <script>
-
-
-const startBtn =
-document.getElementById("startBtn");
 
 
 const welcome =
@@ -383,7 +429,9 @@ manager.style.display="none";
 
 
 
-startBtn.onclick=function(){
+document
+.getElementById("startBtn")
+.onclick=function(){
 
 
 welcome.style.display="none";
@@ -396,6 +444,29 @@ manager.style.display="block";
 
 
 
+
+
+function go(id){
+
+
+manager.style.display="block";
+
+
+welcome.style.display="none";
+
+
+document
+.getElementById(id)
+.scrollIntoView({
+
+behavior:"smooth"
+
+});
+
+
+}
+
+
 </script>
 
 
@@ -403,7 +474,7 @@ manager.style.display="block";
 <script type="module" src="app.js"></script>
 
 
-
 </body>
+
 
 </html>
