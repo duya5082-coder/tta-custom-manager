@@ -1,31 +1,29 @@
 import {
+
 db,
 ref,
 push,
 set,
 onValue,
 remove,
-update,
-get
+update
+
 } from "./firebase.js";
 
-const MAX_TEAM = 12;
 
 
-// =======================
-// THÊM TEAM TỰ CHIA BẢNG
-// =======================
-
-window.addTeam = async function(){
-
-let name = document.getElementById("name").value;
-
-let box = document.getElementById("box").value;
-
-let time = document.getElementById("time").value;
+window.addTeam=function(){
 
 
-if(name.trim()==""){
+let name=document.getElementById("name").value;
+
+let box=document.getElementById("box").value;
+
+let time=document.getElementById("time").value;
+
+
+
+if(name==""){
 
 alert("Nhập tên team");
 
@@ -34,67 +32,12 @@ return;
 }
 
 
-// lấy dữ liệu hiện tại
 
-let snap = await get(ref(db,"teams"));
-
-let data = snap.val() || {};
-
-
-// tìm bảng trống
-
-let tableNumber = 0;
-
-let table = "A";
-
-
-while(true){
-
-
-let count = 0;
-
-
-Object.values(data).forEach(team=>{
-
-
-if(
-team.time == time &&
-team.table == table
-){
-
-count++;
-
-}
-
-
-});
+let team=push(ref(db,"teams"));
 
 
 
-if(count < MAX_TEAM){
-
-break;
-
-}
-
-
-
-tableNumber++;
-
-table = String.fromCharCode(65 + tableNumber);
-
-
-}
-
-
-
-// tạo team
-
-
-let newTeam = push(ref(db,"teams"));
-
-
-set(newTeam,{
+set(team,{
 
 name:name,
 
@@ -102,11 +45,9 @@ box:box,
 
 time:time,
 
-table:table,
-
 paid:false,
 
-created:Date.now()
+table:"A"
 
 });
 
@@ -121,88 +62,59 @@ document.getElementById("name").value="";
 
 
 
-// =======================
-// HIỂN THỊ
-// =======================
-
-
 onValue(ref(db,"teams"),(snapshot)=>{
-
-
-let groups={};
-
-
-
-snapshot.forEach(item=>{
-
-
-let team=item.val();
-
-
-if(!groups[team.time]){
-
-groups[team.time]={};
-
-}
-
-
-
-if(!groups[team.time][team.table]){
-
-groups[team.time][team.table]=[];
-
-}
-
-
-
-groups[team.time][team.table].push({
-
-...team,
-
-id:item.key
-
-});
-
-
-});
-
 
 
 let html="";
 
 
 
-Object.keys(groups).forEach(time=>{
+let boxes={};
+
+
+
+snapshot.forEach(item=>{
+
+
+let t=item.val();
+
+
+let key=t.time;
+
+
+
+if(!boxes[key]){
+
+boxes[key]=[];
+
+}
+
+
+
+boxes[key].push(t);
+
+
+
+});
+
+
+
+
+
+Object.keys(boxes).forEach(time=>{
 
 
 html+=`
 
-<div class="time-box">
+<h2>${time}</h2>
 
-<h2>
-
-${time}
-
-</h2>
+<h3>🔥 BẢNG A</h3>
 
 `;
 
 
 
-Object.keys(groups[time]).sort().forEach(table=>{
-
-
-html+=`
-
-<h3>
-🔥 BẢNG ${table}
-</h3>
-
-`;
-
-
-
-groups[time][table].forEach((team,index)=>{
+boxes[time].forEach((team,index)=>{
 
 
 html+=`
@@ -210,57 +122,34 @@ html+=`
 <div class="team">
 
 
-<b>
 ${String(index+1).padStart(2,"0")}️⃣
-</b>
-
 
 ${team.box}
 
 ${team.name}
 
 
-<br>
-
+<p>
 
 ${team.paid ? "💸 Đã thanh toán" : "❌ Chưa thanh toán"}
 
+</p>
 
 
-<button onclick="pay('${team.id}')">
+<button onclick="pay('${team.name}')">
 
-💸
-
-</button>
-
-
-
-<button onclick="del('${team.id}')">
-
-❌
+💸 Thanh toán
 
 </button>
 
 
 </div>
 
-
 `;
 
 
 
 });
-
-
-});
-
-
-html+=`
-
-</div>
-
-`;
-
 
 
 });
@@ -276,38 +165,10 @@ document.getElementById("list").innerHTML=html;
 
 
 
+window.pay=function(name){
 
 
-// =======================
-// THANH TOÁN
-// =======================
-
-
-window.pay=function(id){
-
-
-update(ref(db,"teams/"+id),{
-
-paid:true
-
-});
-
-
-};
-
-
-
-
-
-// =======================
-// XÓA
-// =======================
-
-
-window.del=function(id){
-
-
-remove(ref(db,"teams/"+id));
+alert("Đã thanh toán: "+name);
 
 
 };
