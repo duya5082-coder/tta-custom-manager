@@ -1,18 +1,15 @@
 import {
-
-db,
-ref,
-push,
-set,
-onValue,
-remove,
-update
-
+    db,
+    ref,
+    push,
+    set,
+    onValue,
+    remove,
+    update
 } from "./firebase.js";
 
 
-
-console.log("🔥 APP TTA MANAGER RUN");
+console.log("🔥 TTA CUSTOM MANAGER READY");
 
 
 
@@ -28,45 +25,107 @@ const addBtn = document.getElementById("add");
 
 
 
-
-// =======================
+// ==========================
 // THÊM / SỬA TEAM
-// =======================
+// ==========================
 
 
 addBtn.onclick = async ()=>{
 
 
-let name = nameInput.value.trim();
-
-let box = boxInput.value;
-
-let time = timeInput.value;
+    let name = nameInput.value.trim();
+    let box = boxInput.value;
+    let time = timeInput.value;
 
 
 
-if(name==""){
+    if(name==""){
 
-alert("Nhập tên team");
+        alert("Chưa nhập tên team");
 
-return;
+        return;
 
-}
-
-
+    }
 
 
-let data = {
 
-name:name,
+    if(editID){
 
-box:box,
 
-time:time,
+        await update(
 
-paid:false,
+            ref(db,"teams/"+editID),
 
-created:Date.now()
+            {
+
+                name:name,
+                box:box,
+                time:time
+
+            }
+
+        );
+
+
+        editID=null;
+
+        addBtn.innerHTML="➕ THÊM TEAM";
+
+
+    }
+
+    else{
+
+
+        let all = [];
+
+        onValue(
+            ref(db,"teams"),
+            (snap)=>{
+
+                snap.forEach(item=>{
+
+                    all.push(item.val());
+
+                });
+
+            },
+            {
+                onlyOnce:true
+            }
+        );
+
+
+
+        await set(
+
+            push(ref(db,"teams")),
+
+            {
+
+                name:name,
+
+                box:box,
+
+                time:time,
+
+                paid:false,
+
+                created:Date.now(),
+
+                order:Date.now()
+
+            }
+
+        );
+
+
+    }
+
+
+
+    nameInput.value="";
+
 
 };
 
@@ -74,85 +133,50 @@ created:Date.now()
 
 
 
-if(editID){
 
 
-await update(
-
-ref(db,"teams/"+editID),
-
-data
-
-);
-
-
-editID=null;
-
-addBtn.innerHTML="➕ THÊM TEAM";
-
-
-}
-
-else{
-
-
-await set(
-
-push(ref(db,"teams")),
-
-data
-
-);
-
-
-}
+// ==========================
+// LẤY DATA FIREBASE
+// ==========================
 
 
 
-nameInput.value="";
+onValue(ref(db,"teams"),(snapshot)=>{
 
 
-};
-
-
-
+    let teams=[];
 
 
 
+    snapshot.forEach(item=>{
+
+
+        teams.push({
+
+            id:item.key,
+
+            ...item.val()
+
+        });
+
+
+    });
 
 
 
-// =======================
-// ĐỌC FIREBASE
-// =======================
+    // sắp xếp theo thời gian đăng ký
 
+    teams.sort((a,b)=>{
 
-onValue(ref(db,"teams"),(snap)=>{
+        return a.order-b.order;
 
-
-let teams=[];
-
-
-
-snap.forEach(item=>{
-
-
-teams.push({
-
-id:item.key,
-
-...item.val()
-
-});
-
-
-});
+    });
 
 
 
-renderList(teams);
+    renderList(teams);
 
-renderTable(teams);
+    renderMatch(teams);
 
 
 
@@ -165,10 +189,10 @@ renderTable(teams);
 
 
 
+// ==========================
+// DANH SÁCH ADMIN
+// ==========================
 
-// =======================
-// DANH SÁCH ĐĂNG KÝ
-// =======================
 
 
 function renderList(teams){
@@ -178,21 +202,22 @@ let html="";
 
 
 
-let times={};
+let group={};
 
 
 
 teams.forEach(t=>{
 
 
-if(!times[t.time]){
+    if(!group[t.time]){
 
-times[t.time]=[];
+        group[t.time]=[];
 
-}
+    }
 
 
-times[t.time].push(t);
+    group[t.time].push(t);
+
 
 
 });
@@ -201,7 +226,7 @@ times[t.time].push(t);
 
 
 
-Object.keys(times).forEach(time=>{
+Object.keys(group).forEach(time=>{
 
 
 html+=`
@@ -216,10 +241,13 @@ ${time}
 
 
 
-times[time].forEach((t,index)=>{
+
+group[time].forEach((t,index)=>{
+
 
 
 html+=`
+
 
 <div class="team">
 
@@ -231,11 +259,21 @@ ${index+1}️⃣ ${t.box} ${t.name}
 </h3>
 
 
+
+<p>
+
+${t.time}
+
+</p>
+
+
+
 <p class="${t.paid?'paid':'unpaid'}">
 
 ${t.paid?"💸 ĐÃ THANH TOÁN":"❌ CHƯA THANH TOÁN"}
 
 </p>
+
 
 
 
@@ -246,13 +284,11 @@ ${t.paid?"💸 ĐÃ THANH TOÁN":"❌ CHƯA THANH TOÁN"}
 </button>
 
 
-
 <button onclick="editTeam('${t.id}')">
 
 ✏️ Sửa
 
 </button>
-
 
 
 <button onclick="deleteTeam('${t.id}')">
@@ -262,13 +298,30 @@ ${t.paid?"💸 ĐÃ THANH TOÁN":"❌ CHƯA THANH TOÁN"}
 </button>
 
 
+<button onclick="up('${t.id}')">
+
+⬆️ Lên
+
+</button>
+
+
+<button onclick="down('${t.id}')">
+
+⬇️ Xuống
+
+</button>
+
+
+
 </div>
+
 
 `;
 
 
 
 });
+
 
 
 });
@@ -288,34 +341,37 @@ document.getElementById("list").innerHTML=html;
 
 
 
+// ==========================
+// BẢNG THI ĐẤU SLOT 01-12
+// ==========================
 
-// =======================
-// BẢNG THI ĐẤU A B C D
-// =======================
 
+function renderMatch(teams){
 
-function renderTable(teams){
 
 
 let html="";
 
 
 
-let times={};
+let group={};
 
 
 
 teams.forEach(t=>{
 
 
-if(!times[t.time]){
+if(!group[t.time]){
 
-times[t.time]=[];
+
+group[t.time]=[];
+
 
 }
 
 
-times[t.time].push(t);
+group[t.time].push(t);
+
 
 
 });
@@ -324,7 +380,8 @@ times[t.time].push(t);
 
 
 
-Object.keys(times).forEach(time=>{
+Object.keys(group).forEach(time=>{
+
 
 
 html+=`
@@ -339,29 +396,33 @@ ${time}
 
 
 
-let current=0;
-
-let table=0;
+let players = group[time];
 
 
 
-while(current < times[time].length){
+let tableNumber=0;
 
 
 
-let letter =
+for(
 
-String.fromCharCode(65+table);
+let i=0;
+
+i<players.length;
+
+i+=12
+
+){
 
 
 
-let group =
+let tableName =
 
-times[time].slice(current,current+12);
+String.fromCharCode(65+tableNumber);
 
 
 
-if(group.length>0){
+let table = players.slice(i,i+12);
 
 
 
@@ -372,34 +433,90 @@ html+=`
 
 <h3>
 
-🔥 BẢNG ${letter}
+🔥 BẢNG ${tableName}
 
 </h3>
-
 
 `;
 
 
 
-group.forEach((t,i)=>{
+
+for(let x=0;x<12;x++){
+
+
+let p=table[x];
+
+
+
+if(p){
+
 
 
 html+=`
 
 <div class="slot">
 
-${String(i+1).padStart(2,"0")}️⃣
 
-${t.box}
+<span>
 
-${t.name}
+${String(x+1).padStart(2,"0")}️⃣
+
+</span>
+
+
+
+${p.name}
+
+<br>
+
+
+🔥 ${p.box}
+
+
+<br>
+
+
+${p.time}
+
+
+<br>
+
+
+${p.paid?"💸 ĐÃ THANH TOÁN":"❌ CHƯA THANH TOÁN"}
+
+
 
 </div>
 
 `;
 
 
-});
+
+}
+
+else{
+
+
+html+=`
+
+<div class="slot">
+
+${String(x+1).padStart(2,"0")}️⃣
+
+(Trống)
+
+</div>
+
+`;
+
+
+
+}
+
+
+
+}
 
 
 
@@ -411,13 +528,7 @@ html+=`
 
 
 
-}
-
-
-
-current +=12;
-
-table++;
+tableNumber++;
 
 
 }
@@ -425,7 +536,6 @@ table++;
 
 
 });
-
 
 
 
@@ -441,10 +551,9 @@ document.getElementById("match").innerHTML=html;
 
 
 
-
-// =======================
+// ==========================
 // THANH TOÁN
-// =======================
+// ==========================
 
 
 window.pay=function(id){
@@ -471,9 +580,9 @@ paid:true
 
 
 
-// =======================
+// ==========================
 // XÓA
-// =======================
+// ==========================
 
 
 window.deleteTeam=function(id){
@@ -500,10 +609,9 @@ ref(db,"teams/"+id)
 
 
 
-
-// =======================
+// ==========================
 // SỬA
-// =======================
+// ==========================
 
 
 window.editTeam=function(id){
@@ -536,7 +644,9 @@ editID=id;
 addBtn.innerHTML="💾 LƯU SỬA";
 
 
+
 },
+
 
 {
 
@@ -544,8 +654,40 @@ onlyOnce:true
 
 }
 
+
+
 );
 
 
 
 };
+
+
+
+
+
+
+
+
+// ==========================
+// ĐỔI THỨ TỰ
+// ==========================
+
+
+window.up=function(id){
+
+
+alert("Chức năng đổi vị trí sẽ hoàn thiện ở bản tiếp theo");
+
+
+}
+
+
+
+window.down=function(id){
+
+
+alert("Chức năng đổi vị trí sẽ hoàn thiện ở bản tiếp theo");
+
+
+}
