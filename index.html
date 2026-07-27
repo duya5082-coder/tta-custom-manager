@@ -24,10 +24,45 @@
 
 
 
-<div class="register">
+<!-- THỐNG KÊ -->
+
+<div class="panel">
+
+<h2>📊 THỐNG KÊ</h2>
+
+<p id="total">
+Tổng team: 0
+</p>
+
+<p id="paidCount">
+Đã thanh toán: 0
+</p>
+
+<p id="unpaidCount">
+Chưa thanh toán: 0
+</p>
+
+<p id="money">
+Doanh thu: 0K
+</p>
 
 
-<h2>➕ ĐĂNG KÝ TEAM</h2>
+</div>
+
+
+
+
+
+<!-- ĐĂNG KÝ -->
+
+
+<div class="panel">
+
+
+<h2>
+➕ ĐĂNG KÝ TEAM
+</h2>
+
 
 
 <input 
@@ -39,18 +74,50 @@ placeholder="Nhập tên team"
 
 <select id="box">
 
-<option>🔥 BOX 1</option>
-<option>🔥 BOX 2</option>
-<option>🔥 BOX 3</option>
-<option>🔥 BOX 4</option>
-<option>🔥 BOX 5</option>
-<option>🔥 BOX 6</option>
-<option>🔥 BOX 7</option>
-<option>🔥 BOX 8</option>
-<option>🔥 BOX 9</option>
-<option>🔥 BOX 10</option>
+
+<option value="1">
+🔥 BOX 1
+</option>
+
+<option value="2">
+🔥 BOX 2
+</option>
+
+<option value="3">
+🔥 BOX 3
+</option>
+
+<option value="4">
+🔥 BOX 4
+</option>
+
+<option value="5">
+🔥 BOX 5
+</option>
+
+<option value="6">
+🔥 BOX 6
+</option>
+
+<option value="7">
+🔥 BOX 7
+</option>
+
+<option value="8">
+🔥 BOX 8
+</option>
+
+<option value="9">
+🔥 BOX 9
+</option>
+
+<option value="10">
+🔥 BOX 10
+</option>
+
 
 </select>
+
 
 
 
@@ -58,22 +125,43 @@ placeholder="Nhập tên team"
 <select id="time">
 
 
-<option>⏰10H00⏰ 💸5K💸</option>
+<option>
+⏰10H00⏰ 💸5K💸
+</option>
 
-<option>⏰13H00⏰ 💸5K💸</option>
 
-<option>⏰15H00⏰ 💸5K💸</option>
+<option>
+⏰13H00⏰ 💸5K💸
+</option>
 
-<option>⏰18H00⏰ 💸5K💸</option>
 
-<option>⏰20H00⏰ 💸5K💸</option>
+<option>
+⏰15H00⏰ 💸5K💸
+</option>
 
-<option>⏰22H00⏰ 💸5K💸</option>
 
-<option>⏰23H50⏰ 💸5K💸</option>
+<option>
+⏰18H00⏰ 💸5K💸
+</option>
+
+
+<option>
+⏰20H00⏰ 💸5K💸
+</option>
+
+
+<option>
+⏰22H00⏰ 💸5K💸
+</option>
+
+
+<option>
+⏰23H50⏰ 💸5K💸
+</option>
 
 
 </select>
+
 
 
 
@@ -92,14 +180,22 @@ placeholder="Nhập tên team"
 
 
 
+
 <div class="layout">
 
+
+
+
+
+<!-- DANH SÁCH CHƯA THANH TOÁN -->
 
 
 <div class="panel">
 
 
-<h2>📋 DANH SÁCH ĐĂNG KÝ</h2>
+<h2>
+📋 DANH SÁCH ĐĂNG KÝ
+</h2>
 
 
 <div id="list">
@@ -113,18 +209,59 @@ placeholder="Nhập tên team"
 
 
 
+
+
+<!-- DANH SÁCH ĐÃ THANH TOÁN -->
+
+
 <div class="panel">
 
 
-<h2>🎮 BẢNG THI ĐẤU</h2>
+<h2>
+💰 ĐÃ THANH TOÁN
+</h2>
 
 
-<div id="match">
+<div id="paidList">
 
 </div>
 
 
 </div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- BẢNG THI ĐẤU COPY MESS -->
+
+
+<div class="panel">
+
+
+<h2>
+🎮 BẢNG THI ĐẤU (COPY MESS)
+</h2>
+
+
+<textarea id="match" readonly>
+
+</textarea>
+
+
+
+<button onclick="copyMatch()">
+
+📋 COPY BẢNG ĐẤU
+
+</button>
 
 
 
