@@ -36,6 +36,9 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 
+console.log("Firebase OK");
+
+
 export {
 db,
 ref,
