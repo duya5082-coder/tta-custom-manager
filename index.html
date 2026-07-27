@@ -17,8 +17,10 @@
 <body>
 
 
+<!-- =====================
+TRANG CHÀO
+===================== -->
 
-<!-- TRANG CHÀO -->
 
 <div id="welcome">
 
@@ -49,19 +51,20 @@ Thống kê
 </button>
 
 
-<button onclick="go('match')">
+<button onclick="go('matchPage')">
 🎮<br>
 Bảng đấu
 </button>
 
 
-<button onclick="go('list')">
+<button onclick="go('listPage')">
 📋<br>
 Danh sách
 </button>
 
 
 </div>
+
 
 
 
@@ -74,19 +77,22 @@ Danh sách
 
 
 
+
 <p>
 
 Liên hệ Zalo:
+
 <br>
 
-<b>0395395057</b>
+<b>
+0395395057
+</b>
 
 <br>
 
 (Thuê làm web)
 
 </p>
-
 
 
 </div>
@@ -98,9 +104,14 @@ Liên hệ Zalo:
 
 
 
-<!-- HỆ THỐNG -->
+
+<!-- =====================
+HỆ THỐNG QUẢN LÝ
+===================== -->
+
 
 <div id="manager">
+
 
 
 <div class="container">
@@ -131,17 +142,18 @@ Liên hệ Zalo:
 </button>
 
 
-<button onclick="go('list')">
+<button onclick="go('listPage')">
 📋 Danh sách
 </button>
 
 
-<button onclick="go('match')">
+<button onclick="go('matchPage')">
 🎮 Bảng đấu
 </button>
 
 
 </div>
+
 
 
 
@@ -181,7 +193,6 @@ Doanh thu: 0K
 </p>
 
 
-
 </div>
 
 
@@ -212,7 +223,9 @@ placeholder="Tên team"
 
 
 
+
 <select id="box">
+
 
 <option value="1">
 🔥 BOX 1
@@ -261,6 +274,8 @@ placeholder="Tên team"
 
 
 
+
+
 <select id="time">
 
 
@@ -304,6 +319,7 @@ placeholder="Tên team"
 
 
 
+
 <button id="add">
 
 ➕ THÊM TEAM
@@ -325,7 +341,7 @@ placeholder="Tên team"
 <!-- DANH SÁCH -->
 
 
-<div class="panel section" id="list">
+<div class="panel section" id="listPage">
 
 
 <h2>
@@ -338,7 +354,6 @@ placeholder="Tên team"
 </div>
 
 
-
 </div>
 
 
@@ -348,7 +363,8 @@ placeholder="Tên team"
 
 
 
-<!-- THANH TOÁN -->
+
+<!-- ĐÃ THANH TOÁN -->
 
 
 <div class="panel">
@@ -364,7 +380,6 @@ placeholder="Tên team"
 </div>
 
 
-
 </div>
 
 
@@ -378,7 +393,7 @@ placeholder="Tên team"
 <!-- BẢNG ĐẤU -->
 
 
-<div class="panel section" id="match">
+<div class="panel section" id="matchPage">
 
 
 <h2>
@@ -399,11 +414,12 @@ placeholder="Tên team"
 
 
 
-</div>
 
 
 </div>
 
+
+</div>
 
 
 
@@ -429,6 +445,7 @@ manager.style.display="none";
 
 
 
+
 document
 .getElementById("startBtn")
 .onclick=function(){
@@ -449,10 +466,14 @@ manager.style.display="block";
 function go(id){
 
 
+welcome.style.display="none";
+
+
 manager.style.display="block";
 
 
-welcome.style.display="none";
+
+setTimeout(()=>{
 
 
 document
@@ -464,17 +485,24 @@ behavior:"smooth"
 });
 
 
+},100);
+
+
+
 }
+
 
 
 </script>
 
 
 
+
+
 <script type="module" src="app.js"></script>
 
 
-</body>
 
+</body>
 
 </html>
