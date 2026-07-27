@@ -1,30 +1,16 @@
 import {
-
 db,
-
 ref,
-
 push,
-
 set,
-
 onValue,
-
 remove,
-
 update
-
-}
-
-from "./firebase.js";
+} from "./firebase.js";
 
 
 
-
-// =======================
 // THÊM TEAM
-// =======================
-
 
 window.addTeam = function(){
 
@@ -37,9 +23,9 @@ let box = document.getElementById("box").value;
 
 
 
-if(name.trim()==""){
+if(name==""){
 
-alert("Nhập tên team!");
+alert("Nhập tên team");
 
 return;
 
@@ -59,17 +45,9 @@ time:time,
 
 box:box,
 
-paid:false,
-
-created:Date.now()
+paid:false
 
 });
-
-
-
-document.getElementById("name").value="";
-
-document.getElementById("time").value="";
 
 
 };
@@ -79,10 +57,7 @@ document.getElementById("time").value="";
 
 
 
-
-// =======================
 // HIỂN THỊ 10 BOX
-// =======================
 
 
 onValue(ref(db,"teams"),(snapshot)=>{
@@ -90,14 +65,6 @@ onValue(ref(db,"teams"),(snapshot)=>{
 
 let boxes={};
 
-
-let total=0;
-
-let paid=0;
-
-
-
-// tạo BOX 1 - BOX 10
 
 for(let i=1;i<=10;i++){
 
@@ -107,60 +74,49 @@ boxes["BOX "+i]="";
 
 
 
+let total=0;
+
+
 snapshot.forEach((item)=>{
 
 
-let team=item.val();
+let data=item.val();
 
 
 total++;
 
 
-if(team.paid){
 
-paid++;
-
-}
+let currentBox=data.box || "BOX 1";
 
 
 
-
-let html=`
-
+boxes[currentBox]+=`
 
 <div class="team">
 
 
 <h3>
 
-${team.paid ? "💸 " : ""}
+${data.paid ? "💸 " : ""}
 
-${team.name}
+${data.name}
 
 </h3>
 
 
-
 <p>
-⏰ ${team.time}
+
+⏰ ${data.time}
+
 </p>
-
-
-
-<p>
-${team.box}
-</p>
-
 
 
 <p>
 
-${team.paid 
-? "✅ Đã thanh toán"
-: "❌ Chưa thanh toán"}
+${data.paid ? "✅ Đã thanh toán" : "❌ Chưa thanh toán"}
 
 </p>
-
 
 
 <button onclick="payTeam('${item.key}')">
@@ -170,28 +126,16 @@ ${team.paid
 </button>
 
 
-
-<button class="delete" onclick="deleteTeam('${item.key}')">
+<button onclick="deleteTeam('${item.key}')">
 
 ❌ Xóa
 
 </button>
 
 
-
 </div>
 
-
 `;
-
-
-
-
-if(boxes[team.box] !== undefined){
-
-boxes[team.box] += html;
-
-}
 
 
 
@@ -200,18 +144,21 @@ boxes[team.box] += html;
 
 
 
-let output="";
+
+let html="";
 
 
 
 for(let i=1;i<=10;i++){
 
 
-output += `
+html += `
 
 
 <h2>
+
 🔥 BOX ${i}
+
 </h2>
 
 
@@ -226,27 +173,17 @@ ${boxes["BOX "+i]}
 
 
 
-output += `
-
-
-<hr>
-
+html += `
 
 <h3>
 👥 Tổng team: ${total}
 </h3>
 
-
-<h3>
-💸 Đã thanh toán: ${paid}
-</h3>
-
-
 `;
 
 
 
-document.getElementById("list").innerHTML=output;
+document.getElementById("list").innerHTML=html;
 
 
 
@@ -259,10 +196,7 @@ document.getElementById("list").innerHTML=output;
 
 
 
-// =======================
 // THANH TOÁN
-// =======================
-
 
 window.payTeam=function(id){
 
@@ -280,23 +214,12 @@ paid:true
 
 
 
-
-
-// =======================
-// XÓA TEAM
-// =======================
-
+// XÓA
 
 window.deleteTeam=function(id){
 
 
-if(confirm("Xóa team này?")){
-
-
 remove(ref(db,"teams/"+id));
-
-
-}
 
 
 };
