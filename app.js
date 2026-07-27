@@ -1,166 +1,95 @@
 import {
+    db,
+    ref,
+    push,
+    set,
+    onValue,
+    remove,
+    update
+} from "./firebase.js";
 
-db,
-
-ref,
-
-push,
-
-set,
-
-onValue,
-
-remove,
-
-update
-
-}
-
-from "./firebase.js";
-
-
-
-
-// THÊM TEAM
 
 window.addTeam = function(){
 
+    let name = document.getElementById("name").value;
+    let time = document.getElementById("time").value;
 
-let name = document.getElementById("name").value;
+    if(name === ""){
+        alert("Nhập tên team");
+        return;
+    }
 
-let time = document.getElementById("time").value;
+    let team = push(ref(db,"teams"));
 
+    set(team,{
+        name:name,
+        time:time,
+        paid:false
+    });
 
-
-if(name==""){
-
-alert("Nhập tên team");
-
-return;
-
-}
-
-
-
-let newTeam = push(ref(db,"teams"));
-
+    document.getElementById("name").value="";
+    document.getElementById("time").value="";
+};
 
 
-set(newTeam,{
 
-name:name,
+onValue(ref(db,"teams"),(snapshot)=>{
 
-time:time,
+    let list = document.getElementById("list");
 
-paid:false
+    list.innerHTML="";
+
+
+    snapshot.forEach((item)=>{
+
+        let data = item.val();
+
+
+        list.innerHTML += `
+
+        <div class="team">
+
+            <h3>
+            ${data.paid ? "💸 " : ""}${data.name}
+            </h3>
+
+            <p>
+            ⏰ ${data.time}
+            </p>
+
+
+            <button onclick="payTeam('${item.key}')">
+            Thanh toán
+            </button>
+
+
+            <button onclick="deleteTeam('${item.key}')">
+            Xóa
+            </button>
+
+        </div>
+
+        `;
+
+
+    });
 
 });
 
 
 
-document.getElementById("name").value="";
+window.payTeam = function(id){
 
-document.getElementById("time").value="";
-
+    update(ref(db,"teams/"+id),{
+        paid:true
+    });
 
 };
 
 
 
+window.deleteTeam = function(id){
 
+    remove(ref(db,"teams/"+id));
 
-// HIỂN THỊ TEAM
-
-
-onValue(ref(db,"teams"),(data)=>{
-
-
-let list=document.getElementById("list");
-
-
-list.innerHTML="";
-
-
-
-data.forEach((item)=>{
-
-
-let team=item.val();
-
-
-
-list.innerHTML += `
-
-
-<div class="team">
-
-
-<h3>
-
-${team.paid ? "💸 " : ""}
-
-${team.name}
-
-</h3>
-
-
-<p>
-
-⏰ ${team.time}
-
-</p>
-
-
-
-<button onclick="pay('${item.key}')">
-
-Thanh toán
-
-</button>
-
-
-<button class="delete" onclick="del('${item.key}')">
-
-Xóa
-
-</button>
-
-
-</div>
-
-
-`;
-
-
-});
-
-
-});
-
-
-
-
-
-
-window.pay=function(id){
-
-
-update(ref(db,"teams/"+id),{
-
-paid:true
-
-});
-
-
-}
-
-
-
-
-window.del=function(id){
-
-
-remove(ref(db,"teams/"+id));
-
-
-}
+};
