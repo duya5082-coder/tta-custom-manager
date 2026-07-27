@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>TTA CUSTOM MANAGER</title>
+<title>CUSTOM TTA</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -17,34 +17,50 @@
 <body>
 
 
-<div class="container">
+<!-- MÀN HÌNH CHÀO -->
+
+<div id="welcome" class="welcome">
 
 
-<h1>🔥 TTA CUSTOM MANAGER 🔥</h1>
+<h1>
+🔥 CUSTOM TTA 🔥
+</h1>
+
+
+<h2>
+HỆ THỐNG QUẢN LÍ BOX HÀNG ĐẦU
+</h2>
 
 
 
-<!-- THỐNG KÊ -->
+<div class="menu-home">
 
-<div class="panel">
 
-<h2>📊 THỐNG KÊ</h2>
+<div>
+📊<br>
+Thống kê
+</div>
 
-<p id="total">
-Tổng team: 0
-</p>
 
-<p id="paidCount">
-Đã thanh toán: 0
-</p>
+<div>
+➕<br>
+Đăng ký
+</div>
 
-<p id="unpaidCount">
-Chưa thanh toán: 0
-</p>
 
-<p id="money">
-Doanh thu: 0K
-</p>
+
+<div>
+🎮<br>
+Bảng đấu
+</div>
+
+
+
+<div>
+📋<br>
+Danh sách
+</div>
+
 
 </div>
 
@@ -52,7 +68,108 @@ Doanh thu: 0K
 
 
 
-<!-- ĐĂNG KÝ TEAM -->
+<button 
+class="start-btn"
+onclick="startManager()"
+>
+
+🔥 VÀO CÔNG VIỆC THÔI NÀO 🔥
+
+</button>
+
+
+
+
+
+<p class="contact">
+
+Liên hệ Zalo:
+<br>
+
+<b>
+0395395057
+</b>
+
+<br>
+
+(Thuê làm web)
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- HỆ THỐNG QUẢN LÝ -->
+
+
+<div id="manager" style="display:none;">
+
+
+
+<div class="container">
+
+
+<h1>
+
+🔥 TTA CUSTOM MANAGER 🔥
+
+</h1>
+
+
+
+
+
+
+<!-- THỐNG KÊ -->
+
+<div class="panel">
+
+
+<h2>
+📊 THỐNG KÊ
+</h2>
+
+
+<p id="total">
+Tổng team: 0
+</p>
+
+
+<p id="paidCount">
+Đã thanh toán: 0
+</p>
+
+
+<p id="unpaidCount">
+Chưa thanh toán: 0
+</p>
+
+
+<p id="money">
+Doanh thu: 0K
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- ĐĂNG KÝ -->
+
 
 <div class="panel">
 
@@ -62,6 +179,7 @@ Doanh thu: 0K
 </h2>
 
 
+
 <input 
 id="name"
 placeholder="Nhập tên team"
@@ -69,20 +187,64 @@ placeholder="Nhập tên team"
 
 
 
+
 <select id="box">
 
-<option value="1">🔥 BOX 1</option>
-<option value="2">🔥 BOX 2</option>
-<option value="3">🔥 BOX 3</option>
-<option value="4">🔥 BOX 4</option>
-<option value="5">🔥 BOX 5</option>
-<option value="6">🔥 BOX 6</option>
-<option value="7">🔥 BOX 7</option>
-<option value="8">🔥 BOX 8</option>
-<option value="9">🔥 BOX 9</option>
-<option value="10">🔥 BOX 10</option>
+
+<option value="1">
+🔥 BOX 1
+</option>
+
+
+<option value="2">
+🔥 BOX 2
+</option>
+
+
+<option value="3">
+🔥 BOX 3
+</option>
+
+
+<option value="4">
+🔥 BOX 4
+</option>
+
+
+<option value="5">
+🔥 BOX 5
+</option>
+
+
+<option value="6">
+🔥 BOX 6
+</option>
+
+
+<option value="7">
+🔥 BOX 7
+</option>
+
+
+<option value="8">
+🔥 BOX 8
+</option>
+
+
+<option value="9">
+🔥 BOX 9
+</option>
+
+
+<option value="10">
+🔥 BOX 10
+</option>
+
 
 </select>
+
+
+
 
 
 
@@ -130,6 +292,8 @@ placeholder="Nhập tên team"
 
 
 
+
+
 <button id="add">
 
 ➕ THÊM TEAM
@@ -137,7 +301,11 @@ placeholder="Nhập tên team"
 </button>
 
 
+
 </div>
+
+
+
 
 
 
@@ -149,7 +317,7 @@ placeholder="Nhập tên team"
 
 
 
-<!-- CHƯA THANH TOÁN -->
+
 
 <div class="panel">
 
@@ -170,10 +338,6 @@ placeholder="Nhập tên team"
 
 
 
-
-
-
-<!-- ĐÃ THANH TOÁN -->
 
 <div class="panel">
 
@@ -204,6 +368,7 @@ placeholder="Nhập tên team"
 
 <!-- BẢNG ĐẤU -->
 
+
 <div class="panel">
 
 
@@ -212,12 +377,18 @@ placeholder="Nhập tên team"
 </h2>
 
 
-
 <div id="match">
 
 </div>
 
 
+</div>
+
+
+
+
+</div>
+
 
 </div>
 
@@ -225,9 +396,26 @@ placeholder="Nhập tên team"
 
 
 
-</div>
 
 
+
+
+<script>
+
+
+function startManager(){
+
+
+document.getElementById("welcome").style.display="none";
+
+
+document.getElementById("manager").style.display="block";
+
+
+}
+
+
+</script>
 
 
 
@@ -235,6 +423,5 @@ placeholder="Nhập tên team"
 
 
 </body>
-
 
 </html>
