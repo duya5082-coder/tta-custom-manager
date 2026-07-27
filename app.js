@@ -1,4 +1,5 @@
 import {
+
 db,
 ref,
 push,
@@ -6,29 +7,39 @@ set,
 onValue,
 remove,
 update
+
 } from "./firebase.js";
 
 
-console.log("APP FIREBASE OK");
+console.log("APP MỚI ĐÃ CHẠY");
 
 
 
-// thêm team
+// THÊM TEAM
 
-document.getElementById("add").onclick=function(){
+document.getElementById("add").onclick = function(){
 
 
-let name=document.getElementById("name").value;
+console.log("ĐÃ BẤM THÊM TEAM");
 
-let box=document.getElementById("box").value;
 
-let time=document.getElementById("time").value;
+
+let name =
+document.getElementById("name").value;
+
+
+let box =
+document.getElementById("box").value;
+
+
+let time =
+document.getElementById("time").value;
 
 
 
 if(name.trim()==""){
 
-alert("Nhập tên team");
+alert("Chưa nhập tên team");
 
 return;
 
@@ -36,11 +47,11 @@ return;
 
 
 
-let newTeam = push(ref(db,"teams"));
+let teamRef = push(ref(db,"teams"));
 
 
 
-set(newTeam,{
+set(teamRef,{
 
 name:name,
 
@@ -52,17 +63,24 @@ paid:false
 
 })
 
+
 .then(()=>{
+
 
 alert("Đã thêm team");
 
+
 document.getElementById("name").value="";
+
 
 })
 
-.catch(error=>{
+
+.catch((error)=>{
+
 
 alert(error.message);
+
 
 });
 
@@ -74,7 +92,7 @@ alert(error.message);
 
 
 
-// hiển thị dữ liệu
+// HIỂN THỊ
 
 
 onValue(ref(db,"teams"),(snapshot)=>{
@@ -92,6 +110,7 @@ let team=item.val();
 
 
 html += `
+
 
 <div class="team">
 
@@ -119,7 +138,6 @@ ${team.paid ? "💸 Đã thanh toán":"❌ Chưa thanh toán"}
 </p>
 
 
-
 <button onclick="pay('${item.key}')">
 
 💸 Thanh toán
@@ -140,12 +158,11 @@ ${team.paid ? "💸 Đã thanh toán":"❌ Chưa thanh toán"}
 `;
 
 
-
 });
 
 
 
-document.getElementById("list").innerHTML=html;
+document.getElementById("list").innerHTML = html;
 
 
 });
@@ -167,6 +184,7 @@ paid:true
 
 
 };
+
 
 
 
