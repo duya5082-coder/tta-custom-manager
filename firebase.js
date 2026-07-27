@@ -37,7 +37,6 @@ const db = getDatabase(app);
 
 
 export {
-
 db,
 ref,
 push,
@@ -45,5 +44,4 @@ set,
 onValue,
 remove,
 update
-
 };
