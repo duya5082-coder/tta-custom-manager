@@ -7,7 +7,9 @@ body{
 
     margin:0;
 
-    font-family:Arial, Helvetica, sans-serif;
+    font-family:Arial, sans-serif;
+
+    color:white;
 
     background:
     linear-gradient(
@@ -18,67 +20,75 @@ body{
 
     background-size:cover;
 
+    background-position:center;
+
     background-attachment:fixed;
 
-    color:white;
-
 }
-
 
 
 
 /* =====================
-   MÀN HÌNH CHÀO
+ TRANG CHÀO
 ===================== */
 
 
-.welcome{
+#welcome{
 
 
 min-height:100vh;
 
+
 display:flex;
+
 
 flex-direction:column;
 
+
 justify-content:center;
+
 
 align-items:center;
 
+
 text-align:center;
 
-padding:25px;
+
+padding:20px;
 
 
 }
 
 
 
-.welcome h1{
+#welcome h1{
 
 
 font-size:38px;
 
-margin-bottom:10px;
 
 color:#ff9800;
 
+
 text-shadow:
-0 0 15px #ff9800;
+
+0 0 15px orange;
+
+
+margin-bottom:10px;
 
 
 }
 
 
 
-.welcome h2{
+#welcome h2{
 
 
 font-size:18px;
 
-font-weight:normal;
 
-margin-bottom:35px;
+font-weight:normal;
 
 
 }
@@ -86,41 +96,49 @@ margin-bottom:35px;
 
 
 
-.menu-home{
+.home-menu{
 
 
 display:grid;
 
+
 grid-template-columns:repeat(2,1fr);
+
 
 gap:15px;
 
+
 width:100%;
 
-max-width:400px;
+
+max-width:420px;
+
+
+margin:30px 0;
 
 
 }
 
 
 
+.home-menu button{
 
-.menu-home div{
+
+height:90px;
 
 
 background:
+
 rgba(255,255,255,0.12);
 
 
-border:
-
-1px solid rgba(255,255,255,0.25);
+border:1px solid rgba(255,255,255,0.25);
 
 
-border-radius:15px;
+border-radius:18px;
 
 
-padding:20px 10px;
+color:white;
 
 
 font-size:18px;
@@ -133,18 +151,13 @@ backdrop-filter:blur(10px);
 
 
 
-
-
-.start-btn{
-
-
-margin-top:35px;
+#startBtn{
 
 
 width:90%;
 
 
-max-width:400px;
+max-width:420px;
 
 
 padding:18px;
@@ -156,37 +169,32 @@ border:none;
 border-radius:30px;
 
 
-font-size:18px;
-
-
-font-weight:bold;
-
-
 background:#ff9800;
 
 
 color:white;
 
 
+font-size:18px;
+
+
+font-weight:bold;
+
+
 box-shadow:
 
-0 0 20px #ff9800;
-
-
-cursor:pointer;
+0 0 20px orange;
 
 
 }
 
 
 
-.contact{
+
+#welcome p{
 
 
 margin-top:25px;
-
-
-font-size:15px;
 
 
 color:#ddd;
@@ -198,12 +206,19 @@ color:#ddd;
 
 
 
-
-
-
 /* =====================
-   TRANG QUẢN LÝ
+ QUẢN LÝ
 ===================== */
+
+
+#manager{
+
+
+padding-bottom:30px;
+
+
+}
+
 
 
 .container{
@@ -225,7 +240,6 @@ padding:15px;
 
 
 
-
 .container>h1{
 
 
@@ -235,7 +249,7 @@ text-align:center;
 color:#ff9800;
 
 
-font-size:30px;
+font-size:28px;
 
 
 }
@@ -244,15 +258,68 @@ font-size:30px;
 
 
 
+
+/* MENU APP */
+
+
+.app-menu{
+
+
+display:grid;
+
+
+grid-template-columns:repeat(2,1fr);
+
+
+gap:10px;
+
+
+margin-bottom:20px;
+
+
+}
+
+
+
+.app-menu button{
+
+
+background:#222;
+
+
+border:1px solid #ff9800;
+
+
+color:white;
+
+
+border-radius:15px;
+
+
+padding:15px;
+
+
+font-size:16px;
+
+
+}
+
+
+
+
+
+/* BOX NỘI DUNG */
+
+
 .panel{
 
 
 background:
 
-rgba(20,20,20,0.85);
+rgba(20,20,20,0.88);
 
 
-border-radius:18px;
+border-radius:20px;
 
 
 padding:18px;
@@ -270,24 +337,25 @@ border:
 
 
 
-
-
 .panel h2{
-
-
-margin-top:0;
 
 
 color:#ffb300;
 
 
-font-size:22px;
+font-size:21px;
+
+
+margin-top:0;
 
 
 }
 
 
 
+
+
+/* INPUT */
 
 
 input,
@@ -317,34 +385,8 @@ font-size:16px;
 
 
 
+
 button{
-
-
-width:100%;
-
-
-padding:14px;
-
-
-border:none;
-
-
-border-radius:12px;
-
-
-background:#ff9800;
-
-
-color:white;
-
-
-font-size:16px;
-
-
-font-weight:bold;
-
-
-margin-top:8px;
 
 
 cursor:pointer;
@@ -354,47 +396,25 @@ cursor:pointer;
 
 
 
+#add{
 
-button:hover{
+
+background:#ff9800;
 
 
-opacity:0.85;
+color:white;
+
+
+font-weight:bold;
 
 
 }
-
-
 
 
 
 
 
 /* DANH SÁCH */
-
-
-.layout{
-
-
-display:flex;
-
-
-gap:15px;
-
-
-}
-
-
-
-
-.layout .panel{
-
-
-flex:1;
-
-
-}
-
-
 
 
 .team{
@@ -405,7 +425,7 @@ background:
 rgba(255,255,255,0.08);
 
 
-border-radius:12px;
+border-radius:15px;
 
 
 padding:12px;
@@ -418,42 +438,13 @@ margin-bottom:12px;
 
 
 
-
 .team h3{
 
 
 margin:0;
 
 
-color:#fff;
-
-
 }
-
-
-
-
-.unpaid{
-
-
-color:#ff5252;
-
-
-}
-
-
-
-
-.paid{
-
-
-color:#00e676;
-
-
-}
-
-
-
 
 
 
@@ -465,9 +456,7 @@ color:#00e676;
 .table-box{
 
 
-background:
-
-rgba(0,0,0,0.5);
+background:#111;
 
 
 border-radius:15px;
@@ -480,7 +469,6 @@ margin-bottom:15px;
 
 
 }
-
 
 
 
@@ -503,19 +491,10 @@ white-space:pre-wrap;
 font-family:Arial;
 
 
-font-size:16px;
+font-size:15px;
 
 
 line-height:1.7;
-
-
-background:#111;
-
-
-padding:15px;
-
-
-border-radius:12px;
 
 
 }
@@ -524,13 +503,32 @@ border-radius:12px;
 
 
 
-
-
-
-/* MOBILE */
+/* =====================
+ MOBILE
+===================== */
 
 
 @media(max-width:600px){
+
+
+
+#welcome h1{
+
+
+font-size:32px;
+
+
+}
+
+
+
+#welcome h2{
+
+
+font-size:16px;
+
+
+}
 
 
 
@@ -547,26 +545,6 @@ padding:10px;
 
 
 
-.container>h1{
-
-
-font-size:24px;
-
-
-}
-
-
-
-.layout{
-
-
-display:block;
-
-
-}
-
-
-
 .panel{
 
 
@@ -577,33 +555,13 @@ padding:14px;
 
 
 
-.menu-home{
+.app-menu button{
 
 
-gap:10px;
+font-size:14px;
 
 
-}
-
-
-
-.menu-home div{
-
-
-padding:15px 5px;
-
-
-font-size:16px;
-
-
-}
-
-
-
-.start-btn{
-
-
-font-size:16px;
+padding:12px;
 
 
 }
