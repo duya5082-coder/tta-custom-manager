@@ -30,7 +30,7 @@ const TTA_USERS = [
 
 {
 username:"admin",
-password:"123456",
+password:"123",
 role:"admin",
 name:"Admin TTA"
 },
@@ -38,7 +38,7 @@ name:"Admin TTA"
 
 {
 username:"ctv1",
-password:"123456",
+password:"101",
 role:"ctv",
 name:"CTV 1"
 },
@@ -46,7 +46,7 @@ name:"CTV 1"
 
 {
 username:"ctv2",
-password:"123456",
+password:"102",
 role:"ctv",
 name:"CTV 2"
 }
