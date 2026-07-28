@@ -1412,4 +1412,75 @@ onchange="importTTABackup(event)">
 
 
 
+});// =======================================
+// PHẦN 9
+// MENU TAB SYSTEM
+// =======================================
+
+
+function openPage(page){
+
+
+    let pages = document.querySelectorAll(
+        ".tta-page"
+    );
+
+
+    pages.forEach(p=>{
+        p.style.display="none";
+    });
+
+
+
+    let target =
+    document.getElementById(page);
+
+
+
+    if(target){
+
+        target.style.display="block";
+
+    }
+
+
+}
+
+
+
+
+window.addEventListener(
+"load",
+()=>{
+
+
+let menu =
+document.querySelectorAll(
+".tta-menu button"
+);
+
+
+
+menu.forEach(btn=>{
+
+
+btn.onclick=function(){
+
+
+let page =
+this.getAttribute(
+"data-page"
+);
+
+
+openPage(page);
+
+
+};
+
+
+});
+
+
+
 });
