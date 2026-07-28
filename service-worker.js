@@ -1,57 +1,76 @@
 // =======================================
-// FILE 7B
-// service-worker.js
-// OFFLINE + LOAD NHANH CUSTOM TTA
+// CUSTOM TTA MANAGER
+// SERVICE WORKER
+// FILE 4B
 // =======================================
 
 
-// =======================================
-// CACHE VERSION
-// =======================================
 
-const CACHE_NAME = "CUSTOM-TTA-v1";
+const CACHE_NAME = "CUSTOM-TTA-v2";
 
 
+
+
+
 // =======================================
-// FILE CẦN LƯU
+// FILE CẦN CACHE
 // =======================================
 
-const FILES_CACHE = [
+
+const APP_FILES = [
+
 
 "./",
 
+
 "./index.html",
+
 
 "./style.css",
 
+
 "./mobile.css",
 
-"./firebase.js",
 
-"./app.js",
+"./manifest.json",
+
 
 "./auth.js",
 
+
+"./app.js",
+
+
+"./firebase.js",
+
+
 "./export.js",
 
-"./reset.js",
-
-"./notification.js",
-
-"./messenger.js",
 
 "./backup.js",
 
-"./manifest.json"
+
+"./reset.js",
+
+
+"./notification.js",
+
+
+"./messenger.js"
 
 
 ];
 
 
 
+
+
+
+
 // =======================================
 // INSTALL
 // =======================================
+
 
 self.addEventListener(
 
@@ -74,7 +93,21 @@ CACHE_NAME
 
 return cache.addAll(
 
-FILES_CACHE
+APP_FILES
+
+);
+
+
+})
+
+.catch(error=>{
+
+
+console.error(
+
+"Cache install lỗi:",
+
+error
 
 );
 
@@ -95,9 +128,15 @@ self.skipWaiting();
 
 
 
+
+
+
+
 // =======================================
 // ACTIVE
+// XÓA CACHE CŨ
 // =======================================
+
 
 self.addEventListener(
 
@@ -133,7 +172,6 @@ return caches.delete(key);
 }
 
 
-
 })
 
 
@@ -144,6 +182,10 @@ return caches.delete(key);
 
 
 );
+
+
+
+self.clients.claim();
 
 
 
@@ -152,9 +194,14 @@ return caches.delete(key);
 
 
 
+
+
+
+
 // =======================================
 // FETCH
 // =======================================
+
 
 self.addEventListener(
 
@@ -175,11 +222,27 @@ event.request
 .then(response=>{
 
 
-return response || fetch(
+return response ||
+
+fetch(
 
 event.request
 
 );
+
+
+
+})
+
+.catch(()=>{
+
+
+return caches.match(
+
+"./index.html"
+
+);
+
 
 
 })
@@ -194,9 +257,12 @@ event.request
 
 
 
+
+
 // =======================================
-// UPDATE CACHE
+// UPDATE
 // =======================================
+
 
 self.addEventListener(
 
@@ -215,7 +281,6 @@ event.data==="UPDATE"
 self.skipWaiting();
 
 
-
 }
 
 
@@ -224,6 +289,11 @@ self.skipWaiting();
 
 
 
-// =======================================
-// END FILE 7B
-// =======================================
+
+
+
+console.log(
+
+"🔥 CUSTOM TTA SERVICE WORKER READY"
+
+);
