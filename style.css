@@ -928,4 +928,14 @@ padding:30px;
 color:#aaa;
 
 
+}/* FIX PAGE HIDDEN */
+
+.hidden{
+    display:none !important;
 }
+
+
+.page{
+    display:block;
+}
+
