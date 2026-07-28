@@ -4,11 +4,7 @@
 // app.js
 // =======================================
 
-if (window.TTA_APP_LOADED) {
 
-    console.warn("APP đã được load");
-
-} else {
 
 window.TTA_APP_LOADED = true;
 
@@ -1491,4 +1487,4 @@ page
 });
 
 
-}
+
