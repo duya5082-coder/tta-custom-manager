@@ -769,7 +769,8 @@ loading.style.display="none";
 },1000);
 
 
-});window.openPage = function(page){
-    console.log("Opening:", page);
+});
+window.openPage = function(page){
+    console.log("Open page:", page);
 };
 
