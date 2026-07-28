@@ -779,16 +779,26 @@ loading.style.display="none";
 });
 window.openPage = function(page){
 
-    // Ẩn tất cả page
-    document.querySelectorAll(".page").forEach(p=>{
+    document.querySelectorAll(".page").forEach(function(p){
         p.classList.add("hidden");
     });
 
-    // Hiện page cần mở
-    const target=document.getElementById(page);
+    const target = document.getElementById(page);
 
     if(target){
         target.classList.remove("hidden");
+    }
+
+    document.querySelectorAll(".menu button").forEach(function(btn){
+        btn.classList.remove("active");
+    });
+
+    const active=document.querySelector(
+        '.menu button[data-page="'+page+'"]'
+    );
+
+    if(active){
+        active.classList.add("active");
     }
 
 };
