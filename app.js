@@ -709,7 +709,14 @@ document.addEventListener(
 
 "DOMContentLoaded",
 
-()=>{
+()=>{// ===============================
+// MENU
+// ===============================
+document.querySelectorAll(".menu button").forEach(btn => {
+    btn.onclick = function () {
+        window.openPage(this.dataset.page);
+    };
+});
 
 
 const btn=
