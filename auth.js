@@ -1,58 +1,148 @@
-// =================================
-// CUSTOM TTA MANAGER V2
-// FIREBASE CONFIG
-// =================================
+// =======================================
+// CUSTOM TTA MANAGER
+// AUTH SYSTEM
+// FILE 2A
+// =======================================
 
 
-// Firebase SDK
+// chống load trùng
+if(window.TTA_AUTH_LOADED){
 
-import { initializeApp } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-
-import { 
-getFirestore 
-} 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+console.warn(
+"AUTH đã được load"
+);
 
 
-import {
+}else{
 
-getAuth
+
+window.TTA_AUTH_LOADED = true;
+
+
+
+// ===============================
+// USER DATABASE DEMO
+// Sau này có thể đổi Firebase
+// ===============================
+
+
+const TTA_USERS = [
+
+{
+username:"admin",
+password:"123456",
+role:"admin",
+name:"Admin TTA"
+},
+
+
+{
+username:"ctv1",
+password:"123456",
+role:"ctv",
+name:"CTV 1"
+},
+
+
+{
+username:"ctv2",
+password:"123456",
+role:"ctv",
+name:"CTV 2"
+}
+
+
+];
+
+
+
+
+// ===============================
+// SESSION KEY
+// dùng tên riêng tránh lỗi
+// ===============================
+
+
+const TTA_SESSION_KEY = "CUSTOM_TTA_SESSION";
+
+
+
+
+// ===============================
+// LẤY SESSION
+// ===============================
+
+
+window.TTA_getSession = function(){
+
+
+try{
+
+
+return JSON.parse(
+
+localStorage.getItem(
+TTA_SESSION_KEY
+)
+
+)
+
+|| null;
+
+
+}catch(e){
+
+
+return null;
+
 
 }
 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+};
 
 
 
 
-
-// =================================
-// FIREBASE CONFIG
-// THAY BẰNG CONFIG CỦA BẠN
-// =================================
+// ===============================
+// LƯU SESSION
+// ===============================
 
 
-const firebaseConfig = {
+window.TTA_saveSession=function(user){
 
 
-apiKey: "YOUR_API_KEY",
+localStorage.setItem(
+
+TTA_SESSION_KEY,
+
+JSON.stringify(user)
+
+);
 
 
-authDomain: "YOUR_PROJECT.firebaseapp.com",
+};
 
 
-projectId: "YOUR_PROJECT_ID",
 
 
-storageBucket: "YOUR_PROJECT.appspot.com",
+// ===============================
+// XÓA SESSION
+// ===============================
 
 
-messagingSenderId: "YOUR_SENDER_ID",
+window.TTA_logout=function(){
 
 
-appId: "YOUR_APP_ID"
+localStorage.removeItem(
+
+TTA_SESSION_KEY
+
+);
+
+
+
+location.reload();
 
 
 };
@@ -61,38 +151,324 @@ appId: "YOUR_APP_ID"
 
 
 
-// =================================
-// INIT FIREBASE
-// =================================
+// ===============================
+// LOGIN
+// ===============================
 
 
-const firebaseApp = initializeApp(firebaseConfig);
-
-
-
-const db = getFirestore(firebaseApp);
+window.TTA_login=function(username,password){
 
 
 
-const auth = getAuth(firebaseApp);
+const user = TTA_USERS.find(
+
+
+u=>
+
+
+u.username===username
+
+&&
+
+u.password===password
+
+
+);
 
 
 
+if(!user){
 
 
-// =================================
-// EXPORT
-// =================================
+return false;
 
 
-export {
+}
 
 
-firebaseApp,
 
-db,
+TTA_saveSession(user);
 
-auth
+
+
+return true;
 
 
 };
+
+
+
+
+
+// ===============================
+// KIỂM TRA QUYỀN
+// ===============================
+
+
+window.TTA_isAdmin=function(){
+
+
+const user=TTA_getSession();
+
+
+
+return user
+
+&&
+
+user.role==="admin";
+
+
+};
+
+
+
+
+
+// ===============================
+// HIỂN THỊ USER
+// ===============================
+
+
+window.TTA_showUser=function(){
+
+
+
+const user=TTA_getSession();
+
+
+
+if(!user)
+
+return;
+
+
+
+const welcome = document.getElementById(
+"welcome"
+);
+
+
+
+if(welcome){
+
+
+welcome.innerHTML=
+
+`
+
+Xin chào <b>${user.name}</b>
+
+`;
+
+
+
+}
+
+
+
+};
+
+
+
+
+// ===============================
+// DOM READY
+// ===============================
+
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+
+
+const loginBtn=
+
+document.getElementById(
+"loginBtn"
+);
+
+
+
+if(loginBtn){
+
+
+
+loginBtn.onclick=function(){
+
+
+
+const username=
+
+document.getElementById(
+"username"
+).value.trim();
+
+
+
+const password=
+
+document.getElementById(
+"password"
+).value.trim();
+
+
+
+
+const result=
+
+TTA_login(
+username,
+password
+);
+
+
+
+if(result){
+
+
+document.getElementById(
+"loginPage"
+).classList.add(
+"hidden"
+);
+
+
+
+document.getElementById(
+"app"
+).classList.remove(
+"hidden"
+);
+
+
+
+TTA_showUser();
+
+
+
+}else{
+
+
+const error=
+
+document.getElementById(
+"loginError"
+);
+
+
+
+if(error)
+
+error.innerHTML=
+
+"❌ Sai tài khoản hoặc mật khẩu";
+
+
+}
+
+
+
+};
+
+
+
+}
+
+
+
+
+const logoutBtn=
+
+document.getElementById(
+"logoutBtn"
+);
+
+
+
+if(logoutBtn){
+
+
+logoutBtn.onclick=()=>{
+
+
+TTA_logout();
+
+
+};
+
+
+}
+
+
+
+
+// tự đăng nhập lại
+
+
+const session=
+
+TTA_getSession();
+
+
+
+if(session){
+
+
+const login=
+
+document.getElementById(
+"loginPage"
+);
+
+
+
+const app=
+
+document.getElementById(
+"app"
+);
+
+
+
+if(login)
+
+login.classList.add(
+"hidden"
+);
+
+
+
+if(app)
+
+app.classList.remove(
+"hidden"
+);
+
+
+
+TTA_showUser();
+
+
+
+}
+
+
+
+
+});
+
+
+
+console.log(
+
+"🔥 AUTH SYSTEM READY"
+
+);
+
+
+
+}
