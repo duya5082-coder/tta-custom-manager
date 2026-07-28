@@ -1,79 +1,332 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // APP SYSTEM
+// FILE 2B
 // =======================================
 
 
-if(window.TTA_APP_SYSTEM_LOADED){
+if(window.TTA_APP_LOADED){
 
 console.warn(
-"APP SYSTEM đã chạy"
+"APP đã được load"
 );
 
 
 }else{
 
 
-window.TTA_APP_SYSTEM_LOADED=true;
+window.TTA_APP_LOADED=true;
 
 
 
 // ===============================
-// CHUYỂN TRANG
+// DATABASE LOCAL
 // ===============================
 
 
-function openPage(page){
+const TTA_TEAM_KEY = "CUSTOM_TTA_TEAMS";
 
 
-document.querySelectorAll(".page")
-.forEach(p=>{
+
+function getTeams(){
 
 
-p.classList.add("hidden");
+try{
+
+
+return JSON.parse(
+
+localStorage.getItem(
+TTA_TEAM_KEY
+)
+
+)
+
+|| [];
+
+
+}catch(error){
+
+
+return [];
+
+
+}
+
+
+}
+
+
+
+
+function saveTeams(data){
+
+
+localStorage.setItem(
+
+TTA_TEAM_KEY,
+
+JSON.stringify(data)
+
+);
+
+
+}
+
+
+
+
+// ===============================
+// HIỂN THỊ TEAM
+// ===============================
+
+
+function renderTeams(){
+
+
+const list = document.getElementById(
+"teamList"
+);
+
+
+
+if(!list)
+
+return;
+
+
+
+const teams=getTeams();
+
+
+
+list.innerHTML="";
+
+
+
+if(teams.length===0){
+
+
+list.innerHTML=
+
+`
+
+<div class="empty">
+
+Chưa có Team nào
+
+</div>
+
+`;
+
+return;
+
+
+}
+
+
+
+teams.forEach((team,index)=>{
+
+
+
+const item=document.createElement(
+"div"
+);
+
+
+
+item.className="teamItem";
+
+
+
+item.innerHTML=
+
+`
+
+<div>
+
+
+<h3>
+
+🔥 ${team.name}
+
+</h3>
+
+
+<p>
+
+📦 BOX ${team.box}
+
+|
+
+🕒 ${team.time}
+
+</p>
+
+
+
+<p>
+
+💰 ${team.paid ? 
+
+"✅ Đã thanh toán"
+
+:
+
+"❌ Chưa thanh toán"
+
+}
+
+</p>
+
+
+</div>
+
+
+
+<div>
+
+
+<button
+
+class="payBtn"
+
+data-id="${index}">
+
+💸
+
+</button>
+
+
+<button
+
+class="deleteBtn"
+
+data-id="${index}">
+
+🗑️
+
+</button>
+
+
+</div>
+
+`;
+
+
+
+list.appendChild(item);
+
 
 
 });
 
 
 
-const target=document.getElementById(page);
 
-
-
-if(target){
-
-target.classList.remove("hidden");
-
-}
-
-
-}
-
-
-
-// ===============================
-// MENU
-// ===============================
-
-
-function initMenu(){
+// nút thanh toán
 
 
 document.querySelectorAll(
-".menu button"
-)
 
-.forEach(btn=>{
+".payBtn"
 
-
-btn.onclick=()=>{
+).forEach(btn=>{
 
 
-const page=btn.dataset.page;
+btn.onclick=function(){
 
 
-openPage(page);
+
+const id=this.dataset.id;
+
+
+
+let data=getTeams();
+
+
+
+data[id].paid=true;
+
+
+
+saveTeams(data);
+
+
+
+renderTeams();
+
+
+
+updateDashboard();
+
+
+
+notify(
+
+"Đã thanh toán Team"
+
+);
+
+
+
+};
+
+
+
+});
+
+
+
+
+
+// nút xóa
+
+
+document.querySelectorAll(
+
+".deleteBtn"
+
+).forEach(btn=>{
+
+
+btn.onclick=function(){
+
+
+
+const id=this.dataset.id;
+
+
+
+let data=getTeams();
+
+
+
+data.splice(
+id,
+1
+);
+
+
+
+saveTeams(data);
+
+
+
+renderTeams();
+
+
+
+updateDashboard();
+
+
+
+notify(
+
+"Đã xóa Team"
+
+);
 
 
 
@@ -83,46 +336,367 @@ openPage(page);
 });
 
 
+
 }
+
 
 
 
 // ===============================
-// LOGOUT
+// THÊM TEAM
 // ===============================
 
 
-function logout(){
+function addTeam(){
 
 
-const app=document.getElementById(
-"app"
+
+const name=
+
+document.getElementById(
+"teamName"
+)?.value.trim();
+
+
+
+const box=
+
+document.getElementById(
+"teamBox"
+)?.value;
+
+
+
+const time=
+
+document.getElementById(
+"teamTime"
+)?.value;
+
+
+
+if(!name || !box || !time){
+
+
+alert(
+"Vui lòng nhập đủ thông tin"
 );
 
 
-const login=document.getElementById(
-"loginPage"
+return;
+
+
+}
+
+
+
+
+const teams=getTeams();
+
+
+
+// chống trùng
+
+
+const exists=
+
+teams.some(
+
+t=>
+
+t.name.toLowerCase()
+
+===
+
+name.toLowerCase()
+
 );
 
 
 
-if(app)
-app.classList.add("hidden");
+if(exists){
 
 
+alert(
 
-if(login)
-login.classList.remove("hidden");
+"Team này đã tồn tại"
 
-
-
-localStorage.removeItem(
-"TTA_LOGIN"
 );
+
+
+return;
+
+
+}
+
+
+
+
+teams.push({
+
+
+id:Date.now(),
+
+
+name:name,
+
+
+box:box,
+
+
+time:time,
+
+
+paid:false,
+
+
+created:new Date()
+
+.toLocaleString()
+
+
+
+});
+
+
+
+
+saveTeams(teams);
+
+
+
+renderTeams();
+
+
+
+updateDashboard();
+
+
+
+notify(
+
+"Đã thêm Team mới"
+
+);
+
+
+
+// reset form
+
+
+document.getElementById(
+"teamName"
+).value="";
 
 
 
 }
+
+
+
+
+// ===============================
+// DASHBOARD
+// ===============================
+
+
+function updateDashboard(){
+
+
+
+const teams=getTeams();
+
+
+
+const total=
+
+document.getElementById(
+"totalTeam"
+);
+
+
+
+const paid=
+
+document.getElementById(
+"paid"
+);
+
+
+
+const unpaid=
+
+document.getElementById(
+"unpaid"
+);
+
+
+
+const revenue=
+
+document.getElementById(
+"revenue"
+);
+
+
+
+if(total)
+
+total.innerHTML=
+
+teams.length;
+
+
+
+const paidTeam=
+
+teams.filter(
+
+t=>t.paid
+
+).length;
+
+
+
+if(paid)
+
+paid.innerHTML=
+
+paidTeam;
+
+
+
+if(unpaid)
+
+unpaid.innerHTML=
+
+teams.length-paidTeam;
+
+
+
+const price=5000;
+
+
+
+if(revenue)
+
+revenue.innerHTML=
+
+(
+
+paidTeam*price
+
+)
+
+.toLocaleString()
+
++"đ";
+
+
+
+}
+
+
+
+
+
+// ===============================
+// TÌM KIẾM TEAM
+// ===============================
+
+
+function searchTeam(){
+
+
+
+const input=
+
+document.getElementById(
+"searchTeam"
+);
+
+
+
+if(!input)
+
+return;
+
+
+
+input.addEventListener(
+
+"input",
+
+()=>{
+
+
+const key=
+
+input.value.toLowerCase();
+
+
+
+document.querySelectorAll(
+
+".teamItem"
+
+).forEach(item=>{
+
+
+item.style.display=
+
+item.innerText
+
+.toLowerCase()
+
+.includes(key)
+
+?
+
+"flex"
+
+:
+
+"none";
+
+
+
+});
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+// ===============================
+// THÔNG BÁO
+// ===============================
+
+
+function notify(msg){
+
+
+
+if(window.sendNotification){
+
+
+window.sendNotification(msg);
+
+
+
+}
+
+
+
+}
+
 
 
 
@@ -132,41 +706,68 @@ localStorage.removeItem(
 
 
 document.addEventListener(
+
 "DOMContentLoaded",
+
 ()=>{
 
 
-initMenu();
+const btn=
 
-
-
-const logoutBtn=document.getElementById(
-"logoutBtn"
+document.getElementById(
+"addTeamBtn"
 );
 
 
 
-if(logoutBtn){
+if(btn){
 
-logoutBtn.onclick=logout;
+
+btn.onclick=addTeam;
+
 
 }
 
 
 
-openPage(
-"dashboard"
-);
+renderTeams();
 
 
+updateDashboard();
 
-console.log(
-"🔥 APP SYSTEM READY"
-);
+
+searchTeam();
 
 
 
 });
 
 
+
+
+
+console.log(
+
+"🔥 APP SYSTEM READY"
+
+);
+
+
+
+}document.addEventListener("DOMContentLoaded",()=>{
+
+setTimeout(()=>{
+
+const loading=document.getElementById("loading");
+
+if(loading){
+
+loading.style.display="none";
+
 }
+
+},1000);
+
+
+});
+
