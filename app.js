@@ -770,7 +770,24 @@ loading.style.display="none";
 
 
 });
-window.openPage = function(page){
-    console.log("Open page:", page);
-};
+// ===============================
+// PAGE NAVIGATION
+// ===============================
 
+window.openPage = function(page){
+
+    console.log("Open page:", page);
+
+    document.querySelectorAll(".page").forEach(p=>{
+        p.style.display = "none";
+    });
+
+    const target = document.getElementById(page);
+
+    if(target){
+        target.style.display = "block";
+    }else{
+        console.warn("Không tìm thấy page:", page);
+    }
+
+};
