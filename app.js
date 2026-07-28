@@ -769,5 +769,7 @@ loading.style.display="none";
 },1000);
 
 
-});
+});window.openPage = function(page){
+    console.log("Opening:", page);
+};
 
