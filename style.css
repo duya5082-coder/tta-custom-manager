@@ -1,171 +1,52 @@
-/* =========================
-CUSTOM TTA MANAGER V2
-STYLE CSS
-========================= */
+/* =======================================
+CUSTOM TTA MANAGER
+MAIN STYLE PC
+FILE 3A - style.css
+======================================= */
 
 
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Poppins',sans-serif;
+
+box-sizing:border-box;
+
+margin:0;
+
+padding:0;
+
+font-family:
+
+Arial, Helvetica, sans-serif;
+
 }
+
 
 
 body{
 
-    background:#0f0f14;
-    color:white;
-    min-height:100vh;
+
+background:#111827;
+
+
+color:#ffffff;
+
+
+min-height:100vh;
+
 
 }
 
+
+
+/* ================================
+COMMON
+================================ */
 
 
 .hidden{
 
-    display:none !important;
 
-}
+display:none !important;
 
-
-
-/* =========================
-LOADING
-========================= */
-
-
-#loading{
-
-    position:fixed;
-    inset:0;
-
-    background:#111;
-
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:center;
-
-    align-items:center;
-
-    z-index:9999;
-
-}
-
-
-
-#loading img{
-
-    width:120px;
-
-    animation:spin 2s infinite;
-
-}
-
-
-
-#loading h2{
-
-    margin-top:20px;
-
-    color:#ff6a00;
-
-}
-
-
-
-@keyframes spin{
-
-    50%{
-
-        transform:scale(1.1);
-
-    }
-
-}
-
-
-
-/* =========================
-LOGIN
-========================= */
-
-
-#loginPage{
-
-    height:100vh;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-}
-
-
-
-.loginBox{
-
-
-    width:380px;
-
-    background:#1b1b24;
-
-    padding:35px;
-
-    border-radius:20px;
-
-    text-align:center;
-
-    box-shadow:
-
-    0 0 30px rgba(255,106,0,.3);
-
-}
-
-
-
-.loginBox .logo{
-
-
-    width:100px;
-
-}
-
-
-
-.loginBox h1{
-
-
-    color:#ff6a00;
-
-    margin:15px 0;
-
-}
-
-
-
-.loginBox input{
-
-
-    width:100%;
-
-    padding:14px;
-
-    margin-top:15px;
-
-    border-radius:10px;
-
-    border:none;
-
-    outline:none;
-
-    background:#292936;
-
-    color:white;
 
 }
 
@@ -174,32 +55,17 @@ LOGIN
 button{
 
 
-    cursor:pointer;
-
-    border:none;
-
-    transition:.2s;
-
-}
+cursor:pointer;
 
 
+border:none;
 
-.loginBox button{
+
+outline:none;
 
 
-    margin-top:20px;
+transition:.2s;
 
-    width:100%;
-
-    padding:14px;
-
-    border-radius:10px;
-
-    background:#ff6a00;
-
-    color:white;
-
-    font-weight:700;
 
 }
 
@@ -208,9 +74,41 @@ button{
 button:hover{
 
 
-    transform:translateY(-2px);
+opacity:.85;
 
-    opacity:.9;
+
+}
+
+
+
+input,
+select,
+textarea{
+
+
+width:100%;
+
+
+padding:12px;
+
+
+border-radius:10px;
+
+
+border:1px solid #374151;
+
+
+background:#1f2937;
+
+
+color:white;
+
+
+margin:8px 0;
+
+
+font-size:15px;
+
 
 }
 
@@ -218,27 +116,205 @@ button:hover{
 
 
 
-/* =========================
-HEADER
-========================= */
+/* ================================
+LOADING
+================================ */
+
+
+#loading{
+
+
+position:fixed;
+
+
+top:0;
+
+
+left:0;
+
+
+width:100%;
+
+
+height:100%;
+
+
+background:#111827;
+
+
+display:flex;
+
+
+flex-direction:column;
+
+
+align-items:center;
+
+
+justify-content:center;
+
+
+z-index:9999;
+
+
+}
+
+
+
+#loading h2{
+
+
+margin-top:15px;
+
+
+color:#ff6a00;
+
+
+}
+
+
+
+#loading p{
+
+
+color:#aaa;
+
+
+}
+
+
+
+/* ================================
+LOGIN
+================================ */
+
+
+#loginPage{
+
+
+width:100%;
+
+
+height:100vh;
+
+
+display:flex;
+
+
+justify-content:center;
+
+
+align-items:center;
+
+
+}
+
+
+
+.loginBox{
+
+
+width:380px;
+
+
+background:#1f2937;
+
+
+padding:35px;
+
+
+border-radius:20px;
+
+
+box-shadow:
+
+0 0 30px rgba(0,0,0,.4);
+
+
+text-align:center;
+
+
+}
+
+
+
+.loginBox h1{
+
+
+color:#ff6a00;
+
+
+margin:15px 0;
+
+
+}
+
+
+
+.loginBox button{
+
+
+width:100%;
+
+
+padding:14px;
+
+
+background:#ff6a00;
+
+
+color:white;
+
+
+border-radius:12px;
+
+
+font-weight:bold;
+
+
+}
+
+
+
+#loginError{
+
+
+color:#ef4444;
+
+
+margin-top:10px;
+
+
+}
+
+
+
+
+/* ================================
+APP HEADER
+================================ */
 
 
 #app header{
 
 
-    height:75px;
+height:80px;
 
-    background:#181820;
 
-    display:flex;
+background:#1f2937;
 
-    align-items:center;
 
-    justify-content:space-between;
+display:flex;
 
-    padding:0 30px;
 
-    border-bottom:1px solid #333;
+align-items:center;
+
+
+justify-content:space-between;
+
+
+padding:0 30px;
+
 
 }
 
@@ -247,20 +323,14 @@ HEADER
 .brand{
 
 
-    display:flex;
-
-    align-items:center;
-
-    gap:15px;
-
-}
+display:flex;
 
 
+align-items:center;
 
-.brand img{
 
+gap:15px;
 
-    width:50px;
 
 }
 
@@ -269,46 +339,62 @@ HEADER
 .brand h2{
 
 
-    color:#ff6a00;
+color:#ff6a00;
+
 
 }
+
+
+
+#welcome{
+
+
+color:#ccc;
+
+
+}
+
 
 
 
 #logoutBtn{
 
 
-    padding:12px 20px;
+background:#dc2626;
 
-    border-radius:10px;
 
-    background:#ff3030;
+color:white;
 
-    color:white;
+
+padding:12px 20px;
+
+
+border-radius:10px;
+
 
 }
 
 
 
-
-
-/* =========================
+/* ================================
 MENU
-========================= */
+================================ */
 
 
 .menu{
 
 
-    display:flex;
+display:flex;
 
-    gap:10px;
 
-    padding:15px;
+gap:10px;
 
-    background:#121218;
 
-    overflow:auto;
+padding:15px 30px;
+
+
+background:#111827;
+
 
 }
 
@@ -317,17 +403,17 @@ MENU
 .menu button{
 
 
-    padding:12px 20px;
+background:#1f2937;
 
-    border-radius:12px;
 
-    background:#252532;
+color:white;
 
-    color:white;
 
-    font-weight:600;
+padding:12px 18px;
 
-    white-space:nowrap;
+
+border-radius:12px;
+
 
 }
 
@@ -335,52 +421,87 @@ MENU
 
 .menu button:hover{
 
-    background:#ff6a00;
+
+background:#ff6a00;
+
 
 }
 
 
 
-/* =========================
-MAIN
-========================= */
+
+
+/* ================================
+CONTENT
+================================ */
 
 
 main{
 
 
-    padding:25px;
+padding:25px 30px;
+
 
 }
 
 
 
-.page h1{
+.pageHeader{
 
 
-    margin-bottom:20px;
+margin-bottom:20px;
 
-    color:#ff6a00;
 
 }
 
 
 
-/* =========================
-CARD DASHBOARD
-========================= */
+.pageHeader h1{
+
+
+color:#ff6a00;
+
+
+}
+
+
+
+.panel{
+
+
+background:#1f2937;
+
+
+padding:25px;
+
+
+border-radius:18px;
+
+
+}
+
+
+
+
+
+/* ================================
+DASHBOARD
+================================ */
 
 
 .cards{
 
 
-    display:grid;
+display:grid;
 
-    grid-template-columns:
 
-    repeat(auto-fit,minmax(220px,1fr));
+grid-template-columns:
 
-    gap:20px;
+repeat(4,1fr);
+
+
+gap:20px;
+
 
 }
 
@@ -389,15 +510,17 @@ CARD DASHBOARD
 .card{
 
 
-    background:#1b1b25;
+background:#1f2937;
 
-    padding:25px;
 
-    border-radius:20px;
+padding:25px;
 
-    box-shadow:
 
-    0 0 20px rgba(0,0,0,.4);
+border-radius:18px;
+
+
+text-align:center;
+
 
 }
 
@@ -406,9 +529,11 @@ CARD DASHBOARD
 .card h3{
 
 
-    color:#aaa;
+color:#aaa;
 
-    font-size:15px;
+
+margin-bottom:10px;
+
 
 }
 
@@ -417,13 +542,11 @@ CARD DASHBOARD
 .card b{
 
 
-    display:block;
+font-size:30px;
 
-    margin-top:15px;
 
-    font-size:35px;
+color:#ff6a00;
 
-    color:#ff6a00;
 
 }
 
@@ -431,65 +554,22 @@ CARD DASHBOARD
 
 
 
-/* =========================
-FORM
-========================= */
+/* ================================
+TEAM
+================================ */
 
 
-#register input,
-#register select{
+.toolbar{
 
 
-    width:100%;
-
-    margin-bottom:15px;
-
-    padding:15px;
-
-    background:#252532;
-
-    border:none;
-
-    color:white;
-
-    border-radius:10px;
-
-}
+display:flex;
 
 
-
-#addTeamBtn{
-
-
-    width:100%;
-
-    padding:15px;
-
-    background:#ff6a00;
-
-    color:white;
-
-    border-radius:12px;
-
-    font-weight:700;
-
-}
+gap:10px;
 
 
+margin-bottom:20px;
 
-
-
-/* =========================
-TEAM LIST
-========================= */
-
-
-#teamList{
-
-
-    display:grid;
-
-    gap:15px;
 
 }
 
@@ -498,26 +578,72 @@ TEAM LIST
 .teamItem{
 
 
-    background:#1b1b25;
+display:flex;
 
-    padding:20px;
 
-    border-radius:15px;
+justify-content:space-between;
 
-    display:flex;
 
-    justify-content:space-between;
+align-items:center;
 
-    align-items:center;
+
+background:#111827;
+
+
+padding:15px;
+
+
+border-radius:12px;
+
+
+margin-bottom:10px;
+
 
 }
 
 
 
-.teamItem b{
+.teamItem h3{
 
 
-    color:#ff6a00;
+color:#ff6a00;
+
+
+}
+
+
+
+.teamItem button{
+
+
+padding:10px;
+
+
+border-radius:8px;
+
+
+}
+
+
+
+.payBtn{
+
+
+background:#16a34a;
+
+
+}
+
+
+
+.deleteBtn{
+
+
+background:#dc2626;
+
+
+color:white;
+
 
 }
 
@@ -525,21 +651,62 @@ TEAM LIST
 
 
 
-/* =========================
-PAYMENT
-========================= */
+/* ================================
+MONEY CARD
+================================ */
 
 
-.paymentItem{
+.paymentSummary,
+.salaryGrid,
+.quickStats{
 
 
-    background:#1b1b25;
+display:grid;
 
-    padding:20px;
 
-    margin-bottom:10px;
+grid-template-columns:
 
-    border-radius:15px;
+repeat(3,1fr);
+
+
+gap:20px;
+
+
+}
+
+
+
+.moneyCard,
+.salaryCard,
+.quickCard{
+
+
+background:#111827;
+
+
+padding:25px;
+
+
+border-radius:15px;
+
+
+text-align:center;
+
+
+}
+
+
+
+.moneyCard b,
+.salaryCard h1,
+.quickCard b{
+
+
+color:#22c55e;
+
+
+font-size:28px;
+
 
 }
 
@@ -547,55 +714,218 @@ PAYMENT
 
 
 
-/* =========================
+/* ================================
+BUTTON
+================================ */
+
+
+#addTeamBtn,
+#saveDebtBtn,
+#saveSettingBtn{
+
+
+background:#ff6a00;
+
+
+color:white;
+
+
+padding:14px;
+
+
+border-radius:12px;
+
+
+font-weight:bold;
+
+
+}
+
+
+
+
+
+/* ================================
+MODAL
+================================ */
+
+
+.modal{
+
+
+position:fixed;
+
+
+top:0;
+
+
+left:0;
+
+
+width:100%;
+
+
+height:100%;
+
+
+background:
+
+rgba(0,0,0,.7);
+
+
+display:flex;
+
+
+justify-content:center;
+
+
+align-items:center;
+
+
+z-index:1000;
+
+
+}
+
+
+
+.modalBox{
+
+
+width:450px;
+
+
+background:#1f2937;
+
+
+padding:30px;
+
+
+border-radius:20px;
+
+
+}
+
+
+
+.modalFooter{
+
+
+display:flex;
+
+
+gap:10px;
+
+
+margin-top:20px;
+
+
+}
+
+
+
+
+
+/* ================================
 TOAST
-========================= */
+================================ */
 
 
 #toast{
 
 
-    position:fixed;
+position:fixed;
 
-    bottom:30px;
 
-    right:30px;
+right:25px;
 
-    background:#ff6a00;
 
-    color:white;
+bottom:25px;
 
-    padding:15px 25px;
 
-    border-radius:15px;
+background:#ff6a00;
 
-    display:none;
+
+color:white;
+
+
+padding:15px 25px;
+
+
+border-radius:12px;
+
+
+display:none;
+
+
+z-index:9999;
+
+
+}
+
+
+
+#toast.show{
+
+
+display:block;
+
 
 }
 
 
 
 
-
-/* =========================
-SCROLLBAR
-========================= */
-
-
-::-webkit-scrollbar{
+/* ================================
+NOTIFICATION
+================================ */
 
 
-    width:8px;
+.notificationItem{
+
+
+background:#111827;
+
+
+padding:15px;
+
+
+border-radius:10px;
+
+
+margin-bottom:10px;
+
 
 }
 
 
 
-::-webkit-scrollbar-thumb{
+.notificationItem small{
 
 
-    background:#ff6a00;
+color:#aaa;
 
-    border-radius:10px;
+
+}
+
+
+
+
+/* ================================
+EMPTY
+================================ */
+
+
+.empty{
+
+
+text-align:center;
+
+
+padding:30px;
+
+
+color:#aaa;
+
 
 }
