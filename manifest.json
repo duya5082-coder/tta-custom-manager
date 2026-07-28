@@ -1,14 +1,28 @@
 {
   "name": "CUSTOM TTA Manager",
   "short_name": "CUSTOM TTA",
-  "start_url": "./",
+  "description": "Hệ thống quản lý box CUSTOM TTA",
+  
+  "start_url": "./index.html",
   "scope": "./",
+
   "display": "standalone",
+
+  "orientation": "portrait",
+
   "background_color": "#111827",
+
   "theme_color": "#ff6a00",
+
   "lang": "vi",
 
-  "icons": [],
+  "dir": "ltr",
+
+  "categories": [
+    "business",
+    "productivity",
+    "utilities"
+  ],
 
   "prefer_related_applications": false
 }
