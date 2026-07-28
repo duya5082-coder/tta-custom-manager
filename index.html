@@ -5,82 +5,104 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>
-🔥 CUSTOM TTA MANAGER
-</title>
+<title>🔥 CUSTOM TTA MANAGER V3</title>
 
+<meta
+name="theme-color"
+content="#ff6a00">
 
-<meta name="theme-color" content="#ff6a00">
+<meta
+name="description"
+content="Hệ thống quản lý CUSTOM TTA">
 
+<link
+rel="stylesheet"
+href="style.css">
 
-<link rel="manifest" href="manifest.json">
+<link
+rel="stylesheet"
+href="mobile.css">
 
+<link
+rel="manifest"
+href="manifest.json">
 
-<link rel="stylesheet" href="style.css">
+<link
+rel="preconnect"
+href="https://fonts.googleapis.com">
 
+<link
+rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
 
-<link rel="stylesheet" href="mobile.css">
-
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
 rel="stylesheet">
-
 
 </head>
 
-
 <body>
 
+<!-- ========================= -->
+<!-- LOADING -->
+<!-- ========================= -->
 
 <div id="loading">
 
-<h2>🔥 CUSTOM TTA</h2>
+<div class="loadingBox">
 
-<p>Đang khởi động...</p>
+<h1>
 
+🔥 CUSTOM TTA
 
+</h1>
+
+<p>
+
+Đang khởi động hệ thống...
+
+</p>
+
+<div class="loader"></div>
 
 </div>
 
+</div>
 
-
+<!-- ========================= -->
 <!-- LOGIN -->
+<!-- ========================= -->
 
 <section id="loginPage">
 
-
-<div class="loginBox">
-
-
-
-
+<div class="loginCard">
 
 <h1>
+
 🔥 CUSTOM TTA
+
 </h1>
 
-
 <p>
-QUẢN LÝ CUSTOM FREE FIRE
+
+HỆ THỐNG QUẢN LÝ CUSTOM FREE FIRE
+
 </p>
-
-
 
 <input
 id="username"
+type="text"
 placeholder="Tên đăng nhập">
-
-
 
 <input
 id="password"
 type="password"
 placeholder="Mật khẩu">
-
-
 
 <button id="loginBtn">
 
@@ -88,51 +110,37 @@ placeholder="Mật khẩu">
 
 </button>
 
-
 <p id="loginError"></p>
 
-
 </div>
-
 
 </section>
 
-
-
-
-
+<!-- ========================= -->
 <!-- APP -->
+<!-- ========================= -->
 
 <div id="app" class="hidden">
 
+<header class="topBar">
 
-
-<header>
-
-
-<div class="brand">
-
-
-<div>
+<div class="left">
 
 <h2>
+
 🔥 CUSTOM TTA
+
 </h2>
 
-
-<span id="welcome">
+<p id="welcomeUser">
 
 Xin chào
 
-</span>
-
-
-</div>
-
+</p>
 
 </div>
 
-
+<div class="right">
 
 <button id="logoutBtn">
 
@@ -140,266 +148,625 @@ Xin chào
 
 </button>
 
-
+</div>
 
 </header>
 
-
-
-
-
+<!-- ========================= -->
 <!-- MENU -->
-
+<!-- ========================= -->
 
 <nav class="menu">
 
-
-<button data-page="dashboard">
+<button
+class="menuBtn active"
+data-page="dashboard">
 
 📊 Dashboard
 
 </button>
 
+<button
+class="menuBtn"
+data-page="register">
 
+➕ Đăng ký
 
-<button data-page="teams">
+</button>
+
+<button
+class="menuBtn"
+data-page="teams">
 
 👥 Team
 
 </button>
 
-
-
-<button data-page="register">
-
-➕
-
-Đăng ký
-
-</button>
-
-
-
-<button data-page="payments">
+<button
+class="menuBtn"
+data-page="payments">
 
 💸 Thanh toán
 
 </button>
 
+<button
+class="menuBtn"
+data-page="debts">
 
+💰 Dư tiền
 
-<button data-page="settings">
+</button>
+
+<button
+class="menuBtn"
+data-page="salary">
+
+👨‍💼 Lương CTV
+
+</button>
+
+<button
+class="menuBtn"
+data-page="history">
+
+📜 Nhật ký
+
+</button>
+
+<button
+class="menuBtn"
+data-page="settings">
 
 ⚙️ Cài đặt
 
 </button>
 
-
-
 </nav>
 
-
-
-
-
-<!-- CONTENT -->
-
-<main>
-
-
-
-
-
+<main id="pages"><!-- ====================================== -->
 <!-- DASHBOARD -->
+<!-- ====================================== -->
 
 <section
 id="dashboard"
-class="page">
+class="page active">
 
+<div class="pageHeader">
 
 <h1>
+
 📊 DASHBOARD
+
 </h1>
 
+<p>
 
+Tổng quan hệ thống CUSTOM TTA
 
-<div class="cards">
-
-
-<div class="card">
-
-<h3>
-Tổng Team
-</h3>
-
-<b id="totalTeam">
-0
-</b>
-
+</p>
 
 </div>
 
-
+<div class="dashboardGrid">
 
 <div class="card">
 
-<h3>
-Doanh thu
-</h3>
+<div class="icon">
 
+👥
 
-<b id="revenue">
+</div>
+
+<div class="text">
+
+<h3>Tổng Team</h3>
+
+<h1 id="totalTeam">
+
+0
+
+</h1>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="icon">
+
+💸
+
+</div>
+
+<div class="text">
+
+<h3>Doanh thu</h3>
+
+<h1 id="totalRevenue">
+
 0đ
-</b>
 
+</h1>
 
 </div>
 
-
+</div>
 
 <div class="card">
 
-<h3>
-Đã thanh toán
-</h3>
+<div class="icon">
 
-
-<b id="paid">
-0
-</b>
-
+✅
 
 </div>
 
+<div class="text">
 
+<h3>Đã thanh toán</h3>
+
+<h1 id="paidTeam">
+
+0
+
+</h1>
+
+</div>
+
+</div>
 
 <div class="card">
 
-<h3>
-Chưa thanh toán
-</h3>
+<div class="icon">
 
+❌
 
-<b id="unpaid">
+</div>
+
+<div class="text">
+
+<h3>Chưa thanh toán</h3>
+
+<h1 id="unpaidTeam">
+
 0
+
+</h1>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="icon">
+
+👨‍💼
+
+</div>
+
+<div class="text">
+
+<h3>Tổng CTV</h3>
+
+<h1 id="totalCTV">
+
+0
+
+</h1>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="icon">
+
+💰
+
+</div>
+
+<div class="text">
+
+<h3>Dư tiền</h3>
+
+<h1 id="totalDebt">
+
+0đ
+
+</h1>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="dashboardRow">
+
+<div class="panel">
+
+<h2>
+
+📦 Thống kê BOX
+
+</h2>
+
+<div class="boxGrid">
+
+<div class="boxItem">
+
+BOX 1
+
+<b id="box1">
+
+0 Team
+
 </b>
 
+</div>
+
+<div class="boxItem">
+
+BOX 2
+
+<b id="box2">
+
+0 Team
+
+</b>
 
 </div>
 
+<div class="boxItem">
+
+BOX 3
+
+<b id="box3">
+
+0 Team
+
+</b>
 
 </div>
 
+<div class="boxItem">
 
+BOX 4
 
-</section>
+<b id="box4">
 
+0 Team
 
+</b>
 
+</div>
 
+<div class="boxItem">
 
+BOX 5
 
+<b id="box5">
 
+0 Team
 
+</b>
 
-<!-- REGISTER -->
+</div>
+
+<div class="boxItem">
+
+BOX 6
+
+<b id="box6">
+
+0 Team
+
+</b>
+
+</div>
+
+<div class="boxItem">
+
+BOX 7
+
+<b id="box7">
+
+0 Team
+
+</b>
+
+</div>
+
+<div class="boxItem">
+
+BOX 8
+
+<b id="box8">
+
+0 Team
+
+</b>
+
+</div>
+
+<div class="boxItem">
+
+BOX 9
+
+<b id="box9">
+
+0 Team
+
+</b>
+
+</div>
+
+<div class="boxItem">
+
+BOX 10
+
+<b id="box10">
+
+0 Team
+
+</b>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<h2>
+
+🕒 Doanh thu theo giờ
+
+</h2>
+
+<div class="timeRevenue">
+
+<div>
+
+10H00
+
+<b id="rev10">
+
+0đ
+
+</b>
+
+</div>
+
+<div>
+
+13H00
+
+<b id="rev13">
+
+0đ
+
+</b>
+
+</div>
+
+<div>
+
+15H00
+
+<b id="rev15">
+
+0đ
+
+</b>
+
+</div>
+
+<div>
+
+18H00
+
+<b id="rev18">
+
+0đ
+
+</b>
+
+</div>
+
+<div>
+
+20H00
+
+<b id="rev20">
+
+0đ
+
+</b>
+
+</div>
+
+<div>
+
+22H00
+
+<b id="rev22">
+
+0đ
+
+</b>
+
+</div>
+
+<div>
+
+23H50
+
+<b id="rev2350">
+
+0đ
+
+</b>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section><!-- ====================================== -->
+<!-- ĐĂNG KÝ TEAM -->
+<!-- ====================================== -->
 
 <section
 id="register"
 class="page hidden">
 
+<div class="pageHeader">
 
 <h1>
+
 ➕ ĐĂNG KÝ TEAM
+
 </h1>
 
+<p>
 
+Thêm Team mới vào hệ thống
+
+</p>
+
+</div>
+
+<div class="panel">
+
+<div class="formGroup">
+
+<label>
+
+🏷️ Tên Team
+
+</label>
 
 <input
 id="teamName"
-placeholder="Tên Team">
+type="text"
+placeholder="Ví dụ: TTA ESPORT">
 
+</div>
 
+<div class="formGroup">
+
+<label>
+
+📦 BOX
+
+</label>
 
 <select id="teamBox">
 
-
 <option value="">
-Chọn BOX
+
+-- Chọn BOX --
+
 </option>
 
+<option value="1">BOX 1</option>
 
-<option>
-BOX 1
-</option>
+<option value="2">BOX 2</option>
 
+<option value="3">BOX 3</option>
 
-<option>
-BOX 2
-</option>
+<option value="4">BOX 4</option>
 
+<option value="5">BOX 5</option>
 
-<option>
-BOX 3
-</option>
+<option value="6">BOX 6</option>
 
+<option value="7">BOX 7</option>
 
-<option>
-BOX 4
-</option>
+<option value="8">BOX 8</option>
 
+<option value="9">BOX 9</option>
 
-<option>
-BOX 5
-</option>
-
+<option value="10">BOX 10</option>
 
 </select>
 
+</div>
 
+<div class="formGroup">
 
+<label>
+
+🕒 Khung giờ
+
+</label>
 
 <select id="teamTime">
 
+<option value="">
 
-<option>
-10H00
+-- Chọn giờ --
+
 </option>
 
+<option value="10H00">10H00</option>
 
-<option>
-13H00
-</option>
+<option value="13H00">13H00</option>
 
+<option value="15H00">15H00</option>
 
-<option>
-15H00
-</option>
+<option value="18H00">18H00</option>
 
+<option value="20H00">20H00</option>
 
-<option>
-18H00
-</option>
+<option value="22H00">22H00</option>
 
-
-<option>
-20H00
-</option>
-
-
-<option>
-22H00
-</option>
-
-
-<option>
-23H50
-</option>
-
+<option value="23H50">23H50</option>
 
 </select>
 
+</div>
 
+<div class="formGroup">
+
+<label>
+
+💰 Dùng dư tiền (nếu có)
+
+</label>
+
+<input
+id="teamDebtUse"
+type="number"
+min="0"
+placeholder="0">
+
+</div>
+
+<div class="formGroup">
+
+<label>
+
+📝 Ghi chú
+
+</label>
+
+<textarea
+id="teamNote"
+rows="4"
+placeholder="Nhập ghi chú..."></textarea>
+
+</div>
+
+<div class="buttonGroup">
 
 <button id="addTeamBtn">
 
@@ -407,42 +774,272 @@ BOX 5
 
 </button>
 
+<button
+type="reset"
+id="clearRegisterBtn">
 
+🧹 XÓA FORM
 
-</section>
+</button>
 
+</div>
 
+</div>
 
+<div class="panel">
 
+<h2>
 
+📌 Lưu ý
 
+</h2>
 
+<ul class="noteList">
 
+<li>
 
-<!-- TEAM LIST -->
+Không được nhập trùng tên Team.
+
+</li>
+
+<li>
+
+Một Team chỉ được đăng ký một lần.
+
+</li>
+
+<li>
+
+Nếu Team dùng dư tiền hãy nhập đúng số tiền.
+
+</li>
+
+<li>
+
+Sau khi thêm sẽ tự đồng bộ Firebase.
+
+</li>
+
+</ul>
+
+</div>
+
+</section><!-- ====================================== -->
+<!-- DANH SÁCH TEAM -->
+<!-- ====================================== -->
 
 <section
 id="teams"
 class="page hidden">
 
+<div class="pageHeader">
 
 <h1>
+
 👥 DANH SÁCH TEAM
+
 </h1>
 
+<p>
+
+Quản lý toàn bộ Team trong hệ thống
+
+</p>
+
+</div>
+
+
+<div class="panel">
+
+
+<div class="toolbar">
 
 
 <input
+
 id="searchTeam"
-placeholder="Tìm team...">
+
+type="text"
+
+placeholder="🔍 Tìm tên Team...">
+
+
+<select id="filterBox">
+
+<option value="all">
+
+Tất cả BOX
+
+</option>
+
+<option value="1">
+
+BOX 1
+
+</option>
+
+<option value="2">
+
+BOX 2
+
+</option>
+
+<option value="3">
+
+BOX 3
+
+</option>
+
+<option value="4">
+
+BOX 4
+
+</option>
+
+<option value="5">
+
+BOX 5
+
+</option>
+
+<option value="6">
+
+BOX 6
+
+</option>
+
+<option value="7">
+
+BOX 7
+
+</option>
+
+<option value="8">
+
+BOX 8
+
+</option>
+
+<option value="9">
+
+BOX 9
+
+</option>
+
+<option value="10">
+
+BOX 10
+
+</option>
+
+</select>
+
+
+
+<select id="filterPayment">
+
+
+<option value="all">
+
+Tất cả trạng thái
+
+</option>
+
+
+<option value="paid">
+
+✅ Đã thanh toán
+
+</option>
+
+
+<option value="unpaid">
+
+❌ Chưa thanh toán
+
+</option>
+
+
+</select>
+
+
+
+</div>
+
+
+
+<div class="quickStats">
+
+
+<div class="quickCard">
+
+<h3>
+
+Tổng Team
+
+</h3>
+
+<b id="teamCount">
+
+0
+
+</b>
+
+</div>
+
+
+
+<div class="quickCard">
+
+<h3>
+
+Đã thu
+
+</h3>
+
+<b id="paidCount">
+
+0
+
+</b>
+
+</div>
+
+
+
+<div class="quickCard">
+
+<h3>
+
+Chưa thu
+
+</h3>
+
+<b id="unpaidCount">
+
+0
+
+</b>
+
+</div>
+
+
+
+</div>
 
 
 
 <div id="teamList">
 
 
+<!-- TEAM TỰ ĐỘNG HIỂN THỊ -->
+
+
 </div>
 
+
+
+</div>
 
 
 </section>
@@ -451,29 +1048,463 @@ placeholder="Tìm team...">
 
 
 
+<!-- ====================================== -->
+<!-- CHI TIẾT TEAM MODAL -->
+<!-- ====================================== -->
+
+
+<div
+
+id="teamDetailModal"
+
+class="modal hidden">
+
+
+<div class="modalBox">
+
+
+<div class="modalHeader">
+
+
+<h2>
+
+📋 CHI TIẾT TEAM
+
+</h2>
+
+
+<button
+
+id="closeTeamDetail">
+
+✖
+
+</button>
+
+
+</div>
 
 
 
+<div class="formGroup">
 
-<!-- PAYMENT -->
 
+<label>
+
+Tên Team
+
+</label>
+
+
+<input
+
+id="detailTeamName"
+
+type="text">
+
+
+</div>
+
+
+
+<div class="formGroup">
+
+
+<label>
+
+BOX
+
+</label>
+
+
+<select id="detailTeamBox">
+
+
+<option value="1">
+
+BOX 1
+
+</option>
+
+
+<option value="2">
+
+BOX 2
+
+</option>
+
+
+<option value="3">
+
+BOX 3
+
+</option>
+
+
+<option value="4">
+
+BOX 4
+
+</option>
+
+
+<option value="5">
+
+BOX 5
+
+</option>
+
+
+<option value="6">
+
+BOX 6
+
+</option>
+
+
+<option value="7">
+
+BOX 7
+
+</option>
+
+
+<option value="8">
+
+BOX 8
+
+</option>
+
+
+<option value="9">
+
+BOX 9
+
+</option>
+
+
+<option value="10">
+
+BOX 10
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+<div class="formGroup">
+
+
+<label>
+
+Khung giờ
+
+</label>
+
+
+<select id="detailTeamTime">
+
+
+<option>
+
+10H00
+
+</option>
+
+
+<option>
+
+13H00
+
+</option>
+
+
+<option>
+
+15H00
+
+</option>
+
+
+<option>
+
+18H00
+
+</option>
+
+
+<option>
+
+20H00
+
+</option>
+
+
+<option>
+
+22H00
+
+</option>
+
+
+<option>
+
+23H50
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+<div class="formGroup">
+
+
+<label>
+
+Trạng thái
+
+</label>
+
+
+<select id="detailPayment">
+
+
+<option value="false">
+
+❌ Chưa thanh toán
+
+</option>
+
+
+<option value="true">
+
+✅ Đã thanh toán
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+<div class="formGroup">
+
+
+<label>
+
+Ghi chú
+
+</label>
+
+
+<textarea
+
+id="detailNote"
+
+rows="3">
+
+</textarea>
+
+
+</div>
+
+
+
+<div class="modalFooter">
+
+
+<button
+
+id="saveDetailBtn">
+
+💾 Lưu thay đổi
+
+</button>
+
+
+
+<button
+
+id="deleteDetailBtn">
+
+🗑 Xóa Team
+
+</button>
+
+
+
+</div>
+
+
+
+</div>
+
+
+</div><!-- ====================================== -->
+<!-- THANH TOÁN -->
+<!-- ====================================== -->
 
 <section
 id="payments"
 class="page hidden">
 
 
+<div class="pageHeader">
+
 <h1>
+
 💸 THANH TOÁN
+
 </h1>
+
+<p>
+
+Quản lý tiền Team tham gia
+
+</p>
+
+</div>
+
+
+
+<div class="panel">
+
+
+
+<div class="paymentSummary">
+
+
+
+<div class="moneyCard">
+
+<h3>
+
+💰 Tổng doanh thu
+
+</h3>
+
+
+<b id="paymentTotal">
+
+0đ
+
+</b>
+
+
+</div>
+
+
+
+<div class="moneyCard">
+
+<h3>
+
+✅ Đã thu
+
+</h3>
+
+
+<b id="paymentDone">
+
+0đ
+
+</b>
+
+
+</div>
+
+
+
+<div class="moneyCard">
+
+<h3>
+
+❌ Chưa thu
+
+</h3>
+
+
+<b id="paymentPending">
+
+0đ
+
+</b>
+
+
+</div>
+
+
+
+</div>
+
+
+
+<div class="toolbar">
+
+
+<input
+
+id="searchPayment"
+
+placeholder="🔍 Tìm Team thanh toán...">
+
+
+<select id="paymentFilter">
+
+
+<option value="all">
+
+Tất cả
+
+</option>
+
+
+<option value="paid">
+
+✅ Đã thanh toán
+
+</option>
+
+
+<option value="unpaid">
+
+❌ Chưa thanh toán
+
+</option>
+
+
+</select>
+
+
+</div>
+
 
 
 
 <div id="paymentList">
 
 
+<!-- DỮ LIỆU THANH TOÁN TỰ ĐỘNG -->
+
+
 </div>
 
+
+
+</div>
 
 
 </section>
@@ -482,36 +1513,112 @@ class="page hidden">
 
 
 
-
-
-
-
-<!-- SETTINGS -->
+<!-- ====================================== -->
+<!-- DƯ TIỀN -->
+<!-- ====================================== -->
 
 
 <section
-id="settings"
+
+id="debts"
+
 class="page hidden">
 
 
+
+<div class="pageHeader">
+
+
 <h1>
-⚙️ CÀI ĐẶT
+
+💰 DƯ TIỀN
+
 </h1>
 
 
-<button id="backupBtn">
+<p>
 
-💾 Backup
+Quản lý số tiền còn lại của người chơi
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="panel">
+
+
+
+<div class="debtTop">
+
+
+<div class="moneyCard">
+
+
+<h3>
+
+💵 Tổng dư
+
+</h3>
+
+
+<b id="totalDebtMoney">
+
+0đ
+
+</b>
+
+
+</div>
+
+
+
+<button
+
+id="addDebtBtn">
+
+
+➕ Thêm dư tiền
+
 
 </button>
 
 
+</div>
 
-<button id="resetBtn">
 
-🔄 Reset
 
-</button>
+
+<div class="toolbar">
+
+
+<input
+
+id="searchDebt"
+
+placeholder="🔍 Tìm người...">
+
+
+</div>
+
+
+
+
+<div id="debtList">
+
+
+<!-- DƯ TIỀN HIỂN THỊ Ở ĐÂY -->
+
+
+</div>
+
+
+
+
+</div>
 
 
 
@@ -521,15 +1628,534 @@ class="page hidden">
 
 
 
-</main>
+<!-- ====================================== -->
+<!-- MODAL THÊM DƯ TIỀN -->
+<!-- ====================================== -->
+
+
+<div
+
+id="debtModal"
+
+class="modal hidden">
+
+
+<div class="modalBox">
+
+
+
+<h2>
+
+💰 THÊM DƯ TIỀN
+
+</h2>
+
+
+
+
+<div class="formGroup">
+
+
+<label>
+
+Tên người
+
+</label>
+
+
+<input
+
+id="debtName"
+
+placeholder="Nhập tên">
+
+
+</div>
+
+
+
+
+<div class="formGroup">
+
+
+<label>
+
+Số tiền
+
+</label>
+
+
+<input
+
+id="debtAmount"
+
+type="number"
+
+placeholder="Ví dụ: 5000">
+
+
+</div>
+
+
+
+
+<div class="formGroup">
+
+
+<label>
+
+Ghi chú
+
+</label>
+
+
+<textarea
+
+id="debtNote"
+
+rows="3">
+
+</textarea>
+
+
+</div>
+
+
+
+
+<div class="modalFooter">
+
+
+<button
+
+id="saveDebtBtn">
+
+
+💾 Lưu
+
+
+</button>
+
+
+
+<button
+
+id="closeDebtBtn">
+
+
+❌ Đóng
+
+
+</button>
+
+
+
+</div>
+
+
+
+</div>
+
+
+</div><!-- ====================================== -->
+<!-- QUẢN LÝ CTV + LƯƠNG -->
+<!-- ====================================== -->
+
+<section
+id="salary"
+class="page hidden">
+
+
+<div class="pageHeader">
+
+
+<h1>
+
+👨‍💼 QUẢN LÝ CTV
+
+</h1>
+
+
+<p>
+
+Theo dõi số Team và tiền lương CTV
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="panel">
+
+
+
+<div class="salaryGrid">
+
+
+
+<div class="salaryCard">
+
+
+<h2>
+
+CTV 1
+
+</h2>
+
+
+<h1 id="salaryCTV1">
+
+0đ
+
+</h1>
+
+
+<p>
+
+Team:
+
+<b id="countCTV1">
+
+0
+
+</b>
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="salaryCard">
+
+
+<h2>
+
+CTV 2
+
+</h2>
+
+
+<h1 id="salaryCTV2">
+
+0đ
+
+</h1>
+
+
+<p>
+
+Team:
+
+<b id="countCTV2">
+
+0
+
+</b>
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="salaryCard">
+
+
+<h2>
+
+CTV 3
+
+</h2>
+
+
+<h1 id="salaryCTV3">
+
+0đ
+
+</h1>
+
+
+<p>
+
+Team:
+
+<b id="countCTV3">
+
+0
+
+</b>
+
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+
+<button
+
+id="resetSalaryBtn">
+
+
+🔄 Reset lương
+
+</button>
+
+
+
+</div>
+
+
+
+</section>
 
 
 
 
 
-<!-- TOAST -->
 
-<div id="toast">
+<!-- ====================================== -->
+<!-- LỊCH SỬ HỆ THỐNG -->
+<!-- ====================================== -->
+
+
+<section
+
+id="history"
+
+class="page hidden">
+
+
+
+<div class="pageHeader">
+
+
+<h1>
+
+📜 LỊCH SỬ
+
+</h1>
+
+
+<p>
+
+Nhật ký hoạt động hệ thống
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="panel">
+
+
+
+<div class="toolbar">
+
+
+<select id="historyFilter">
+
+
+<option value="today">
+
+Hôm nay
+
+</option>
+
+
+<option value="week">
+
+7 ngày gần nhất
+
+</option>
+
+
+<option value="month">
+
+30 ngày gần nhất
+
+</option>
+
+
+<option value="all">
+
+Tất cả
+
+</option>
+
+
+</select>
+
+
+
+</div>
+
+
+
+<div id="historyList">
+
+
+<!-- LỊCH SỬ TỰ ĐỘNG -->
+
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+<!-- ====================================== -->
+<!-- CÀI ĐẶT HỆ THỐNG -->
+<!-- ====================================== -->
+
+
+<section
+
+id="settings"
+
+class="page hidden">
+
+
+
+<div class="pageHeader">
+
+
+<h1>
+
+⚙️ CÀI ĐẶT
+
+</h1>
+
+
+<p>
+
+Điều chỉnh thông số CUSTOM TTA
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="panel">
+
+
+
+<div class="settingItem">
+
+
+<label>
+
+💸 Giá mỗi Team
+
+</label>
+
+
+<input
+
+id="priceTeam"
+
+type="number"
+
+value="5000">
+
+
+</div>
+
+
+
+
+<div class="settingItem">
+
+
+<label>
+
+👨‍💼 Lương CTV / Team
+
+</label>
+
+
+<input
+
+id="salaryTeam"
+
+type="number"
+
+value="500">
+
+
+</div>
+
+
+
+
+<div class="settingItem">
+
+
+<label>
+
+👥 Số Team mỗi bảng
+
+</label>
+
+
+<input
+
+id="maxTeam"
+
+type="number"
+
+value="12">
+
+
+</div>
+
+
+
+
+<div class="settingItem">
+
+
+<label>
+
+🔄 Tự reset ngày mới
+
+</label>
+
+
+<input
+
+id="autoReset"
+
+type="checkbox"
+
+checked>
+
 
 </div>
 
@@ -537,77 +2163,127 @@ class="page hidden">
 
 
 
+<div class="buttonGroup">
+
+
+<button
+
+id="saveSettingBtn">
+
+
+💾 Lưu cài đặt
+
+</button>
+
+
+<button
+
+id="backupBtn">
+
+
+📦 Backup dữ liệu
+
+</button>
+
+
+
+<button
+
+id="restoreBtn">
+
+
+♻️ Khôi phục
+
+</button>
+
+
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+<!-- ====================================== -->
+<!-- MODAL XÁC NHẬN -->
+<!-- ====================================== -->
+
+
+<div
+
+id="confirmModal"
+
+class="modal hidden">
+
+
+<div class="modalBox">
+
+
+<h2>
+
+⚠️ Xác nhận
+
+</h2>
+
+
+<p id="confirmMessage">
+
+Bạn có chắc không?
+
+</p>
+
+
+
+<div class="modalFooter">
+
+
+<button
+
+id="confirmYes">
+
+
+Đồng ý
+
+</button>
+
+
+<button
+
+id="confirmNo">
+
+
+Hủy
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
 </div>
 
 
 
 
 
+<!-- ====================================== -->
+<!-- TOAST THÔNG BÁO -->
+<!-- ====================================== -->
 
 
+<div
 
+id="toast">
 
-
-<!-- SCRIPT DUY NHẤT -->
-
-<script type="module" src="firebase.js"></script>
-
-<script type="module" src="auth.js"></script>
-
-<script type="module" src="app.js"></script>
-
-
-
-
-
-
-
-<!-- SERVICE WORKER -->
-
-<script>
-
-
-if("serviceWorker" in navigator){
-
-
-window.addEventListener(
-"load",
-()=>{
-
-
-navigator.serviceWorker.register(
-"./service-worker.js"
-)
-
-
-.then(()=>{
-
-console.log(
-"🔥 CUSTOM TTA PWA READY"
-)
-
-})
-
-
-.catch(err=>{
-
-console.log(err)
-
-})
-
-
-}
-
-)
-
-
-}
-
-
-</script>
-
-
-
-</body>
-
-</html>
+</div>
