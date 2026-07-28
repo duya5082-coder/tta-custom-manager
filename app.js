@@ -1484,7 +1484,21 @@ page
 });
 
 
-});
+});window.openPage = function(page){
+
+    document.querySelectorAll(".page").forEach(p=>{
+        p.classList.add("hidden");
+    });
+
+    const target = document.getElementById(page);
+
+    if(target){
+        target.classList.remove("hidden");
+    }else{
+        console.error("Không tìm thấy page:", page);
+    }
+
+};
 
 
 
