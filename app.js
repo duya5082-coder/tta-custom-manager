@@ -1,794 +1,425 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // APP SYSTEM
-// FILE 2B
+// PHẦN 1
 // =======================================
 
+if (window.TTA_APP_LOADED) {
 
-if(window.TTA_APP_LOADED){
+    console.warn("APP đã được load");
 
-console.warn(
-"APP đã được load"
-);
+} else {
 
+window.TTA_APP_LOADED = true;
 
-}else{
+// =======================================
+// DATABASE
+// =======================================
 
-
-window.TTA_APP_LOADED=true;
-
-
-
-// ===============================
-// DATABASE LOCAL
-// ===============================
-
-
-const TTA_TEAM_KEY = "CUSTOM_TTA_TEAMS";
-
-
+const TEAM_KEY = "CUSTOM_TTA_TEAMS";
 
 function getTeams(){
 
+    try{
 
-try{
+        const data = JSON.parse(localStorage.getItem(TEAM_KEY));
 
+        return Array.isArray(data) ? data : [];
 
-return JSON.parse(
+    }catch(e){
 
-localStorage.getItem(
-TTA_TEAM_KEY
-)
+        return [];
 
-)
-
-|| [];
-
-
-}catch(error){
-
-
-return [];
-
+    }
 
 }
-
-
-}
-
-
-
 
 function saveTeams(data){
 
-
-localStorage.setItem(
-
-TTA_TEAM_KEY,
-
-JSON.stringify(data)
-
-);
-
+    localStorage.setItem(
+        TEAM_KEY,
+        JSON.stringify(data)
+    );
 
 }
 
+// =======================================
+// PAGE NAVIGATION
+// =======================================
 
+window.openPage = function(page){
 
+    document.querySelectorAll(".page").forEach(function(item){
 
-// ===============================
+        item.classList.add("hidden");
+
+    });
+
+    const target=document.getElementById(page);
+
+    if(target){
+
+        target.classList.remove("hidden");
+
+    }
+
+    document.querySelectorAll(".menu button").forEach(function(btn){
+
+        btn.classList.remove("active");
+
+    });
+
+    const active=document.querySelector(
+        '.menu button[data-page="'+page+'"]'
+    );
+
+    if(active){
+
+        active.classList.add("active");
+
+    }
+
+};
+
+// =======================================
+// DASHBOARD
+// =======================================
+
+window.updateDashboard=function(){
+
+    const teams=getTeams();
+
+    const total=teams.length;
+
+    const paidTeams=teams.filter(t=>t.paid);
+
+    const paid=paidTeams.length;
+
+    const unpaid=total-paid;
+
+    const revenue=paid*5000;
+
+    const totalEl=document.getElementById("totalTeam");
+    const paidEl=document.getElementById("paid");
+    const unpaidEl=document.getElementById("unpaid");
+    const revenueEl=document.getElementById("revenue");
+
+    if(totalEl) totalEl.textContent=total;
+
+    if(paidEl) paidEl.textContent=paid;
+
+    if(unpaidEl) unpaidEl.textContent=unpaid;
+
+    if(revenueEl)
+        revenueEl.textContent=
+        revenue.toLocaleString()+"đ";
+
+};
+
+// =======================================
+// THÔNG BÁO
+// =======================================
+
+window.notify=function(text){
+
+    if(window.sendNotification){
+
+        window.sendNotification(text);
+
+    }
+
+};
+
+// =======================================
+// DOM READY
+// =======================================
+
+document.addEventListener("DOMContentLoaded",function(){
+
+    // Menu
+
+    document.querySelectorAll(".menu button").forEach(function(btn){
+
+        btn.onclick=function(){
+
+            openPage(this.dataset.page);
+
+        };
+
+    });
+
+    // Dashboard mặc định
+
+    openPage("dashboard");
+
+    updateDashboard();
+
+});// ===============================
 // HIỂN THỊ TEAM
 // ===============================
 
-
 function renderTeams(){
 
+    const list = document.getElementById("teamList");
 
-const list = document.getElementById(
-"teamList"
-);
+    if(!list) return;
 
+    const teams = getTeams();
 
+    list.innerHTML = "";
 
-if(!list)
+    if(teams.length===0){
+        list.innerHTML=`
+        <div class="empty">
+            Chưa có Team nào
+        </div>
+        `;
+        return;
+    }
 
-return;
+    teams.forEach((team,index)=>{
 
+        const item=document.createElement("div");
 
+        item.className="teamItem";
 
-const teams=getTeams();
+        item.innerHTML=`
 
+        <div>
 
+            <h3>🔥 ${team.name}</h3>
 
-list.innerHTML="";
+            <p>
+                📦 ${team.box}
+                |
+                🕒 ${team.time}
+            </p>
 
+            <p>
+                ${
+                    team.paid
+                    ? "💸 Đã thanh toán"
+                    : "❌ Chưa thanh toán"
+                }
+            </p>
 
+        </div>
 
-if(teams.length===0){
+        <div>
 
+            <button
+                class="payBtn"
+                data-id="${index}">
+                💸
+            </button>
 
-list.innerHTML=
+            <button
+                class="deleteBtn"
+                data-id="${index}">
+                🗑️
+            </button>
 
-`
+        </div>
 
-<div class="empty">
+        `;
 
-Chưa có Team nào
+        list.appendChild(item);
 
-</div>
+    });
 
-`;
+    //=====================
+    // NÚT THANH TOÁN
+    //=====================
 
-return;
+    document.querySelectorAll(".payBtn").forEach(btn=>{
 
+        btn.onclick=function(){
 
-}
+            const id=this.dataset.id;
 
+            let teams=getTeams();
 
+            teams[id].paid=true;
 
-teams.forEach((team,index)=>{
+            saveTeams(teams);
 
+            renderTeams();
 
+            updateDashboard();
 
-const item=document.createElement(
-"div"
-);
+            notify("Đã thanh toán");
 
+        };
 
+    });
 
-item.className="teamItem";
+    //=====================
+    // NÚT XOÁ
+    //=====================
 
+    document.querySelectorAll(".deleteBtn").forEach(btn=>{
 
+        btn.onclick=function(){
 
-item.innerHTML=
+            const id=this.dataset.id;
 
-`
+            let teams=getTeams();
 
-<div>
+            teams.splice(id,1);
 
+            saveTeams(teams);
 
-<h3>
+            renderTeams();
 
-🔥 ${team.name}
+            updateDashboard();
 
-</h3>
+            notify("Đã xoá Team");
 
+        };
 
-<p>
+    });
 
-📦 BOX ${team.box}
-
-|
-
-🕒 ${team.time}
-
-</p>
-
-
-
-<p>
-
-💰 ${team.paid ? 
-
-"✅ Đã thanh toán"
-
-:
-
-"❌ Chưa thanh toán"
-
-}
-
-</p>
-
-
-</div>
-
-
-
-<div>
-
-
-<button
-
-class="payBtn"
-
-data-id="${index}">
-
-💸
-
-</button>
-
-
-<button
-
-class="deleteBtn"
-
-data-id="${index}">
-
-🗑️
-
-</button>
-
-
-</div>
-
-`;
-
-
-
-list.appendChild(item);
-
-
-
-});
-
-
-
-
-// nút thanh toán
-
-
-document.querySelectorAll(
-
-".payBtn"
-
-).forEach(btn=>{
-
-
-btn.onclick=function(){
-
-
-
-const id=this.dataset.id;
-
-
-
-let data=getTeams();
-
-
-
-data[id].paid=true;
-
-
-
-saveTeams(data);
-
-
-
-renderTeams();
-
-
-
-updateDashboard();
-
-
-
-notify(
-
-"Đã thanh toán Team"
-
-);
-
-
-
-};
-
-
-
-});
-
-
-
-
-
-// nút xóa
-
-
-document.querySelectorAll(
-
-".deleteBtn"
-
-).forEach(btn=>{
-
-
-btn.onclick=function(){
-
-
-
-const id=this.dataset.id;
-
-
-
-let data=getTeams();
-
-
-
-data.splice(
-id,
-1
-);
-
-
-
-saveTeams(data);
-
-
-
-renderTeams();
-
-
-
-updateDashboard();
-
-
-
-notify(
-
-"Đã xóa Team"
-
-);
-
-
-
-};
-
-
-});
-
-
-
-}
-
-
-
-
-// ===============================
+}// ===============================
 // THÊM TEAM
 // ===============================
 
-
 function addTeam(){
 
+    const name=document.getElementById("teamName").value.trim();
+    const box=document.getElementById("teamBox").value;
+    const time=document.getElementById("teamTime").value;
 
+    if(name===""){
+        alert("Vui lòng nhập tên Team");
+        return;
+    }
 
-const name=
+    let teams=getTeams();
 
-document.getElementById(
-"teamName"
-)?.value.trim();
+    if(
+        teams.some(
+            t=>t.name.toLowerCase()===name.toLowerCase()
+        )
+    ){
+        alert("Team đã tồn tại");
+        return;
+    }
 
+    teams.push({
+        id:Date.now(),
+        name:name,
+        box:box,
+        time:time,
+        paid:false
+    });
 
+    saveTeams(teams);
 
-const box=
+    renderTeams();
 
-document.getElementById(
-"teamBox"
-)?.value;
+    updateDashboard();
 
+    notify("Đã thêm Team");
 
-
-const time=
-
-document.getElementById(
-"teamTime"
-)?.value;
-
-
-
-if(!name || !box || !time){
-
-
-alert(
-"Vui lòng nhập đủ thông tin"
-);
-
-
-return;
-
-
-}
-
-
-
-
-const teams=getTeams();
-
-
-
-// chống trùng
-
-
-const exists=
-
-teams.some(
-
-t=>
-
-t.name.toLowerCase()
-
-===
-
-name.toLowerCase()
-
-);
-
-
-
-if(exists){
-
-
-alert(
-
-"Team này đã tồn tại"
-
-);
-
-
-return;
-
+    document.getElementById("teamName").value="";
 
 }
-
-
-
-
-teams.push({
-
-
-id:Date.now(),
-
-
-name:name,
-
-
-box:box,
-
-
-time:time,
-
-
-paid:false,
-
-
-created:new Date()
-
-.toLocaleString()
-
-
-
-});
-
-
-
-
-saveTeams(teams);
-
-
-
-renderTeams();
-
-
-
-updateDashboard();
-
-
-
-notify(
-
-"Đã thêm Team mới"
-
-);
-
-
-
-// reset form
-
-
-document.getElementById(
-"teamName"
-).value="";
-
-
-
-}
-
-
-
 
 // ===============================
 // DASHBOARD
 // ===============================
 
-
 function updateDashboard(){
 
+    const teams=getTeams();
 
+    const total=teams.length;
 
-const teams=getTeams();
+    const paidTeams=teams.filter(
+        t=>t.paid
+    ).length;
 
+    const unpaidTeams=total-paidTeams;
 
+    if(document.getElementById("totalTeam"))
+        document.getElementById("totalTeam").innerHTML=total;
 
-const total=
+    if(document.getElementById("paid"))
+        document.getElementById("paid").innerHTML=paidTeams;
 
-document.getElementById(
-"totalTeam"
-);
+    if(document.getElementById("unpaid"))
+        document.getElementById("unpaid").innerHTML=unpaidTeams;
 
-
-
-const paid=
-
-document.getElementById(
-"paid"
-);
-
-
-
-const unpaid=
-
-document.getElementById(
-"unpaid"
-);
-
-
-
-const revenue=
-
-document.getElementById(
-"revenue"
-);
-
-
-
-if(total)
-
-total.innerHTML=
-
-teams.length;
-
-
-
-const paidTeam=
-
-teams.filter(
-
-t=>t.paid
-
-).length;
-
-
-
-if(paid)
-
-paid.innerHTML=
-
-paidTeam;
-
-
-
-if(unpaid)
-
-unpaid.innerHTML=
-
-teams.length-paidTeam;
-
-
-
-const price=5000;
-
-
-
-if(revenue)
-
-revenue.innerHTML=
-
-(
-
-paidTeam*price
-
-)
-
-.toLocaleString()
-
-+"đ";
-
-
+    if(document.getElementById("revenue"))
+        document.getElementById("revenue").innerHTML=
+        (paidTeams*5000).toLocaleString()+"đ";
 
 }
 
-
-
-
-
 // ===============================
-// TÌM KIẾM TEAM
+// SEARCH TEAM
 // ===============================
-
 
 function searchTeam(){
 
+    const input=document.getElementById("searchTeam");
 
+    if(!input) return;
 
-const input=
+    input.oninput=function(){
 
-document.getElementById(
-"searchTeam"
-);
+        const keyword=this.value.toLowerCase();
 
+        document.querySelectorAll(".teamItem")
+        .forEach(item=>{
 
+            if(
+                item.innerText
+                .toLowerCase()
+                .includes(keyword)
+            ){
+                item.style.display="flex";
+            }else{
+                item.style.display="none";
+            }
 
-if(!input)
+        });
 
-return;
-
-
-
-input.addEventListener(
-
-"input",
-
-()=>{
-
-
-const key=
-
-input.value.toLowerCase();
-
-
-
-document.querySelectorAll(
-
-".teamItem"
-
-).forEach(item=>{
-
-
-item.style.display=
-
-item.innerText
-
-.toLowerCase()
-
-.includes(key)
-
-?
-
-"flex"
-
-:
-
-"none";
-
-
-
-});
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-// ===============================
-// THÔNG BÁO
-// ===============================
-
-
-function notify(msg){
-
-
-
-if(window.sendNotification){
-
-
-window.sendNotification(msg);
-
-
-
-}
-
-
-
-}
-
-
-
-
-// ===============================
-// START
-// ===============================
-
-
-document.addEventListener(
-
-"DOMContentLoaded",
-
-()=>{// ===============================
-// MENU
-// ===============================
-document.querySelectorAll(".menu button").forEach(btn => {
-    btn.onclick = function () {
-        window.openPage(this.dataset.page);
     };
-});
-
-
-const btn=
-
-document.getElementById(
-"addTeamBtn"
-);
-
-
-
-if(btn){
-
-
-btn.onclick=addTeam;
-
 
 }
 
+// ===============================
+// NOTIFY
+// ===============================
 
+function notify(text){
 
-renderTeams();
+    if(window.sendNotification){
 
+        window.sendNotification(text);
 
-updateDashboard();
+    }
 
+}// ===============================
+// PAGE NAVIGATION
+// ===============================
 
-searchTeam();
+window.openPage=function(page){
 
-
-
-});
-
-
-
-
-
-console.log(
-
-"🔥 APP SYSTEM READY"
-
-);
-
-
-
-}document.addEventListener("DOMContentLoaded",()=>{
-
-setTimeout(()=>{
-
-const loading=document.getElementById("loading");
-
-if(loading){
-
-loading.style.display="none";
-
-}
-
-},1000);
-
-
-});
-window.openPage = function(page){
-
-    document.querySelectorAll(".page").forEach(function(p){
-        p.classList.add("hidden");
+    // Ẩn tất cả page
+    document.querySelectorAll(".page").forEach(function(item){
+        item.classList.add("hidden");
     });
 
-    const target = document.getElementById(page);
+    // Hiện page được chọn
+    const target=document.getElementById(page);
 
     if(target){
         target.classList.remove("hidden");
     }
 
+    // Active menu
     document.querySelectorAll(".menu button").forEach(function(btn){
         btn.classList.remove("active");
     });
@@ -802,3 +433,51 @@ window.openPage = function(page){
     }
 
 };
+
+// ===============================
+// START APP
+// ===============================
+
+document.addEventListener("DOMContentLoaded",function(){
+
+    // Menu
+    document.querySelectorAll(".menu button").forEach(function(btn){
+
+        btn.onclick=function(){
+
+            openPage(this.dataset.page);
+
+        };
+
+    });
+
+    // Nút thêm Team
+    const addBtn=document.getElementById("addTeamBtn");
+
+    if(addBtn){
+        addBtn.onclick=addTeam;
+    }
+
+    renderTeams();
+
+    updateDashboard();
+
+    searchTeam();
+
+    // Mở Dashboard mặc định
+    openPage("dashboard");
+
+    // Ẩn loading
+    setTimeout(function(){
+
+        const loading=document.getElementById("loading");
+
+        if(loading){
+            loading.style.display="none";
+        }
+
+    },1000);
+
+});
+
+console.log("🔥 APP SYSTEM READY");
