@@ -131,7 +131,8 @@ window.notify = function(text){
 
     }
 
-};// =======================================
+};
+// =======================================
 // CUSTOM TTA MANAGER
 // APP SYSTEM
 // PHẦN 2
@@ -211,7 +212,8 @@ function renderTeams() {
 
     });
 
-}// =======================================
+}
+// =======================================
 // CUSTOM TTA MANAGER
 // PHẦN 3
 // UI + TEAM SYSTEM
@@ -388,7 +390,8 @@ window.addEventListener(
 
     loadTTAList();
 
-});// =======================================
+});
+// =======================================
 // CUSTOM TTA MANAGER
 // PHẦN 4
 // BILL SYSTEM 5K
@@ -516,7 +519,8 @@ class="bill-btn">
 }
 
 
-});// =======================================
+});
+// =======================================
 // CUSTOM TTA MANAGER
 // PHẦN 5
 // COMMAND SYSTEM
@@ -721,7 +725,8 @@ window.addEventListener(
 
 createCommandBox();
 
-});// =======================================
+});
+// =======================================
 // CUSTOM TTA MANAGER
 // PHẦN 6
 // STATISTICS SYSTEM
@@ -868,7 +873,8 @@ oldLoad();
 updateTTAStats();
 
 
-};// =======================================
+};
+// =======================================
 // CUSTOM TTA MANAGER
 // PHẦN 7
 // ADMIN LOGIN SYSTEM
@@ -1115,7 +1121,8 @@ window.addEventListener(
 createAdminBox();
 
 
-});// =======================================
+});
+// =======================================
 // CUSTOM TTA MANAGER
 // PHẦN 8
 // BACKUP + ADMIN PROTECT
@@ -1408,7 +1415,8 @@ onchange="importTTABackup(event)">
 
 
 
-});// =======================================
+});
+// =======================================
 // MENU FIX FINAL
 // =======================================
 
@@ -1499,6 +1507,8 @@ page
     }
 
 };
+console.log("APP CUỐI FILE");
 
+console.log(typeof window.openPage);
 
 
