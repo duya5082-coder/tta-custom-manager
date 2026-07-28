@@ -1,58 +1,226 @@
-// =================================
-// CUSTOM TTA MANAGER V2
+// =======================================
+// CUSTOM TTA MANAGER
+// FIREBASE CONNECT SYSTEM
+// FILE 2C
+// =======================================
+
+
+// chống load trùng
+
+if(window.TTA_FIREBASE_LOADED){
+
+console.warn(
+"Firebase đã được load"
+);
+
+
+}else{
+
+
+window.TTA_FIREBASE_LOADED=true;
+
+
+
+// =======================================
 // FIREBASE CONFIG
-// =================================
-
-
-// Firebase SDK
-
-import { initializeApp } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-
-import { 
-getFirestore 
-} 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-import {
-
-getAuth
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-
-
-
-
-// =================================
-// FIREBASE CONFIG
-// THAY BẰNG CONFIG CỦA BẠN
-// =================================
+// Thay bằng config thật của bạn sau
+// =======================================
 
 
 const firebaseConfig = {
 
 
-apiKey: "YOUR_API_KEY",
+apiKey: "",
 
 
-authDomain: "YOUR_PROJECT.firebaseapp.com",
+authDomain: "",
 
 
-projectId: "YOUR_PROJECT_ID",
+projectId: "",
 
 
-storageBucket: "YOUR_PROJECT.appspot.com",
+storageBucket: "",
 
 
-messagingSenderId: "YOUR_SENDER_ID",
+messagingSenderId: "",
 
 
-appId: "YOUR_APP_ID"
+appId: ""
+
+
+};
+
+
+
+
+// =======================================
+// KIỂM TRA CONFIG
+// =======================================
+
+
+const FIREBASE_READY =
+
+firebaseConfig.apiKey !== "";
+
+
+
+
+
+// =======================================
+// KHỞI TẠO
+// =======================================
+
+
+if(FIREBASE_READY){
+
+
+
+console.log(
+
+"🔥 Firebase config detected"
+
+);
+
+
+
+// Sau này thêm:
+// initializeApp(firebaseConfig)
+// getFirestore()
+// getAuth()
+
+
+
+}else{
+
+
+
+console.warn(
+
+"⚠️ Firebase chưa cấu hình - đang chạy Local Mode"
+
+);
+
+
+
+}
+
+
+
+
+
+
+// =======================================
+// DATABASE CONNECTOR
+// =======================================
+
+
+
+window.TTA_DATABASE = {
+
+
+
+mode:
+
+FIREBASE_READY
+
+?
+
+"firebase"
+
+:
+
+"local",
+
+
+
+
+
+save:function(key,data){
+
+
+
+if(this.mode==="local"){
+
+
+
+localStorage.setItem(
+
+key,
+
+JSON.stringify(data)
+
+);
+
+
+
+return true;
+
+
+}
+
+
+
+},
+
+
+
+
+
+get:function(key){
+
+
+
+if(this.mode==="local"){
+
+
+
+try{
+
+
+return JSON.parse(
+
+localStorage.getItem(key)
+
+)
+
+|| null;
+
+
+
+}catch(e){
+
+
+
+return null;
+
+
+
+}
+
+
+
+}
+
+
+
+},
+
+
+
+
+
+remove:function(key){
+
+
+
+localStorage.removeItem(key);
+
+
+
+}
+
+
+
 
 
 };
@@ -61,38 +229,231 @@ appId: "YOUR_APP_ID"
 
 
 
-// =================================
-// INIT FIREBASE
-// =================================
 
 
-const firebaseApp = initializeApp(firebaseConfig);
-
-
-
-const db = getFirestore(firebaseApp);
+// =======================================
+// BACKUP DATA
+// =======================================
 
 
 
-const auth = getAuth(firebaseApp);
+window.TTA_backupDatabase=function(){
 
 
 
+const data={
 
 
-// =================================
-// EXPORT
-// =================================
+
+teams:
+
+localStorage.getItem(
+
+"CUSTOM_TTA_TEAMS"
+
+),
 
 
-export {
+
+session:
+
+localStorage.getItem(
+
+"CUSTOM_TTA_SESSION"
+
+),
 
 
-firebaseApp,
 
-db,
+date:
 
-auth
+new Date()
+
+.toISOString()
+
 
 
 };
+
+
+
+
+const file=new Blob(
+
+[
+
+JSON.stringify(
+
+data,
+
+null,
+
+2
+
+)
+
+],
+
+
+{
+
+type:"application/json"
+
+}
+
+
+);
+
+
+
+
+const url=
+
+URL.createObjectURL(file);
+
+
+
+const a=document.createElement(
+
+"a"
+
+);
+
+
+
+a.href=url;
+
+
+
+a.download=
+
+"CUSTOM-TTA-backup.json";
+
+
+
+a.click();
+
+
+
+URL.revokeObjectURL(url);
+
+
+
+};
+
+
+
+
+
+
+// =======================================
+// RESTORE DATA
+// =======================================
+
+
+window.TTA_restoreDatabase=function(file){
+
+
+
+const reader=new FileReader();
+
+
+
+reader.onload=function(){
+
+
+
+try{
+
+
+
+const data=
+
+JSON.parse(
+
+reader.result
+
+);
+
+
+
+
+if(data.teams)
+
+
+localStorage.setItem(
+
+"CUSTOM_TTA_TEAMS",
+
+data.teams
+
+);
+
+
+
+
+if(data.session)
+
+
+localStorage.setItem(
+
+"CUSTOM_TTA_SESSION",
+
+data.session
+
+);
+
+
+
+
+alert(
+
+"Khôi phục thành công"
+
+);
+
+
+
+location.reload();
+
+
+
+}catch(e){
+
+
+
+alert(
+
+"File backup lỗi"
+
+);
+
+
+
+}
+
+
+
+};
+
+
+
+reader.readAsText(file);
+
+
+
+};
+
+
+
+
+
+console.log(
+
+"🔥 FIREBASE SYSTEM READY"
+
+);
+
+
+
+}
