@@ -451,7 +451,9 @@ app.classList.remove(
 
 
 TTA_showUser();
-
+if (window.openPage) {
+    window.openPage("dashboard");
+}
 
 
 }
