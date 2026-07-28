@@ -26,28 +26,22 @@
 </head>
 
 
-
 <body>
-
 
 
 <!-- LOADING -->
 
 <div id="loading">
 
-
 <h1>
 🔥 CUSTOM TTA
 </h1>
-
 
 <p>
 Đang khởi động hệ thống...
 </p>
 
-
 </div>
-
 
 
 
@@ -96,7 +90,6 @@ placeholder="Mật khẩu">
 <p id="loginError"></p>
 
 
-
 </div>
 
 
@@ -112,7 +105,6 @@ placeholder="Mật khẩu">
 
 <!-- APP -->
 
-
 <div id="app" class="hidden">
 
 
@@ -121,7 +113,6 @@ placeholder="Mật khẩu">
 
 
 <div>
-
 
 <h2>
 🔥 CUSTOM TTA
@@ -139,7 +130,7 @@ Xin chào
 
 <button id="logoutBtn">
 
-Đăng xuất
+🚪 Đăng xuất
 
 </button>
 
@@ -151,6 +142,10 @@ Xin chào
 
 
 
+
+
+
+<!-- MENU -->
 
 <nav class="menu">
 
@@ -209,7 +204,7 @@ Xin chào
 
 
 
-
+<!-- DASHBOARD -->
 
 <section id="dashboard" class="page">
 
@@ -229,15 +224,11 @@ Xin chào
 Tổng Team
 </h3>
 
-
 <b id="totalTeam">
 0
 </b>
 
-
 </div>
-
-
 
 
 
@@ -247,15 +238,11 @@ Tổng Team
 Doanh thu
 </h3>
 
-
 <b id="revenue">
 0đ
 </b>
 
-
 </div>
-
-
 
 
 
@@ -265,15 +252,11 @@ Doanh thu
 Đã thanh toán
 </h3>
 
-
 <b id="paid">
 0
 </b>
 
-
 </div>
-
-
 
 
 
@@ -283,11 +266,9 @@ Doanh thu
 Chưa thanh toán
 </h3>
 
-
 <b id="unpaid">
 0
 </b>
-
 
 </div>
 
@@ -305,7 +286,7 @@ Chưa thanh toán
 
 
 
-
+<!-- ĐĂNG KÝ -->
 
 <section id="register" class="page hidden">
 
@@ -350,7 +331,6 @@ BOX 5
 </option>
 
 
-
 </select>
 
 
@@ -390,9 +370,7 @@ BOX 5
 </option>
 
 
-
 </select>
-
 
 
 
@@ -415,7 +393,7 @@ BOX 5
 
 
 
-
+<!-- TEAM -->
 
 <section id="teams" class="page hidden">
 
@@ -425,9 +403,11 @@ BOX 5
 </h1>
 
 
+
 <input 
 id="searchTeam"
-placeholder="Tìm Team">
+placeholder="🔎 Tìm Team">
+
 
 
 <div id="teamList">
@@ -446,7 +426,7 @@ placeholder="Tìm Team">
 
 
 
-
+<!-- THANH TOÁN -->
 
 <section id="payments" class="page hidden">
 
@@ -456,9 +436,11 @@ placeholder="Tìm Team">
 </h1>
 
 
+
 <div id="paymentList">
 
 </div>
+
 
 
 </section>
@@ -470,6 +452,8 @@ placeholder="Tìm Team">
 
 
 
+
+<!-- CÀI ĐẶT -->
 
 <section id="settings" class="page hidden">
 
@@ -502,8 +486,9 @@ placeholder="Tìm Team">
 
 
 
-</main>
 
+
+</main>
 
 
 
@@ -525,7 +510,7 @@ placeholder="Tìm Team">
 
 
 
-<!-- JS -->
+<!-- JAVASCRIPT -->
 
 
 <script src="notification.js"></script>
@@ -534,7 +519,7 @@ placeholder="Tìm Team">
 
 <script src="firebase.js"></script>
 
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
 
 <script src="export.js"></script>
 
@@ -549,20 +534,16 @@ placeholder="Tìm Team">
 
 
 
-
-<!-- HIDE LOADING -->
-
-
 <script>
 
 
-window.addEventListener("load",()=>{
+window.addEventListener(
+"load",
+()=>{
 
 
-setTimeout(()=>{
-
-
-const loading=document.getElementById(
+let loading =
+document.getElementById(
 "loading"
 );
 
@@ -570,16 +551,15 @@ const loading=document.getElementById(
 
 if(loading){
 
+setTimeout(()=>{
 
 loading.style.display="none";
 
 
-}
-
-
-
 },1200);
 
+
+}
 
 
 });
@@ -591,12 +571,6 @@ loading.style.display="none";
 
 
 
-
-
-
-
-
-<!-- SERVICE WORKER -->
 
 
 <script>
@@ -608,13 +582,10 @@ if(
 
 
 navigator.serviceWorker.register(
-
 "./service-worker.js"
-
 )
 
 .then(()=>{
-
 
 console.log(
 "🔥 CUSTOM TTA PWA READY"
@@ -623,11 +594,10 @@ console.log(
 
 })
 
+
 .catch(err=>{
 
-
 console.log(err);
-
 
 });
 
@@ -635,13 +605,10 @@ console.log(err);
 }
 
 
-
 </script>
 
 
 
-
 </body>
-
 
 </html>
