@@ -1,15 +1,15 @@
-// =====================================
-// CUSTOM TTA
-// BACKUP DATA
-// =====================================
-
+// =======================================
+// CUSTOM TTA MANAGER
+// BACKUP SYSTEM
+// FILE 2E - backup.js
+// =======================================
 
 
 if(window.TTA_BACKUP_LOADED){
 
 
 console.warn(
-"backup loaded"
+"BACKUP đã được load"
 );
 
 
@@ -20,27 +20,289 @@ window.TTA_BACKUP_LOADED=true;
 
 
 
-document.addEventListener(
-
-"DOMContentLoaded",
-
-()=>{
+// =======================================
+// KEY DATABASE
+// =======================================
 
 
-const btn=
+const TTA_BACKUP_KEYS = [
 
-document.getElementById(
 
-"backupBtn"
+"CUSTOM_TTA_TEAMS",
+
+
+"CUSTOM_TTA_SESSION",
+
+
+"CUSTOM_TTA_SETTINGS",
+
+
+"CUSTOM_TTA_DEBT",
+
+
+"CUSTOM_TTA_HISTORY"
+
+
+];
+
+
+
+
+// =======================================
+// TẠO BACKUP
+// =======================================
+
+
+window.TTA_createBackup=function(){
+
+
+
+const backup={
+
+
+app:"CUSTOM TTA Manager",
+
+
+version:"1.0",
+
+
+created:
+
+new Date()
+
+.toLocaleString(),
+
+
+
+data:{}
+
+
+
+};
+
+
+
+
+
+TTA_BACKUP_KEYS.forEach(key=>{
+
+
+backup.data[key]=
+
+localStorage.getItem(key);
+
+
+
+});
+
+
+
+
+
+const blob=new Blob(
+
+
+[
+
+JSON.stringify(
+
+backup,
+
+null,
+
+2
+
+)
+
+],
+
+
+{
+
+type:"application/json"
+
+}
+
 
 );
 
 
 
-if(btn){
 
 
-btn.onclick=backupData;
+const url=
+
+URL.createObjectURL(blob);
+
+
+
+const link=
+
+document.createElement("a");
+
+
+
+link.href=url;
+
+
+
+link.download=
+
+"CUSTOM-TTA-BACKUP.json";
+
+
+
+document.body.appendChild(link);
+
+
+
+link.click();
+
+
+
+link.remove();
+
+
+
+URL.revokeObjectURL(url);
+
+
+
+
+
+if(window.sendNotification){
+
+
+window.sendNotification(
+
+"Đã tạo file backup"
+
+);
+
+
+}
+
+
+
+};
+
+
+
+
+
+
+// =======================================
+// KHÔI PHỤC BACKUP
+// =======================================
+
+
+window.TTA_restoreBackup=function(file){
+
+
+
+if(!file){
+
+
+alert(
+
+"Chưa chọn file backup"
+
+);
+
+
+return;
+
+
+}
+
+
+
+
+
+const reader=
+
+new FileReader();
+
+
+
+
+
+reader.onload=function(e){
+
+
+
+try{
+
+
+
+const backup=
+
+JSON.parse(
+
+e.target.result
+
+);
+
+
+
+
+
+if(!backup.data){
+
+
+
+alert(
+
+"File backup không hợp lệ"
+
+);
+
+
+
+return;
+
+
+}
+
+
+
+
+
+
+Object.keys(
+
+backup.data
+
+)
+
+.forEach(key=>{
+
+
+
+if(
+
+backup.data[key]
+
+!==null
+
+&&
+
+backup.data[key]
+
+!==undefined
+
+){
+
+
+
+localStorage.setItem(
+
+key,
+
+backup.data[key]
+
+);
+
 
 
 }
@@ -53,31 +315,47 @@ btn.onclick=backupData;
 
 
 
+alert(
 
+"✅ Khôi phục dữ liệu thành công"
 
-function backupData(){
-
-
-
-const data={
-
-
-
-teams:
-
-JSON.parse(
-
-localStorage.getItem(
-"TTA_TEAMS"
-)
-
-)||[],
+);
 
 
 
-date:
+location.reload();
 
-new Date().toLocaleString()
+
+
+
+
+}catch(error){
+
+
+
+console.error(error);
+
+
+
+alert(
+
+"❌ File backup bị lỗi"
+
+);
+
+
+
+}
+
+
+
+};
+
+
+
+
+
+reader.readAsText(file);
 
 
 
@@ -88,78 +366,60 @@ new Date().toLocaleString()
 
 
 
-const file=
+// =======================================
+// NÚT BACKUP
+// =======================================
 
-new Blob(
 
-[
+document.addEventListener(
 
-JSON.stringify(
+"DOMContentLoaded",
 
-data,
+()=>{
 
-null,
 
-2
 
-)
+const backupBtn=
 
-],
-
-{
-
-type:"application/json"
-
-}
-
+document.getElementById(
+"backupBtn"
 );
 
 
 
+if(backupBtn){
 
 
 
-const url=
-
-URL.createObjectURL(file);
+backupBtn.onclick=function(){
 
 
 
-const a=
-
-document.createElement("a");
+TTA_createBackup();
 
 
 
-a.href=url;
-
-
-
-a.download=
-
-"TTA_BACKUP.json";
-
-
-
-a.click();
-
-
-
-URL.revokeObjectURL(url);
-
-
-
-alert(
-
-"✅ Backup thành công"
-
-);
+};
 
 
 
 }
 
 
+
+
+
+});
+
+
+
+
+
+console.log(
+
+"🔥 BACKUP SYSTEM READY"
+
+);
 
 
 
