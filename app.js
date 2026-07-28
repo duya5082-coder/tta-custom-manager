@@ -1413,61 +1413,45 @@ onchange="importTTABackup(event)">
 
 
 });// =======================================
-// PHẦN 9
-// MENU TAB SYSTEM FIX
+// MENU FIX FINAL
 // =======================================
 
 
-document.addEventListener(
-"DOMContentLoaded",
+window.addEventListener(
+"load",
 ()=>{
 
 
-const menu =
 document.querySelectorAll(
 ".menu button"
-);
+).forEach(btn=>{
 
 
-
-menu.forEach(btn=>{
-
-
-btn.onclick = function(){
+btn.addEventListener(
+"click",
+function(){
 
 
-const page =
+let page =
 this.getAttribute(
 "data-page"
 );
 
 
 
-openPage(page);
+console.log(
+"CLICK:",
+page
+);
 
-
-
-};
-
-
-});
-
-
-
-});
-
-
-
-window.openPage = function(page){
 
 
 document.querySelectorAll(
 ".page"
-)
-.forEach(item=>{
+).forEach(p=>{
 
 
-item.classList.add(
+p.classList.add(
 "hidden"
 );
 
@@ -1476,7 +1460,7 @@ item.classList.add(
 
 
 
-const target =
+let target =
 document.getElementById(page);
 
 
@@ -1489,8 +1473,19 @@ target.classList.remove(
 );
 
 
+console.log(
+"OPEN:",
+page
+);
+
+
 }
 
 
+});
 
-};
+
+});
+
+
+});
