@@ -1,268 +1,426 @@
-/* ======================================
-   CUSTOM TTA MANAGER
-   STYLE.CSS
-====================================== */
+/* =======================================
+CUSTOM TTA MANAGER
+STYLE.CSS
+PHẦN 2C
+MAIN UI DESIGN
+======================================= */
+
+
+/* RESET */
 
 *{
+
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:"Poppins",sans-serif;
+    font-family:'Poppins',sans-serif;
+
 }
+
+
 
 body{
-    background:#f4f7fb;
+
+    background:#f5f7fb;
     color:#222;
+
 }
 
-/* LOGIN */
+
+
+/* =======================================
+HIDDEN
+======================================= */
+
+
+.hidden{
+
+    display:none !important;
+
+}
+
+
+
+
+
+/* =======================================
+LOGIN
+======================================= */
+
 
 .login-page{
+
     width:100%;
     height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    background:linear-gradient(135deg,#0f172a,#1e3a8a);
+    background:
+    linear-gradient(
+        135deg,
+        #141e30,
+        #243b55
+    );
+
 }
+
+
 
 .login-box{
-    width:400px;
-    background:#fff;
-    border-radius:16px;
+
+    width:360px;
+    background:white;
     padding:35px;
-    box-shadow:0 10px 30px rgba(0,0,0,.2);
+    border-radius:18px;
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.15);
+    text-align:center;
+
 }
+
+
 
 .login-box h1{
-    text-align:center;
-    color:#2563eb;
-    margin-bottom:10px;
+
+    font-size:28px;
+
 }
+
+
 
 .login-box p{
-    text-align:center;
+
     color:#777;
     margin-bottom:25px;
+
 }
+
+
 
 .login-box input{
+
     width:100%;
-    padding:12px;
-    margin-bottom:15px;
-    border:1px solid #ddd;
+    padding:13px;
+    margin:8px 0;
     border-radius:10px;
+    border:1px solid #ddd;
     outline:none;
-    transition:.3s;
+
 }
 
-.login-box input:focus{
-    border-color:#2563eb;
-}
+
 
 .login-box button{
+
     width:100%;
-    padding:12px;
+    padding:13px;
+    margin-top:15px;
     border:none;
     border-radius:10px;
     background:#2563eb;
-    color:#fff;
+    color:white;
+    font-weight:600;
     cursor:pointer;
-    font-size:16px;
-    transition:.3s;
+
 }
+
+
 
 .login-box button:hover{
-    background:#1d4ed8;
+
+    opacity:.9;
+
 }
 
-#loginError{
-    margin-top:15px;
-    color:red;
-    text-align:center;
-}
 
-/* APP */
+
+
+/* =======================================
+APP
+======================================= */
+
 
 #app{
+
     display:flex;
+    min-height:100vh;
+
 }
 
-/* SIDEBAR */
+
+
+
+
+/* =======================================
+SIDEBAR
+======================================= */
+
 
 .sidebar{
+
     width:240px;
-    height:100vh;
-    position:fixed;
-    left:0;
-    top:0;
     background:#111827;
-    color:#fff;
-    overflow:auto;
+    color:white;
+    padding:20px;
+    position:fixed;
+    top:0;
+    bottom:0;
+
 }
+
+
 
 .logo{
-    text-align:center;
+
     font-size:22px;
     font-weight:700;
-    padding:25px;
-    border-bottom:1px solid rgba(255,255,255,.08);
+    margin-bottom:20px;
+
 }
+
+
+
+#userInfo{
+
+    font-size:14px;
+    color:#cbd5e1;
+    margin-bottom:20px;
+
+}
+
+
 
 .menu-item{
-    padding:16px 22px;
+
+    padding:13px;
+    margin:8px 0;
+    border-radius:10px;
     cursor:pointer;
-    transition:.25s;
+    transition:.2s;
+
 }
 
-.menu-item:hover{
-    background:#1f2937;
-}
 
+
+.menu-item:hover,
 .menu-item.active{
+
     background:#2563eb;
+
 }
 
-/* CONTENT */
+
+
+
+
+/* =======================================
+CONTENT
+======================================= */
+
 
 .content{
+
     margin-left:240px;
     width:calc(100% - 240px);
-    min-height:100vh;
     padding:20px;
+
 }
+
+
+
 
 /* TOPBAR */
 
+
 .topbar{
-    background:#fff;
-    border-radius:12px;
-    padding:18px 25px;
+
+    background:white;
+    padding:15px 20px;
+    border-radius:15px;
     display:flex;
     justify-content:space-between;
-    align-items:center;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-    margin-bottom:25px;
+    margin-bottom:20px;
+    box-shadow:
+    0 5px 20px rgba(0,0,0,.05);
+
 }
+
+
+
+
 
 /* PAGE */
 
 .page{
-    animation:fade .25s;
+
+    animation:
+    fade .25s ease;
+
 }
 
-.hidden{
-    display:none;
-}
 
-/* DASHBOARD */
-
-.card-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
-}
-
-.card{
-    background:#fff;
-    border-radius:14px;
-    padding:22px;
-    box-shadow:0 4px 12px rgba(0,0,0,.08);
-}
-
-.card h3{
-    color:#666;
-    font-size:15px;
-    margin-bottom:10px;
-}
-
-.card span{
-    font-size:34px;
-    font-weight:700;
-    color:#2563eb;
-}
-
-/* TABLE */
-
-table{
-    width:100%;
-    border-collapse:collapse;
-    background:#fff;
-    border-radius:12px;
-    overflow:hidden;
-}
-
-table th{
-    background:#2563eb;
-    color:#fff;
-    padding:12px;
-}
-
-table td{
-    padding:12px;
-    border-bottom:1px solid #eee;
-}
-
-/* BUTTON */
-
-.btn{
-    border:none;
-    border-radius:8px;
-    padding:10px 16px;
-    cursor:pointer;
-    color:#fff;
-}
-
-.btn-blue{
-    background:#2563eb;
-}
-
-.btn-green{
-    background:#16a34a;
-}
-
-.btn-red{
-    background:#dc2626;
-}
-
-.btn-orange{
-    background:#ea580c;
-}
-
-/* INPUT */
-
-input,
-select{
-    padding:10px;
-    border:1px solid #ddd;
-    border-radius:8px;
-    outline:none;
-}
-
-/* STATUS */
-
-.status-paid{
-    color:#16a34a;
-    font-weight:600;
-}
-
-.status-unpaid{
-    color:#dc2626;
-    font-weight:600;
-}
-
-/* ANIMATION */
 
 @keyframes fade{
 
-from{
-    opacity:0;
-    transform:translateY(10px);
+    from{
+
+        opacity:0;
+        transform:translateY(10px);
+
+    }
+
+
+    to{
+
+        opacity:1;
+        transform:none;
+
+    }
+
 }
 
-to{
-    opacity:1;
-    transform:translateY(0);
+
+
+
+
+/* =======================================
+CARD
+======================================= */
+
+
+.card-grid{
+
+    display:grid;
+    grid-template-columns:
+    repeat(4,1fr);
+    gap:20px;
+
 }
+
+
+
+.card{
+
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:
+    0 5px 20px rgba(0,0,0,.06);
+
+}
+
+
+
+.card h3{
+
+    color:#64748b;
+    font-size:15px;
+
+}
+
+
+
+.card span{
+
+    display:block;
+    margin-top:10px;
+    font-size:30px;
+    font-weight:700;
+    color:#2563eb;
+
+}
+
+
+
+
+/* =======================================
+MOBILE
+======================================= */
+
+
+@media(max-width:768px){
+
+
+.sidebar{
+
+    width:70px;
+    padding:10px;
+
+}
+
+
+
+.logo{
+
+    font-size:0;
+
+}
+
+
+
+.logo:after{
+
+    content:"TTA";
+    font-size:20px;
+
+}
+
+
+
+.menu-item{
+
+    font-size:0;
+    text-align:center;
+
+}
+
+
+
+.menu-item:first-letter{
+
+    font-size:22px;
+
+}
+
+
+
+.content{
+
+    margin-left:70px;
+    width:calc(100% - 70px);
+
+}
+
+
+
+.card-grid{
+
+    grid-template-columns:
+    repeat(2,1fr);
+
+}
+
+
+}
+
+
+
+@media(max-width:450px){
+
+
+.card-grid{
+
+    grid-template-columns:1fr;
+
+}
+
+
+
+.login-box{
+
+    width:90%;
+
+}
+
 
 }
