@@ -1,148 +1,91 @@
 // =======================================
 // CUSTOM TTA MANAGER
-// AUTH SYSTEM
-// FILE 2A
+// AUTH.JS
+// PHẦN 2D
+// LOGIN SYSTEM
 // =======================================
 
 
-// chống load trùng
-if(window.TTA_AUTH_LOADED){
 
-console.warn(
-"AUTH đã được load"
-);
+// =======================================
+// LOGIN FUNCTION
+// =======================================
 
+window.login = function(){
 
-}else{
 
+    let username =
+    document.getElementById(
+        "username"
+    ).value.trim();
 
-window.TTA_AUTH_LOADED = true;
 
 
+    let password =
+    document.getElementById(
+        "password"
+    ).value.trim();
 
-// ===============================
-// USER DATABASE DEMO
-// Sau này có thể đổi Firebase
-// ===============================
 
 
-const TTA_USERS = [
 
-{
-username:"admin",
-password:"123",
-role:"admin",
-name:"Admin TTA"
-},
+    let error =
+    document.getElementById(
+        "loginError"
+    );
 
 
-{
-username:"ctv1",
-password:"101",
-role:"ctv",
-name:"CTV 1"
-},
 
+    let result =
+    TTA.login(
+        username,
+        password
+    );
 
-{
-username:"ctv2",
-password:"102",
-role:"ctv",
-name:"CTV 2"
-}
 
 
-];
 
+    if(!result.success){
 
 
+        if(error){
 
-// ===============================
-// SESSION KEY
-// dùng tên riêng tránh lỗi
-// ===============================
+            error.innerHTML =
+            result.message;
 
+        }
 
-const TTA_SESSION_KEY = "CUSTOM_TTA_SESSION";
 
+        return;
 
+    }
 
 
-// ===============================
-// LẤY SESSION
-// ===============================
 
 
-window.TTA_getSession = function(){
+    // LƯU PHIÊN
 
+    localStorage.setItem(
 
-try{
+        "CUSTOM_TTA_SESSION",
 
+        JSON.stringify(
+            result.user
+        )
 
-return JSON.parse(
+    );
 
-localStorage.getItem(
-TTA_SESSION_KEY
-)
 
-)
 
-|| null;
 
+    TTA.currentUser =
+    result.user;
 
-}catch(e){
 
 
-return null;
 
+    showApp();
 
-}
-
-
-};
-
-
-
-
-// ===============================
-// LƯU SESSION
-// ===============================
-
-
-window.TTA_saveSession=function(user){
-
-
-localStorage.setItem(
-
-TTA_SESSION_KEY,
-
-JSON.stringify(user)
-
-);
-
-
-};
-
-
-
-
-// ===============================
-// XÓA SESSION
-// ===============================
-
-
-window.TTA_logout=function(){
-
-
-localStorage.removeItem(
-
-TTA_SESSION_KEY
-
-);
-
-
-
-location.reload();
 
 
 };
@@ -151,115 +94,54 @@ location.reload();
 
 
 
-// ===============================
-// LOGIN
-// ===============================
+// =======================================
+// SHOW APP
+// =======================================
 
+function showApp(){
 
-window.TTA_login=function(username,password){
 
 
+    let loginPage =
+    document.getElementById(
+        "loginPage"
+    );
 
-const user = TTA_USERS.find(
 
+    let app =
+    document.getElementById(
+        "app"
+    );
 
-u=>
 
 
-u.username===username
+    if(loginPage){
 
-&&
+        loginPage.classList.add(
+            "hidden"
+        );
 
-u.password===password
+    }
 
 
-);
 
+    if(app){
 
+        app.classList.remove(
+            "hidden"
+        );
 
-if(!user){
+    }
 
 
-return false;
 
+    updateUserInfo();
 
-}
 
 
-
-TTA_saveSession(user);
-
-
-
-return true;
-
-
-};
-
-
-
-
-
-// ===============================
-// KIỂM TRA QUYỀN
-// ===============================
-
-
-window.TTA_isAdmin=function(){
-
-
-const user=TTA_getSession();
-
-
-
-return user
-
-&&
-
-user.role==="admin";
-
-
-};
-
-
-
-
-
-// ===============================
-// HIỂN THỊ USER
-// ===============================
-
-
-window.TTA_showUser=function(){
-
-
-
-const user=TTA_getSession();
-
-
-
-if(!user)
-
-return;
-
-
-
-const welcome = document.getElementById(
-"welcome"
-);
-
-
-
-if(welcome){
-
-
-welcome.innerHTML=
-
-`
-
-Xin chào <b>${user.name}</b>
-
-`;
+    openPage(
+        "dashboard"
+    );
 
 
 
@@ -267,212 +149,259 @@ Xin chào <b>${user.name}</b>
 
 
 
+
+
+// =======================================
+// UPDATE USER INFO
+// =======================================
+
+function updateUserInfo(){
+
+
+
+    let user =
+    TTA.currentUser;
+
+
+
+    if(!user){
+
+        return;
+
+    }
+
+
+
+    let box =
+    document.getElementById(
+        "userInfo"
+    );
+
+
+
+    let welcome =
+    document.getElementById(
+        "welcomeUser"
+    );
+
+
+
+    if(box){
+
+
+        box.innerHTML =
+
+        `
+
+        👤 ${user.name}
+
+        <br>
+
+        🔑 ${user.role}
+
+        `;
+
+
+    }
+
+
+
+    if(welcome){
+
+
+        welcome.innerHTML =
+
+        "Xin chào " +
+        user.name;
+
+
+    }
+
+
+
+}
+
+
+
+
+
+// =======================================
+// LOGOUT
+// =======================================
+
+window.logout = function(){
+
+
+
+    localStorage.removeItem(
+        "CUSTOM_TTA_SESSION"
+    );
+
+
+
+    TTA.currentUser = null;
+
+
+
+    let app =
+    document.getElementById(
+        "app"
+    );
+
+
+
+    let loginPage =
+    document.getElementById(
+        "loginPage"
+    );
+
+
+
+    if(app){
+
+        app.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+
+    if(loginPage){
+
+        loginPage.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
 };
 
 
 
 
-// ===============================
-// DOM READY
-// ===============================
 
+
+// =======================================
+// LOAD SESSION
+// =======================================
+
+TTA.loadSession = function(){
+
+
+
+    let session =
+    localStorage.getItem(
+        "CUSTOM_TTA_SESSION"
+    );
+
+
+
+    if(!session){
+
+        return false;
+
+    }
+
+
+
+    try{
+
+
+        TTA.currentUser =
+        JSON.parse(
+            session
+        );
+
+
+
+        showApp();
+
+
+
+        return true;
+
+
+
+    }catch(e){
+
+
+        console.error(
+            "Session lỗi",
+            e
+        );
+
+
+        return false;
+
+    }
+
+
+
+};
+
+
+
+
+
+// =======================================
+// CHECK ADMIN
+// =======================================
+
+TTA.requireAdmin = function(){
+
+
+
+    if(
+        !TTA.isAdmin()
+    ){
+
+
+        alert(
+            "Bạn không có quyền truy cập"
+        );
+
+
+        openPage(
+            "dashboard"
+        );
+
+
+        return false;
+
+
+    }
+
+
+
+    return true;
+
+
+};
+
+
+
+
+
+
+// =======================================
+// AUTO LOAD
+// =======================================
 
 document.addEventListener(
-
 "DOMContentLoaded",
+function(){
 
-()=>{
 
-
-
-const loginBtn=
-
-document.getElementById(
-"loginBtn"
-);
-
-
-
-if(loginBtn){
-
-
-
-loginBtn.onclick=function(){
-
-
-
-const username=
-
-document.getElementById(
-"username"
-).value.trim();
-
-
-
-const password=
-
-document.getElementById(
-"password"
-).value.trim();
-
-
-
-
-const result=
-
-TTA_login(
-username,
-password
-);
-
-
-
-if(result){
-
-
-document.getElementById(
-"loginPage"
-).classList.add(
-"hidden"
-);
-
-
-
-document.getElementById(
-"app"
-).classList.remove(
-"hidden"
-);
-
-
-
-TTA_showUser();
-if (window.openPage) {
-    window.openPage("dashboard");
-}
-
-
-}else{
-
-
-const error=
-
-document.getElementById(
-"loginError"
-);
-
-
-
-if(error)
-
-error.innerHTML=
-
-"❌ Sai tài khoản hoặc mật khẩu";
-
-
-}
-
-
-
-};
-
-
-
-}
-
-
-
-
-const logoutBtn=
-
-document.getElementById(
-"logoutBtn"
-);
-
-
-
-if(logoutBtn){
-
-
-logoutBtn.onclick=()=>{
-
-
-TTA_logout();
-
-
-};
-
-
-}
-
-
-
-
-// tự đăng nhập lại
-
-
-const session=
-
-TTA_getSession();
-
-
-
-if(session){
-
-
-const login=
-
-document.getElementById(
-"loginPage"
-);
-
-
-
-const app=
-
-document.getElementById(
-"app"
-);
-
-
-
-if(login)
-
-login.classList.add(
-"hidden"
-);
-
-
-
-if(app)
-
-app.classList.remove(
-"hidden"
-);
-
-
-
-TTA_showUser();
-if (window.openPage) {
-    window.openPage("dashboard");
-}
-
-
-}
-
-
+    TTA.loadSession();
 
 
 });
 
 
 
-console.log(
 
-"🔥 AUTH SYSTEM READY"
-
-);
-
-
-
-}
+// =======================================
+// END PART 2D
+// =======================================
