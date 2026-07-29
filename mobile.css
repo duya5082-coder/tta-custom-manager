@@ -1,500 +1,269 @@
-/* =======================================
-CUSTOM TTA MANAGER
-MOBILE RESPONSIVE
-FILE 3B - mobile.css
-======================================= */
+/* ==========================================
+   CUSTOM TTA MANAGER
+   MOBILE.CSS
+========================================== */
 
+@media screen and (max-width:1200px){
 
+.content{
 
-@media(max-width:768px){
+margin-left:220px;
 
-
-
-body{
-
-overflow-x:hidden;
+width:calc(100% - 220px);
 
 }
 
+.sidebar{
 
-
-/* ================================
-HEADER
-================================ */
-
-
-#app header{
-
-
-height:auto;
-
-
-padding:15px;
-
-
-flex-direction:column;
-
-
-gap:15px;
-
-
-align-items:flex-start;
-
+width:220px;
 
 }
 
+}
 
+@media screen and (max-width:992px){
 
+.sidebar{
 
-.brand{
-
-
-width:100%;
-
+width:80px;
 
 }
 
+.logo{
 
+font-size:18px;
 
-.brand h2{
-
-
-font-size:20px;
-
+padding:20px 5px;
 
 }
 
+.menu-item{
 
+font-size:0;
 
-#logoutBtn{
-
-
-width:100%;
-
-
-}
-
-
-
-
-
-/* ================================
-MENU
-================================ */
-
-
-.menu{
-
-
-padding:10px;
-
-
-display:flex;
-
-
-overflow-x:auto;
-
-
-gap:8px;
-
-
-}
-
-
-
-.menu button{
-
-
-white-space:nowrap;
-
-
-font-size:14px;
-
-
-padding:10px 15px;
-
-
-}
-
-
-
-
-
-/* ================================
-MAIN
-================================ */
-
-
-main{
-
-
-padding:15px;
-
-
-}
-
-
-
-
-
-.pageHeader h1{
-
-
-font-size:22px;
-
-
-}
-
-
-
-
-.panel{
-
-
-padding:15px;
-
-
-border-radius:15px;
-
-
-}
-
-
-
-
-
-/* ================================
-LOGIN
-================================ */
-
-
-.loginBox{
-
-
-width:90%;
-
-
-padding:25px;
-
-
-}
-
-
-
-.loginBox h1{
-
-
-font-size:24px;
-
-
-}
-
-
-
-
-
-/* ================================
-DASHBOARD
-================================ */
-
-
-.cards{
-
-
-grid-template-columns:
-
-1fr;
-
-
-gap:15px;
-
-
-}
-
-
-
-.card{
-
-
-padding:20px;
-
-
-}
-
-
-
-.card b{
-
-
-font-size:26px;
-
-
-}
-
-
-
-
-
-/* ================================
-TOOLBAR
-================================ */
-
-
-.toolbar{
-
-
-flex-direction:column;
-
-
-}
-
-
-
-.toolbar input,
-.toolbar select{
-
-
-width:100%;
-
-
-}
-
-
-
-
-
-/* ================================
-TEAM LIST
-================================ */
-
-
-.teamItem{
-
-
-flex-direction:column;
-
-
-align-items:flex-start;
-
-
-gap:15px;
-
-
-}
-
-
-
-.teamItem div:last-child{
-
-
-width:100%;
-
-
-display:flex;
-
-
-gap:10px;
-
-
-}
-
-
-
-.teamItem button{
-
-
-flex:1;
-
-
-}
-
-
-
-
-
-/* ================================
-MONEY
-================================ */
-
-
-.paymentSummary,
-.salaryGrid,
-.quickStats{
-
-
-grid-template-columns:
-
-1fr;
-
-
-}
-
-
-
-
-.moneyCard,
-.salaryCard,
-.quickCard{
-
-
-padding:20px;
-
-
-}
-
-
-
-
-/* ================================
-SETTING
-================================ */
-
-
-.settingItem{
-
-
-margin-bottom:15px;
-
-
-}
-
-
-
-.buttonGroup{
-
-
-display:flex;
-
-
-flex-direction:column;
-
-
-gap:10px;
-
-
-}
-
-
-
-.buttonGroup button{
-
-
-width:100%;
-
-
-}
-
-
-
-
-
-/* ================================
-MODAL
-================================ */
-
-
-.modalBox{
-
-
-width:92%;
-
-
-max-height:90vh;
-
-
-overflow-y:auto;
-
-
-padding:20px;
-
-
-}
-
-
-
-
-.modalFooter{
-
-
-flex-direction:column;
-
-
-}
-
-
-
-.modalFooter button{
-
-
-width:100%;
-
-
-}
-
-
-
-
-
-/* ================================
-TEXT
-================================ */
-
-
-h1{
-
-
-font-size:24px;
-
-
-}
-
-
-
-h2{
-
-
-font-size:20px;
-
-
-}
-
-
-
-h3{
-
-
-font-size:17px;
-
-
-}
-
-
-
-
-
-/* ================================
-TOAST
-================================ */
-
-
-#toast{
-
-
-left:15px;
-
-
-right:15px;
-
-
-bottom:15px;
-
+padding:18px;
 
 text-align:center;
 
+}
+
+.menu-item::first-letter{
+
+font-size:22px;
 
 }
 
+.content{
 
+margin-left:80px;
 
+width:calc(100% - 80px);
+
+}
+
+.topbar{
+
+flex-direction:column;
+
+gap:10px;
+
+align-items:flex-start;
+
+}
+
+.card-grid{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+@media screen and (max-width:768px){
+
+.login-box{
+
+width:95%;
+
+padding:25px;
+
+}
+
+.content{
+
+padding:15px;
+
+}
+
+.card-grid{
+
+grid-template-columns:1fr;
+
+}
+
+table{
+
+display:block;
+
+overflow-x:auto;
+
+white-space:nowrap;
+
+}
+
+.btn{
+
+width:100%;
+
+margin-top:8px;
+
+}
+
+input,
+select{
+
+width:100%;
+
+}
+
+}
+
+@media screen and (max-width:600px){
+
+.sidebar{
+
+position:fixed;
+
+left:-240px;
+
+top:0;
+
+width:240px;
+
+transition:.3s;
+
+z-index:999;
+
+}
+
+.sidebar.show{
+
+left:0;
+
+}
+
+.content{
+
+margin-left:0;
+
+width:100%;
+
+}
+
+.topbar{
+
+padding:15px;
+
+}
+
+.mobile-menu{
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+position:fixed;
+
+top:15px;
+
+left:15px;
+
+width:45px;
+
+height:45px;
+
+border-radius:10px;
+
+background:#2563eb;
+
+color:#fff;
+
+font-size:22px;
+
+cursor:pointer;
+
+z-index:1000;
+
+box-shadow:0 5px 15px rgba(0,0,0,.25);
+
+}
+
+.overlay{
+
+display:none;
+
+position:fixed;
+
+left:0;
+
+top:0;
+
+width:100%;
+
+height:100%;
+
+background:rgba(0,0,0,.4);
+
+z-index:998;
+
+}
+
+.overlay.show{
+
+display:block;
+
+}
+
+}
+
+@media screen and (max-width:480px){
+
+.logo{
+
+font-size:20px;
+
+}
+
+.login-box h1{
+
+font-size:26px;
+
+}
+
+.login-box p{
+
+font-size:14px;
+
+}
+
+.card{
+
+padding:15px;
+
+}
+
+.card span{
+
+font-size:28px;
+
+}
+
+.topbar{
+
+font-size:14px;
+
+}
 
 }
