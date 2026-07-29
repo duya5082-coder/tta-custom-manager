@@ -1,175 +1,148 @@
 // =======================================
 // CUSTOM TTA MANAGER
-// MESSENGER BILL SYSTEM
-// FILE 2H - messenger.js
+// MESSENGER.JS
+// PHẦN 2I
+// MESSENGER COPY SYSTEM
 // =======================================
 
-
-if(window.TTA_MESSENGER_LOADED){
-
-
-console.warn(
-"MESSENGER đã được load"
-);
-
-
-}else{
-
-
-window.TTA_MESSENGER_LOADED=true;
 
 
 
 // =======================================
-// LẤY TEAM
+// SELECTED SLOT
 // =======================================
 
-
-function TTA_getMessengerTeams(){
-
-
-
-try{
-
-
-return JSON.parse(
-
-localStorage.getItem(
-
-"CUSTOM_TTA_TEAMS"
-
-)
-
-)
-
-|| [];
+TTA.selectedSlots =
+TTA.selectedSlots || [];
 
 
 
-}catch(e){
+
+// =======================================
+// TOGGLE SLOT SELECT
+// =======================================
+
+window.toggleMessengerSlot = function(id){
 
 
-return [];
+
+    let index =
+    TTA.selectedSlots.indexOf(id);
 
 
-}
+
+    if(index === -1){
+
+
+        TTA.selectedSlots.push(id);
+
+
+    }else{
+
+
+        TTA.selectedSlots.splice(
+            index,
+            1
+        );
+
+
+    }
 
 
 
-}
+    TTA.renderSlots();
+
+
+};
+
 
 
 
 
 
 // =======================================
-// TẠO BILL
+// GET SELECTED SLOTS
 // =======================================
 
+TTA.getSelectedMessengerSlots = function(){
 
-window.createMessengerBill=function(){
 
 
+    return TTA.getSlots()
+    .filter(
+        slot =>
+        TTA.selectedSlots.includes(
+            slot.id
+        )
+    );
 
-const teams=
 
-TTA_getMessengerTeams();
+};
 
 
 
 
 
-if(teams.length===0){
 
 
+// =======================================
+// FORMAT MULTI SLOT MESSAGE
+// =======================================
 
-alert(
+TTA.formatMultiSlotMessage = function(){
 
-"Chưa có Team để tạo bill"
 
-);
 
+    let slots =
+    TTA.getSelectedMessengerSlots();
 
 
-return "";
 
+    if(
+        slots.length === 0
+    ){
 
 
-}
+        return "Chưa chọn Slot";
 
 
+    }
 
 
 
-let text=
+    let text =
+    "📢 LỊCH SLOT CUSTOM TTA\n\n";
 
-"🔥 CUSTOM TTA BILL\n";
 
 
 
-text +=
+    slots.forEach(
+        (slot,index)=>{
 
-"====================\n\n";
 
+            text +=
 
+            `
 
+${index + 1}. 📌 ${slot.title}
 
+📅 Ngày: ${slot.date}
 
-teams.forEach((team,index)=>{
+⏰ ${slot.startTime} - ${slot.endTime}
 
+📊 ${slot.status}
 
 
-text +=
+`;
 
-`${index+1}. ${team.name}\n`;
 
 
+        }
+    );
 
-text +=
 
-`📦 BOX ${team.box}\n`;
 
-
-
-text +=
-
-`🕒 ${team.time}\n`;
-
-
-
-text +=
-
-`💸 ${team.paid ? "Đã thanh toán" : "Chưa thanh toán"}\n\n`;
-
-
-
-});
-
-
-
-
-
-text +=
-
-"====================\n";
-
-
-
-text +=
-
-`👥 Tổng Team: ${teams.length}\n`;
-
-
-
-text +=
-
-"🔥 CUSTOM TTA ESPORT";
-
-
-
-
-
-return text;
+    return text.trim();
 
 
 
@@ -182,79 +155,127 @@ return text;
 
 
 // =======================================
-// COPY BILL
+// COPY MULTI SLOT
 // =======================================
 
-
-window.copyMessengerBill=function(){
-
-
-
-const bill=
-
-createMessengerBill();
+window.copyAllMessengerSlot = function(){
 
 
 
-
-
-if(!bill)
-
-return;
+    let text =
+    TTA.formatMultiSlotMessage();
 
 
 
+    navigator.clipboard
+    .writeText(
+        text
+    )
+    .then(
+        function(){
+
+
+            alert(
+                "Đã copy lịch Slot Messenger"
+            );
+
+
+        }
+    );
+
+
+};
 
 
 
-navigator.clipboard.writeText(
-
-bill
-
-)
-
-.then(()=>{
 
 
 
-alert(
-
-"✅ Đã copy bill Messenger"
-
-);
 
 
+// =======================================
+// COPY SINGLE SLOT
+// =======================================
 
-if(window.sendNotification){
-
-
-window.sendNotification(
-
-"Đã copy bill"
-
-);
+window.copySingleMessengerSlot = function(id){
 
 
 
-}
+    let slot =
+    TTA.findSlot(id);
 
 
 
-})
+    if(!slot){
 
-.catch(()=>{
+        return;
 
-
-
-alert(
-
-"Không thể copy"
-
-);
+    }
 
 
 
-});
+    navigator.clipboard
+    .writeText(
+        TTA.formatSlotMessage(
+            slot
+        )
+    )
+    .then(
+        function(){
+
+            alert(
+                "Đã copy Slot"
+            );
+
+        }
+    );
+
+
+};
+
+
+
+
+
+
+
+
+// =======================================
+// RENDER MESSENGER TOOL
+// =======================================
+
+TTA.renderMessengerTool = function(){
+
+
+
+    let box =
+    document.getElementById(
+        "messengerTool"
+    );
+
+
+
+    if(!box){
+
+        return;
+
+    }
+
+
+
+    box.innerHTML =
+
+
+    `
+
+    <button onclick="copyAllMessengerSlot()">
+
+    📋 Copy tất cả Slot đã chọn
+
+    </button>
+
+
+    `;
 
 
 
@@ -267,53 +288,116 @@ alert(
 
 
 // =======================================
-// MỞ MESSENGER
+// ADD CHECKBOX SLOT
+// =======================================
+
+TTA.renderSlotMessengerCheck = function(){
+
+
+
+    let slots =
+    document.querySelectorAll(
+        "#slotList .card"
+    );
+
+
+
+    slots.forEach(
+        (card,index)=>{
+
+
+            let slot =
+            TTA.getSlots()[index];
+
+
+
+            if(!slot){
+
+                return;
+
+            }
+
+
+
+            let check =
+            document.createElement(
+                "input"
+            );
+
+
+
+            check.type =
+            "checkbox";
+
+
+
+            check.onclick =
+            function(){
+
+
+                toggleMessengerSlot(
+                    slot.id
+                );
+
+
+            };
+
+
+
+            card.prepend(
+                check
+            );
+
+
+
+        }
+    );
+
+
+};
+
+
+
+
+
+
+
+// =======================================
+// PAGE HOOK
 // =======================================
 
 
-window.openMessenger=function(){
+let oldMessengerOpenPage =
+window.openPage;
 
 
 
-const bill=
-
-createMessengerBill();
+window.openPage = function(page){
 
 
 
-
-
-if(!bill)
-
-return;
+    oldMessengerOpenPage(page);
 
 
 
+    if(
+        page === "slot"
+    ){
 
 
-const url=
-
-"https://m.me/?text="
-
-+
-
-encodeURIComponent(
-
-bill
-
-);
+        setTimeout(
+            function(){
 
 
+                TTA.renderSlotMessengerCheck();
 
 
+            },
+            300
+        );
 
-window.open(
 
-url,
-
-"_blank"
-
-);
+    }
 
 
 
@@ -326,78 +410,15 @@ url,
 
 
 // =======================================
-// BUTTON
+// AUTO LOAD
 // =======================================
-
 
 document.addEventListener(
-
 "DOMContentLoaded",
-
-()=>{
-
+function(){
 
 
-const btn=
-
-document.getElementById(
-
-"messengerBtn"
-
-);
-
-
-
-
-if(btn){
-
-
-
-btn.onclick=function(){
-
-
-
-openMessenger();
-
-
-
-};
-
-
-
-}
-
-
-
-
-const copyBtn=
-
-document.getElementById(
-
-"copyBillBtn"
-
-);
-
-
-
-if(copyBtn){
-
-
-
-copyBtn.onclick=function(){
-
-
-
-copyMessengerBill();
-
-
-
-};
-
-
-
-}
-
+    TTA.renderMessengerTool();
 
 
 });
@@ -406,12 +427,6 @@ copyMessengerBill();
 
 
 
-console.log(
-
-"🔥 MESSENGER SYSTEM READY"
-
-);
-
-
-
-}
+// =======================================
+// END PART 2I
+// =======================================
