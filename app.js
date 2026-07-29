@@ -2107,3 +2107,237 @@ function(){
 // =======================================
 // END PART 2A
 // =======================================
+// =======================================
+// CUSTOM TTA MANAGER
+// APP.JS
+// PHẦN 2E
+// DASHBOARD DATA SYSTEM
+// =======================================
+
+
+
+// =======================================
+// COUNT SLOTS
+// =======================================
+
+TTA.countSlots = function(){
+
+
+    return TTA.getSlots()
+    .length;
+
+
+};
+
+
+
+
+// =======================================
+// COUNT FULL SLOT
+// =======================================
+
+TTA.countFullSlots = function(){
+
+
+    return TTA.getSlots()
+    .filter(
+        slot =>
+        slot.status === "FULL"
+    )
+    .length;
+
+
+};
+
+
+
+
+// =======================================
+// COUNT BILLS
+// =======================================
+
+TTA.countBills = function(){
+
+
+    return TTA.getBills()
+    .length;
+
+
+};
+
+
+
+
+// =======================================
+// COUNT CTV
+// =======================================
+
+TTA.countCTV = function(){
+
+
+    return TTA.getUsers()
+    .filter(
+        user =>
+        user.role === "CTV"
+    )
+    .length;
+
+
+};
+
+
+
+
+// =======================================
+// UPDATE DASHBOARD
+// =======================================
+
+TTA.updateDashboard = function(){
+
+
+
+    let totalSlot =
+    document.getElementById(
+        "totalSlot"
+    );
+
+
+
+    let fullSlot =
+    document.getElementById(
+        "fullSlot"
+    );
+
+
+
+    let totalBill =
+    document.getElementById(
+        "totalBill"
+    );
+
+
+
+    let totalCTV =
+    document.getElementById(
+        "totalCTV"
+    );
+
+
+
+
+    if(totalSlot){
+
+        totalSlot.innerHTML =
+        TTA.countSlots();
+
+    }
+
+
+
+    if(fullSlot){
+
+        fullSlot.innerHTML =
+        TTA.countFullSlots();
+
+    }
+
+
+
+    if(totalBill){
+
+        totalBill.innerHTML =
+        TTA.countBills();
+
+    }
+
+
+
+    if(totalCTV){
+
+        totalCTV.innerHTML =
+        TTA.countCTV();
+
+    }
+
+
+
+};
+
+
+
+
+
+// =======================================
+// DASHBOARD REFRESH
+// =======================================
+
+TTA.refreshDashboard = function(){
+
+
+    TTA.updateDashboard();
+
+
+};
+
+
+
+
+
+// =======================================
+// OPEN PAGE HOOK
+// =======================================
+
+let oldOpenPage =
+window.openPage;
+
+
+
+window.openPage = function(page){
+
+
+    oldOpenPage(page);
+
+
+
+    if(
+        page === "dashboard"
+    ){
+
+        TTA.refreshDashboard();
+
+    }
+
+
+};
+
+
+
+
+
+// =======================================
+// AUTO UPDATE
+// =======================================
+
+document.addEventListener(
+"DOMContentLoaded",
+function(){
+
+
+    setTimeout(
+        function(){
+
+            TTA.updateDashboard();
+
+        },
+        500
+    );
+
+
+});
+
+
+
+
+// =======================================
+// END PART 2E
+// =======================================
