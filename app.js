@@ -1,1514 +1,2109 @@
 // =======================================
 // CUSTOM TTA MANAGER
-// APP SYSTEM
-// app.js
+// APP.JS
+// PHẦN 1A
+// SYSTEM CORE
 // =======================================
 
-
-
-window.TTA_APP_LOADED = true;
+"use strict";
 
 // =======================================
-// DATABASE
+// APP
 // =======================================
 
-const TEAM_KEY = "CUSTOM_TTA_TEAMS";
+const TTA = {
 
-function getTeams(){
+    version: "2.0.0",
+
+    appName: "CUSTOM TTA MANAGER",
+
+    currentUser: null,
+
+    currentRole: null,
+
+    currentPage: "dashboard",
+
+    loaded: false,
+
+    ready: false,
+
+    database: {
+
+        users: [],
+
+        slots: [],
+
+        salaries: [],
+
+        balances: [],
+
+        settings: {
+
+            slotLimit: 12,
+
+            slotPrice: 5000,
+
+            salaryPerSlot: 500,
+
+            salaryDelay: 90
+
+        }
+
+    }
+
+};
+
+// =======================================
+// STORAGE
+// =======================================
+
+const STORAGE_KEY = "CUSTOM_TTA_DATABASE";
+
+// =======================================
+// LOAD DATABASE
+// =======================================
+
+function loadDatabase(){
 
     try{
 
         const data = JSON.parse(
-            localStorage.getItem(TEAM_KEY)
+            localStorage.getItem(STORAGE_KEY)
         );
 
-        return Array.isArray(data)
-            ? data
-            : [];
+        if(data){
+
+            TTA.database = data;
+
+        }
 
     }catch(e){
+
+        console.warn("Không thể đọc dữ liệu.");
+
+    }
+
+}
+
+// =======================================
+// SAVE DATABASE
+// =======================================
+
+function saveDatabase(){
+
+    localStorage.setItem(
+
+        STORAGE_KEY,
+
+        JSON.stringify(TTA.database)
+
+    );
+
+}
+
+// =======================================
+// RESET DATABASE
+// =======================================
+
+function resetDatabase(){
+
+    localStorage.removeItem(STORAGE_KEY);
+
+    location.reload();
+
+}
+
+// =======================================
+// APP START
+// =======================================
+
+function startApp(){
+
+    loadDatabase();
+
+    TTA.loaded = true;
+
+    TTA.ready = true;
+
+    console.log("================================");
+
+    console.log(TTA.appName);
+
+    console.log("Version:",TTA.version);
+
+    console.log("Loaded");
+
+    console.log("================================");
+
+}
+
+// =======================================
+// START
+// =======================================
+
+window.addEventListener(
+
+    "DOMContentLoaded",
+
+    startApp
+
+);
+// =======================================
+// CUSTOM TTA MANAGER
+// APP.JS
+// PHẦN 1B
+// CORE DATABASE SYSTEM
+// =======================================
+
+
+// =======================================
+// STORAGE HELPER
+// =======================================
+
+TTA.storage = {
+
+    get(key, defaultValue){
+
+        try{
+
+            let data = localStorage.getItem(key);
+
+            if(!data){
+                return defaultValue;
+            }
+
+            return JSON.parse(data);
+
+        }catch(error){
+
+            console.error(
+                "Storage GET lỗi:",
+                error
+            );
+
+            return defaultValue;
+        }
+
+    },
+
+
+    set(key,value){
+
+        try{
+
+            localStorage.setItem(
+                key,
+                JSON.stringify(value)
+            );
+
+            return true;
+
+        }catch(error){
+
+            console.error(
+                "Storage SET lỗi:",
+                error
+            );
+
+            return false;
+        }
+
+    },
+
+
+    remove(key){
+
+        localStorage.removeItem(key);
+
+    }
+
+};
+
+
+
+
+// =======================================
+// DATABASE INIT
+// =======================================
+
+TTA.initDatabase = function(){
+
+    const defaultDB = {
+
+        users: [],
+
+        teams: [],
+
+        slots: [],
+
+        bills: [],
+
+        logs: [],
+
+        settings: {
+
+            appName:
+            "CUSTOM TTA MANAGER",
+
+            version:
+            "1.0.0"
+
+        }
+
+    };
+
+
+    let database =
+    TTA.storage.get(
+        "CUSTOM_TTA_DATABASE",
+        null
+    );
+
+
+    if(!database){
+
+        database = defaultDB;
+
+
+        TTA.storage.set(
+            "CUSTOM_TTA_DATABASE",
+            database
+        );
+
+    }
+
+
+    TTA.database =
+    database;
+
+
+    console.log(
+        "Database Loaded",
+        TTA.database
+    );
+
+
+};
+
+
+
+
+// =======================================
+// SAVE DATABASE
+// =======================================
+
+TTA.saveDatabase = function(){
+
+    if(!TTA.database){
+
+        console.warn(
+            "Database chưa tồn tại"
+        );
+
+        return;
+
+    }
+
+
+    TTA.storage.set(
+        "CUSTOM_TTA_DATABASE",
+        TTA.database
+    );
+
+
+};
+
+
+
+
+// =======================================
+// LOAD DATABASE
+// =======================================
+
+TTA.loadDatabase = function(){
+
+    TTA.database =
+    TTA.storage.get(
+        "CUSTOM_TTA_DATABASE",
+        {
+            users:[],
+            teams:[],
+            slots:[],
+            bills:[],
+            logs:[]
+        }
+    );
+
+
+};
+
+
+
+
+// =======================================
+// RESET DATABASE
+// =======================================
+
+TTA.resetDatabase = function(){
+
+    if(
+        confirm(
+            "Xóa toàn bộ dữ liệu?"
+        )
+    ){
+
+        localStorage.removeItem(
+            "CUSTOM_TTA_DATABASE"
+        );
+
+
+        location.reload();
+
+    }
+
+
+};
+
+
+
+
+// =======================================
+// AUTO START DATABASE
+// =======================================
+
+TTA.initDatabase();
+
+
+
+// =======================================
+// END PART 1B
+// =======================================
+// =======================================
+// CUSTOM TTA MANAGER
+// APP.JS
+// PHẦN 1C
+// USER & PERMISSION SYSTEM
+// =======================================
+
+
+
+// =======================================
+// USER DATABASE
+// =======================================
+
+
+TTA.getUsers = function(){
+
+    if(!TTA.database.users){
+
+        TTA.database.users = [];
+
+    }
+
+
+    return TTA.database.users;
+
+};
+
+
+
+
+// =======================================
+// SAVE USERS
+// =======================================
+
+
+TTA.saveUsers = function(users){
+
+    TTA.database.users = users;
+
+    TTA.saveDatabase();
+
+};
+
+
+
+
+// =======================================
+// CREATE USER
+// =======================================
+
+
+TTA.createUser = function(data){
+
+
+    let users =
+    TTA.getUsers();
+
+
+
+    let newUser = {
+
+        id:
+        Date.now(),
+
+
+        username:
+        data.username,
+
+
+        password:
+        data.password,
+
+
+        name:
+        data.name || "User",
+
+
+        role:
+        data.role || "CTV",
+
+
+        salary:
+        data.salary || 0,
+
+
+        created:
+        new Date()
+        .toISOString()
+
+    };
+
+
+
+    users.push(newUser);
+
+
+
+    TTA.saveUsers(
+        users
+    );
+
+
+    return newUser;
+
+
+};
+
+
+
+
+// =======================================
+// FIND USER
+// =======================================
+
+
+TTA.findUser = function(username){
+
+
+    let users =
+    TTA.getUsers();
+
+
+
+    return users.find(
+        user =>
+        user.username === username
+    );
+
+
+};
+
+
+
+
+// =======================================
+// LOGIN
+// =======================================
+
+
+TTA.login = function(
+    username,
+    password
+){
+
+
+    let user =
+    TTA.findUser(
+        username
+    );
+
+
+
+    if(!user){
+
+        return {
+
+            success:false,
+
+            message:
+            "Không tồn tại tài khoản"
+
+        };
+
+    }
+
+
+
+    if(
+        user.password !== password
+    ){
+
+        return {
+
+            success:false,
+
+            message:
+            "Sai mật khẩu"
+
+        };
+
+    }
+
+
+
+    TTA.currentUser =
+    user;
+
+
+
+    return {
+
+        success:true,
+
+        user:user
+
+    };
+
+
+};
+
+
+
+
+// =======================================
+// CHECK PERMISSION
+// =======================================
+
+
+TTA.hasRole = function(role){
+
+
+    if(!TTA.currentUser){
+
+        return false;
+
+    }
+
+
+
+    return (
+        TTA.currentUser.role === role
+    );
+
+
+};
+
+
+
+
+// =======================================
+// ADMIN CHECK
+// =======================================
+
+
+TTA.isAdmin = function(){
+
+
+    return TTA.hasRole(
+        "ADMIN"
+    );
+
+
+};
+
+
+
+
+// =======================================
+// CTV VIEW FILTER
+// ẨN LƯƠNG CTV
+// =======================================
+
+
+TTA.filterUserData = function(user){
+
+
+    if(
+        TTA.isAdmin()
+    ){
+
+        return user;
+
+    }
+
+
+
+    return {
+
+        id:user.id,
+
+        username:user.username,
+
+        name:user.name,
+
+        role:user.role
+
+    };
+
+
+};
+
+
+
+
+// =======================================
+// CREATE DEFAULT ADMIN
+// =======================================
+
+
+(function(){
+
+
+    let users =
+    TTA.getUsers();
+
+
+
+    if(
+        users.length === 0
+    ){
+
+
+        TTA.createUser({
+
+            username:
+            "admin",
+
+
+            password:
+            "123456",
+
+
+            name:
+            "Administrator",
+
+
+            role:
+            "ADMIN"
+
+        });
+
+
+        console.log(
+            "Tạo tài khoản Admin mặc định"
+        );
+
+
+    }
+
+
+})();
+
+
+
+
+// =======================================
+// END PART 1C
+// =======================================
+// =======================================
+// CUSTOM TTA MANAGER
+// APP.JS
+// PHẦN 1D
+// TEAM MANAGEMENT SYSTEM
+// =======================================
+
+
+
+// =======================================
+// TEAM DATABASE
+// =======================================
+
+
+TTA.getTeams = function(){
+
+    if(!TTA.database.teams){
+
+        TTA.database.teams = [];
+
+    }
+
+
+    return TTA.database.teams;
+
+};
+
+
+
+
+// =======================================
+// SAVE TEAM
+// =======================================
+
+
+TTA.saveTeams = function(teams){
+
+    TTA.database.teams = teams;
+
+    TTA.saveDatabase();
+
+};
+
+
+
+
+// =======================================
+// CREATE TEAM
+// =======================================
+
+
+TTA.createTeam = function(data){
+
+
+    let teams =
+    TTA.getTeams();
+
+
+
+    let newTeam = {
+
+        id:
+        Date.now(),
+
+
+        name:
+        data.name || "Team mới",
+
+
+        leader:
+        data.leader || null,
+
+
+        members:
+        [],
+
+
+        created:
+        new Date()
+        .toISOString()
+
+    };
+
+
+
+    teams.push(
+        newTeam
+    );
+
+
+
+    TTA.saveTeams(
+        teams
+    );
+
+
+    return newTeam;
+
+
+};
+
+
+
+
+// =======================================
+// FIND TEAM
+// =======================================
+
+
+TTA.findTeam = function(id){
+
+
+    return TTA.getTeams()
+    .find(
+        team =>
+        team.id == id
+    );
+
+
+};
+
+
+
+
+// =======================================
+// ADD MEMBER TO TEAM
+// =======================================
+
+
+TTA.addMemberToTeam = function(
+    teamId,
+    userId
+){
+
+
+    let team =
+    TTA.findTeam(
+        teamId
+    );
+
+
+
+    if(!team){
+
+        return false;
+
+    }
+
+
+
+    if(
+        !team.members.includes(userId)
+    ){
+
+        team.members.push(
+            userId
+        );
+
+    }
+
+
+
+    TTA.saveDatabase();
+
+
+    return true;
+
+
+};
+
+
+
+
+// =======================================
+// REMOVE MEMBER
+// =======================================
+
+
+TTA.removeMemberFromTeam = function(
+    teamId,
+    userId
+){
+
+
+    let team =
+    TTA.findTeam(
+        teamId
+    );
+
+
+
+    if(!team){
+
+        return false;
+
+    }
+
+
+
+    team.members =
+    team.members.filter(
+        id =>
+        id != userId
+    );
+
+
+
+    TTA.saveDatabase();
+
+
+    return true;
+
+
+};
+
+
+
+
+// =======================================
+// GET TEAM MEMBERS
+// =======================================
+
+
+TTA.getTeamMembers = function(
+    teamId
+){
+
+
+    let team =
+    TTA.findTeam(
+        teamId
+    );
+
+
+
+    if(!team){
 
         return [];
 
     }
 
-}
 
-function saveTeams(data){
 
-    localStorage.setItem(
-        TEAM_KEY,
-        JSON.stringify(data)
+    return TTA.getUsers()
+    .filter(
+        user =>
+        team.members.includes(
+            user.id
+        )
     );
 
-}
+
+};
+
+
+
 
 // =======================================
-// PAGE NAVIGATION
+// DELETE TEAM
+// =======================================
+
+
+TTA.deleteTeam = function(
+    teamId
+){
+
+
+    TTA.database.teams =
+    TTA.getTeams()
+    .filter(
+        team =>
+        team.id != teamId
+    );
+
+
+
+    TTA.saveDatabase();
+
+
+    return true;
+
+
+};
+
+
+
+
+// =======================================
+// DEFAULT TEST TEAM
+// =======================================
+
+
+(function(){
+
+
+    let teams =
+    TTA.getTeams();
+
+
+
+    if(
+        teams.length === 0
+    ){
+
+
+        TTA.createTeam({
+
+            name:
+            "Team Demo"
+
+        });
+
+
+        console.log(
+            "Đã tạo Team Demo"
+        );
+
+
+    }
+
+
+})();
+
+
+
+
+// =======================================
+// END PART 1D
+// =======================================
+// =======================================
+// CUSTOM TTA MANAGER
+// APP.JS
+// PHẦN 1E
+// SLOT MANAGEMENT SYSTEM
+// =======================================
+
+
+
+// =======================================
+// SLOT DATABASE
+// =======================================
+
+
+TTA.getSlots = function(){
+
+    if(!TTA.database.slots){
+
+        TTA.database.slots = [];
+
+    }
+
+
+    return TTA.database.slots;
+
+};
+
+
+
+
+// =======================================
+// SAVE SLOTS
+// =======================================
+
+
+TTA.saveSlots = function(slots){
+
+    TTA.database.slots = slots;
+
+    TTA.saveDatabase();
+
+};
+
+
+
+
+// =======================================
+// CREATE SLOT
+// =======================================
+
+
+TTA.createSlot = function(data){
+
+
+    let slots =
+    TTA.getSlots();
+
+
+
+    let newSlot = {
+
+
+        id:
+        Date.now(),
+
+
+        teamId:
+        data.teamId || null,
+
+
+        date:
+        data.date || "",
+
+
+        startTime:
+        data.startTime || "",
+
+
+        endTime:
+        data.endTime || "",
+
+
+        title:
+        data.title || "Ca làm việc",
+
+
+        assigned:
+        data.assigned || [],
+
+
+        status:
+        "OPEN",
+
+
+        created:
+        new Date()
+        .toISOString()
+
+
+    };
+
+
+
+    slots.push(
+        newSlot
+    );
+
+
+
+    TTA.saveSlots(
+        slots
+    );
+
+
+    return newSlot;
+
+
+};
+
+
+
+
+// =======================================
+// FIND SLOT
+// =======================================
+
+
+TTA.findSlot = function(id){
+
+
+    return TTA.getSlots()
+    .find(
+        slot =>
+        slot.id == id
+    );
+
+
+};
+
+
+
+
+// =======================================
+// UPDATE SLOT
+// =======================================
+
+
+TTA.updateSlot = function(
+    id,
+    data
+){
+
+
+    let slot =
+    TTA.findSlot(
+        id
+    );
+
+
+
+    if(!slot){
+
+        return false;
+
+    }
+
+
+
+    Object.assign(
+        slot,
+        data
+    );
+
+
+
+    TTA.saveDatabase();
+
+
+    return true;
+
+
+};
+
+
+
+
+// =======================================
+// DELETE SLOT
+// =======================================
+
+
+TTA.deleteSlot = function(id){
+
+
+    TTA.database.slots =
+    TTA.getSlots()
+    .filter(
+        slot =>
+        slot.id != id
+    );
+
+
+
+    TTA.saveDatabase();
+
+
+    return true;
+
+
+};
+
+
+
+
+// =======================================
+// ADD USER TO SLOT
+// =======================================
+
+
+TTA.assignUserToSlot = function(
+    slotId,
+    userId
+){
+
+
+    let slot =
+    TTA.findSlot(
+        slotId
+    );
+
+
+
+    if(!slot){
+
+        return false;
+
+    }
+
+
+
+    if(
+        !slot.assigned.includes(userId)
+    ){
+
+        slot.assigned.push(
+            userId
+        );
+
+    }
+
+
+
+    TTA.saveDatabase();
+
+
+    return true;
+
+
+};
+
+
+
+
+// =======================================
+// REMOVE USER FROM SLOT
+// =======================================
+
+
+TTA.removeUserFromSlot = function(
+    slotId,
+    userId
+){
+
+
+    let slot =
+    TTA.findSlot(
+        slotId
+    );
+
+
+
+    if(!slot){
+
+        return false;
+
+    }
+
+
+
+    slot.assigned =
+    slot.assigned.filter(
+        id =>
+        id != userId
+    );
+
+
+
+    TTA.saveDatabase();
+
+
+    return true;
+
+
+};
+
+
+
+
+// =======================================
+// GET TEAM SLOTS
+// =======================================
+
+
+TTA.getTeamSlots = function(
+    teamId
+){
+
+
+    return TTA.getSlots()
+    .filter(
+        slot =>
+        slot.teamId == teamId
+    );
+
+
+};
+
+
+
+
+// =======================================
+// COPY SLOT
+// SAO CHÉP KHUNG GIỜ
+// =======================================
+
+
+TTA.copySlot = function(
+    slotId
+){
+
+
+    let oldSlot =
+    TTA.findSlot(
+        slotId
+    );
+
+
+
+    if(!oldSlot){
+
+        return null;
+
+    }
+
+
+
+    let newSlot = {
+
+        ...oldSlot,
+
+
+        id:
+        Date.now(),
+
+
+        status:
+        "OPEN",
+
+
+        created:
+        new Date()
+        .toISOString()
+
+    };
+
+
+
+    TTA.database.slots.push(
+        newSlot
+    );
+
+
+
+    TTA.saveDatabase();
+
+
+    return newSlot;
+
+
+};
+
+
+
+
+// =======================================
+// FORMAT SLOT MESSAGE
+// CHUẨN BỊ GỬI MESSENGER
+// =======================================
+
+
+TTA.formatSlotMessage = function(
+    slot
+){
+
+
+    return `
+
+📌 ${slot.title}
+
+📅 Ngày: ${slot.date}
+
+⏰ Thời gian:
+${slot.startTime} - ${slot.endTime}
+
+📊 Trạng thái:
+${slot.status}
+
+    `.trim();
+
+
+};
+
+
+
+
+// =======================================
+// END PART 1E
+// =======================================
+// =======================================
+// CUSTOM TTA MANAGER
+// APP.JS
+// PHẦN 1F
+// BILL MANAGEMENT SYSTEM
+// =======================================
+
+
+
+// =======================================
+// GET BILLS
+// =======================================
+
+TTA.getBills = function(){
+
+    if(!Array.isArray(TTA.database.bills)){
+
+        TTA.database.bills = [];
+
+    }
+
+
+    return TTA.database.bills;
+
+};
+
+
+
+
+// =======================================
+// SAVE BILLS
+// =======================================
+
+TTA.saveBills = function(){
+
+    TTA.saveDatabase();
+
+};
+
+
+
+
+// =======================================
+// CREATE BILL
+// =======================================
+
+TTA.createBill = function(data = {}){
+
+
+    let bills =
+    TTA.getBills();
+
+
+
+    let bill = {
+
+
+        id:
+        Date.now(),
+
+
+
+        userId:
+        data.userId || null,
+
+
+
+        teamId:
+        data.teamId || null,
+
+
+
+        slotId:
+        data.slotId || null,
+
+
+
+        title:
+        data.title || "Bill mới",
+
+
+
+        amount:
+        Number(data.amount) || 0,
+
+
+
+        status:
+        "PENDING",
+
+
+
+        note:
+        data.note || "",
+
+
+
+        created:
+        new Date().toISOString()
+
+
+    };
+
+
+
+    bills.push(bill);
+
+
+
+    TTA.saveBills();
+
+
+
+    return bill;
+
+};
+
+
+
+
+// =======================================
+// FIND BILL
+// =======================================
+
+TTA.findBill = function(id){
+
+
+    return TTA.getBills()
+    .find(
+        bill =>
+        bill.id == id
+    );
+
+
+};
+
+
+
+
+// =======================================
+// UPDATE BILL
+// =======================================
+
+TTA.updateBill = function(
+    id,
+    data = {}
+){
+
+    let bill =
+    TTA.findBill(id);
+
+
+
+    if(!bill){
+
+        return false;
+
+    }
+
+
+
+    Object.assign(
+        bill,
+        data
+    );
+
+
+
+    TTA.saveBills();
+
+
+
+    return true;
+
+};
+
+
+
+
+// =======================================
+// DELETE BILL
+// =======================================
+
+TTA.deleteBill = function(id){
+
+
+    TTA.database.bills =
+    TTA.getBills()
+    .filter(
+        bill =>
+        bill.id != id
+    );
+
+
+
+    TTA.saveBills();
+
+
+
+    return true;
+
+};
+
+
+
+
+// =======================================
+// CHANGE BILL STATUS
+// =======================================
+
+TTA.updateBillStatus = function(
+    id,
+    status
+){
+
+    let bill =
+    TTA.findBill(id);
+
+
+
+    if(!bill){
+
+        return false;
+
+    }
+
+
+
+    bill.status = status;
+
+
+
+    TTA.saveBills();
+
+
+
+    return true;
+
+};
+
+
+
+
+// =======================================
+// GET USER BILLS
+// =======================================
+
+TTA.getUserBills = function(
+    userId
+){
+
+
+    return TTA.getBills()
+    .filter(
+        bill =>
+        bill.userId == userId
+    );
+
+
+};
+
+
+
+
+// =======================================
+// TOTAL BILL
+// =======================================
+
+TTA.calculateTotalBill = function(
+    bills = []
+){
+
+
+    return bills.reduce(
+        (total,bill)=>{
+
+            return total +
+            Number(bill.amount || 0);
+
+        },
+        0
+    );
+
+
+};
+
+
+
+
+// =======================================
+// VIEW SALARY PERMISSION
+// ADMIN XEM
+// CTV ẨN
+// =======================================
+
+TTA.getSalaryView = function(
+    userId
+){
+
+
+    let bills =
+    TTA.getUserBills(
+        userId
+    );
+
+
+
+    if(
+        TTA.isAdmin()
+    ){
+
+        return {
+
+            visible:true,
+
+            total:
+            TTA.calculateTotalBill(
+                bills
+            ),
+
+            bills:bills
+
+        };
+
+    }
+
+
+
+    return {
+
+        visible:false,
+
+        total:0,
+
+        bills:[]
+
+    };
+
+
+};
+
+
+
+
+// =======================================
+// FORMAT BILL MESSAGE
+// =======================================
+
+TTA.formatBillMessage = function(
+    bill
+){
+
+
+    return [
+
+        "🧾 " + bill.title,
+
+        "💰 Số tiền: " +
+        bill.amount,
+
+        "📌 Trạng thái: " +
+        bill.status
+
+    ].join("\n");
+
+
+};
+
+
+
+
+// =======================================
+// END PART 1F
+// =======================================
+// =======================================
+// CUSTOM TTA MANAGER
+// APP.JS
+// PHẦN 2A
+// PAGE ROUTER SYSTEM
+// =======================================
+
+
+
+// =======================================
+// CURRENT PAGE
+// =======================================
+
+TTA.currentPage =
+TTA.currentPage || "dashboard";
+
+
+
+
+// =======================================
+// OPEN PAGE
 // =======================================
 
 window.openPage = function(page){
 
-    document.querySelectorAll(".page").forEach(function(item){
 
-        item.classList.add("hidden");
+    let pages =
+    document.querySelectorAll(
+        ".page"
+    );
 
-    });
 
-    const target = document.getElementById(page);
+
+    pages.forEach(
+        item => {
+
+            item.classList.add(
+                "hidden"
+            );
+
+        }
+    );
+
+
+
+    let target =
+    document.getElementById(
+        page
+    );
+
+
 
     if(target){
 
-        target.classList.remove("hidden");
+        target.classList.remove(
+            "hidden"
+        );
+
+
+        TTA.currentPage =
+        page;
+
+
+        console.log(
+            "Open page:",
+            page
+        );
+
+
+    }else{
+
+
+        console.warn(
+            "Không tìm thấy page:",
+            page
+        );
+
 
     }
 
-    document.querySelectorAll(".menu button").forEach(function(btn){
-
-        btn.classList.remove("active");
-
-    });
-
-    const active = document.querySelector(
-        '.menu button[data-page="'+page+'"]'
-    );
-
-    if(active){
-
-        active.classList.add("active");
-
-    }
 
 };
 
+
+
+
 // =======================================
-// DASHBOARD
+// MENU CLICK
 // =======================================
 
-window.updateDashboard = function(){
+window.menuClick = function(page){
 
-    const teams = getTeams();
 
-    const total = teams.length;
+    if(
+        typeof window.openPage === "function"
+    ){
 
-    const paid = teams.filter(function(t){
-
-        return t.paid;
-
-    }).length;
-
-    const unpaid = total - paid;
-
-    const revenue = paid * 5000;
-
-    const totalEl = document.getElementById("totalTeam");
-    const paidEl = document.getElementById("paid");
-    const unpaidEl = document.getElementById("unpaid");
-    const revenueEl = document.getElementById("revenue");
-
-    if(totalEl) totalEl.textContent = total;
-    if(paidEl) paidEl.textContent = paid;
-    if(unpaidEl) unpaidEl.textContent = unpaid;
-
-    if(revenueEl){
-
-        revenueEl.textContent =
-            revenue.toLocaleString() + "đ";
+        window.openPage(page);
 
     }
+
 
 };
 
+
+
+
 // =======================================
-// NOTIFY
-// =======================================
-
-window.notify = function(text){
-
-    if(window.sendNotification){
-
-        window.sendNotification(text);
-
-    }
-
-};
-// =======================================
-// CUSTOM TTA MANAGER
-// APP SYSTEM
-// PHẦN 2
+// CHECK LOGIN UI
 // =======================================
 
-// HIỂN THỊ TEAM
-function renderTeams() {
+TTA.checkLoginUI = function(){
 
-    const list = document.getElementById("teamList");
-    if (!list) return;
 
-    const teams = getTeams();
-    list.innerHTML = "";
+    let user =
+    TTA.currentUser;
 
-    if (teams.length === 0) {
-        list.innerHTML = `
-            <div class="empty">
-                Chưa có Team nào
-            </div>
-        `;
-        return;
-    }
 
-    teams.forEach((team, index) => {
-
-        const item = document.createElement("div");
-        item.className = "teamItem";
-
-        item.innerHTML = `
-            <div>
-                <h3>🔥 ${team.name}</h3>
-                <p>📦 ${team.box} | 🕒 ${team.time}</p>
-                <p>${team.paid ? "💸 Đã thanh toán" : "❌ Chưa thanh toán"}</p>
-            </div>
-
-            <div>
-                <button class="payBtn" data-id="${index}">💸</button>
-                <button class="deleteBtn" data-id="${index}">🗑️</button>
-            </div>
-        `;
-
-        list.appendChild(item);
-
-    });
-
-    // Nút thanh toán
-    document.querySelectorAll(".payBtn").forEach(btn => {
-
-        btn.onclick = function () {
-
-            const teams = getTeams();
-            teams[this.dataset.id].paid = true;
-
-            saveTeams(teams);
-            renderTeams();
-            updateDashboard();
-            notify("Đã thanh toán Team");
-
-        };
-
-    });
-
-    // Nút xóa
-    document.querySelectorAll(".deleteBtn").forEach(btn => {
-
-        btn.onclick = function () {
-
-            const teams = getTeams();
-            teams.splice(this.dataset.id, 1);
-
-            saveTeams(teams);
-            renderTeams();
-            updateDashboard();
-            notify("Đã xóa Team");
-
-        };
-
-    });
-
-}
-// =======================================
-// CUSTOM TTA MANAGER
-// PHẦN 3
-// UI + TEAM SYSTEM
-// =======================================
-
-function createTTABox(){
-
-    let app = document.createElement("div");
-
-    app.id = "tta-manager";
-
-    app.innerHTML = `
-
-    <div class="tta-header">
-        💸 CUSTOM TTA MANAGER
-    </div>
-
-
-    <div class="tta-body">
-
-        <input 
-        id="tta-name"
-        placeholder="Nhập tên đội">
-
-        <button onclick="addTTAPlayer()">
-            ➕ Thêm đội
-        </button>
-
-
-        <div id="tta-list">
-
-        </div>
-
-
-    </div>
-
-
-    `;
-
-
-    document.body.appendChild(app);
-
-}
-
-
-
-function addTTAPlayer(){
-
-    let name =
-    document.getElementById("tta-name").value;
-
-
-    if(name.trim()==""){
-        alert("Chưa nhập tên!");
-        return;
-    }
-
-
-    let data =
-    JSON.parse(localStorage.getItem("TTA_LIST"))
-    || [];
-
-
-    data.push({
-
-        name:name,
-        time:new Date().toLocaleString()
-
-    });
-
-
-    localStorage.setItem(
-        "TTA_LIST",
-        JSON.stringify(data)
-    );
-
-
-    document.getElementById("tta-name").value="";
-
-
-    loadTTAList();
-
-}
-
-
-
-
-function loadTTAList(){
 
     let box =
-    document.getElementById("tta-list");
-
-
-    if(!box) return;
-
-
-    let data =
-    JSON.parse(localStorage.getItem("TTA_LIST"))
-    || [];
-
-
-    box.innerHTML="";
-
-
-    data.forEach((item,index)=>{
-
-
-        box.innerHTML += `
-
-
-        <div class="tta-item">
-
-
-        <b>
-        ${index+1}. ${item.name}
-        </b>
-
-
-        <small>
-        ${item.time}
-        </small>
-
-
-        <button 
-        onclick="removeTTA(${index})">
-        ❌
-        </button>
-
-
-        </div>
-
-
-        `;
-
-
-    });
-
-
-}
-
-
-
-
-function removeTTA(index){
-
-
-    let data =
-    JSON.parse(localStorage.getItem("TTA_LIST"))
-    || [];
-
-
-    data.splice(index,1);
-
-
-    localStorage.setItem(
-        "TTA_LIST",
-        JSON.stringify(data)
+    document.getElementById(
+        "userInfo"
     );
 
 
-    loadTTAList();
 
-}
+    if(
+        !box
+    ){
 
-
-
-
-
-window.addEventListener(
-"load",
-()=>{
-
-    createTTABox();
-
-    loadTTAList();
-
-});
-// =======================================
-// CUSTOM TTA MANAGER
-// PHẦN 4
-// BILL SYSTEM 5K
-// =======================================
-
-
-function createBillTTA(){
-
-
-    let data =
-    JSON.parse(localStorage.getItem("TTA_LIST"))
-    || [];
-
-
-    if(data.length == 0){
-
-        alert("Chưa có đội đăng ký!");
         return;
 
     }
 
 
 
-    let bill = 
-    "💸 CUSTOM TTA 5K\n\n";
+    if(user){
 
 
-    bill +=
-    "📋 DANH SÁCH TEAM\n\n";
+        box.innerHTML =
 
+        `
 
+        👤 ${user.name}
 
-    data.forEach((item,index)=>{
+        <br>
 
+        🔑 ${user.role}
 
-        bill +=
-        `${index+1}. ${item.name} 💸\n`;
+        `;
 
 
-    });
-
-
-
-    bill +=
-    "\n💰 Lệ phí: 5K/team";
-
-
-
-    navigator.clipboard.writeText(bill);
-
-
-
-    alert(
-    "Đã tạo bill và copy!"
-    );
-
-}
-
-
-
-
-
-function cancelTTA(name){
-
-
-    let data =
-    JSON.parse(localStorage.getItem("TTA_LIST"))
-    || [];
-
-
-
-    let newData =
-    data.filter(
-        item =>
-        item.name.toLowerCase()
-        != name.toLowerCase()
-    );
-
-
-
-    localStorage.setItem(
-        "TTA_LIST",
-        JSON.stringify(newData)
-    );
-
-
-    loadTTAList();
-
-
-}
-
-
-
-
-
-// tạo nút bill
-
-window.addEventListener(
-"load",
-()=>{
-
-
-let box =
-document.getElementById("tta-manager");
-
-
-if(box){
-
-
-box.innerHTML += `
-
-
-<button 
-onclick="createBillTTA()"
-class="bill-btn">
-
-💸 TẠO BILL 5K
-
-</button>
-
-
-`;
-
-
-}
-
-
-});
-// =======================================
-// CUSTOM TTA MANAGER
-// PHẦN 5
-// COMMAND SYSTEM
-// =======================================
-
-
-function createCommandBox(){
-
-
-let box =
-document.getElementById("tta-manager");
-
-
-if(!box) return;
-
-
-
-box.innerHTML += `
-
-
-<div class="tta-command">
-
-
-<input 
-id="tta-command-input"
-placeholder="Nhập: đăng ký Team A">
-
-
-<button onclick="runTTACommand()">
-▶ Gửi
-</button>
-
-
-</div>
-
-
-<div id="tta-log">
-
-</div>
-
-
-`;
-
-
-
-}
-
-
-
-
-function runTTACommand(){
-
-
-let input =
-document.getElementById(
-"tta-command-input"
-);
-
-
-let command =
-input.value.trim();
-
-
-
-if(command=="") return;
-
-
-
-let text =
-command.toLowerCase();
-
-
-
-if(text.startsWith("đăng ký")){
-
-
-let name =
-command.substring(8).trim();
-
-
-
-if(name==""){
-
-alert("Chưa có tên team");
-return;
-
-}
-
-
-
-let data =
-JSON.parse(
-localStorage.getItem("TTA_LIST")
-)
-|| [];
-
-
-
-data.push({
-
-name:name,
-time:new Date()
-.toLocaleString()
-
-});
-
-
-
-localStorage.setItem(
-"TTA_LIST",
-JSON.stringify(data)
-);
-
-
-
-addTTALog(
-"✅ Đã đăng ký: "+name
-);
-
-
-
-}
-
-
-
-else if(text.startsWith("hủy")){
-
-
-let name =
-command.substring(3).trim();
-
-
-
-cancelTTA(name);
-
-
-
-addTTALog(
-"❌ Đã hủy: "+name
-);
-
-
-
-}
-
-
-else{
-
-
-addTTALog(
-"⚠️ Không hiểu lệnh"
-);
-
-
-}
-
-
-
-input.value="";
-
-
-loadTTAList();
-
-
-}
-
-
-
-
-function addTTALog(text){
-
-
-let log =
-document.getElementById(
-"tta-log"
-);
-
-
-
-if(!log) return;
-
-
-
-log.innerHTML += `
-
-<div>
-${text}
-</div>
-
-`;
-
-
-
-}
-
-
-
-
-window.addEventListener(
-"load",
-()=>{
-
-createCommandBox();
-
-});
-// =======================================
-// CUSTOM TTA MANAGER
-// PHẦN 6
-// STATISTICS SYSTEM
-// =======================================
-
-
-function createStatsBox(){
-
-
-let box =
-document.getElementById(
-"tta-manager"
-);
-
-
-if(!box) return;
-
-
-
-box.innerHTML += `
-
-
-<div class="tta-stats">
-
-
-<h3>
-📊 THỐNG KÊ TTA
-</h3>
-
-
-<div id="tta-stats-content">
-
-</div>
-
-
-</div>
-
-
-`;
-
-
-
-updateTTAStats();
-
-
-}
-
-
-
-
-function updateTTAStats(){
-
-
-let stats =
-document.getElementById(
-"tta-stats-content"
-);
-
-
-
-if(!stats) return;
-
-
-
-let data =
-JSON.parse(
-localStorage.getItem("TTA_LIST")
-)
-|| [];
-
-
-
-let team =
-data.length;
-
-
-
-let money =
-team * 5000;
-
-
-
-stats.innerHTML = `
-
-
-<p>
-👥 Số team:
-<b>${team}</b>
-</p>
-
-
-<p>
-💸 Tổng tiền:
-<b>${money.toLocaleString()}đ</b>
-</p>
-
-
-<p>
-📅 Cập nhật:
-${new Date()
-.toLocaleString()}
-</p>
-
-
-`;
-
-
-
-}
-
-
-
-
-
-window.addEventListener(
-"load",
-()=>{
-
-
-createStatsBox();
-
-
-});
-
-
-
-
-// cập nhật tự động sau mỗi lần thêm/xóa
-
-let oldLoad =
-window.loadTTAList;
-
-
-
-window.loadTTAList =
-function(){
-
-
-if(oldLoad)
-oldLoad();
-
-
-
-updateTTAStats();
-
-
-};
-// =======================================
-// CUSTOM TTA MANAGER
-// PHẦN 7
-// ADMIN LOGIN SYSTEM
-// =======================================
-
-
-const ADMIN_ACCOUNT = {
-
-    username:"admin",
-    password:"123456"
-
-};
-
-
-
-let TTA_ADMIN_LOGIN =
-localStorage.getItem(
-"TTA_ADMIN_LOGIN"
-) === "true";
-
-
-
-
-
-function createAdminBox(){
-
-
-let box =
-document.getElementById(
-"tta-manager"
-);
-
-
-if(!box) return;
-
-
-
-box.innerHTML += `
-
-
-<div class="tta-admin">
-
-
-<h3>
-🔐 ADMIN
-</h3>
-
-
-<div id="admin-status">
-
-</div>
-
-
-<div id="admin-login-box">
-
-
-<input 
-id="admin-user"
-placeholder="Tài khoản">
-
-
-<input 
-id="admin-pass"
-type="password"
-placeholder="Mật khẩu">
-
-
-<button onclick="loginTTAAdmin()">
-Đăng nhập
-</button>
-
-
-</div>
-
-
-
-</div>
-
-
-`;
-
-
-
-updateAdminStatus();
-
-
-
-}
-
-
-
-
-
-function loginTTAAdmin(){
-
-
-let user =
-document.getElementById(
-"admin-user"
-).value;
-
-
-let pass =
-document.getElementById(
-"admin-pass"
-).value;
-
-
-
-if(
-user === ADMIN_ACCOUNT.username
-&&
-pass === ADMIN_ACCOUNT.password
-
-){
-
-
-localStorage.setItem(
-"TTA_ADMIN_LOGIN",
-"true"
-);
-
-
-
-TTA_ADMIN_LOGIN = true;
-
-
-
-alert(
-"✅ Đăng nhập Admin thành công"
-);
-
-
-
-updateAdminStatus();
-
-
-}
-
-else{
-
-
-alert(
-"❌ Sai tài khoản hoặc mật khẩu"
-);
-
-
-}
-
-
-
-}
-
-
-
-
-
-function logoutTTAAdmin(){
-
-
-localStorage.removeItem(
-"TTA_ADMIN_LOGIN"
-);
-
-
-
-TTA_ADMIN_LOGIN=false;
-
-
-
-updateAdminStatus();
-
-
-
-}
-
-
-
-
-function updateAdminStatus(){
-
-
-let box =
-document.getElementById(
-"admin-status"
-);
-
-
-
-if(!box) return;
-
-
-
-if(TTA_ADMIN_LOGIN){
-
-
-box.innerHTML = `
-
-
-<p>
-🟢 Admin đang hoạt động
-</p>
-
-
-<button onclick="logoutTTAAdmin()">
-🚪 Đăng xuất
-</button>
-
-
-`;
-
-
-
-}
-
-else{
-
-
-box.innerHTML = `
-
-<p>
-🔴 Chưa đăng nhập
-</p>
-
-`;
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-window.addEventListener(
-"load",
-()=>{
-
-
-createAdminBox();
-
-
-});
-// =======================================
-// CUSTOM TTA MANAGER
-// PHẦN 8
-// BACKUP + ADMIN PROTECT
-// =======================================
-
-
-
-// ===============================
-// KIỂM TRA QUYỀN ADMIN
-// ===============================
-
-function checkTTAAdmin(){
-
-
-return localStorage.getItem(
-"TTA_ADMIN_LOGIN"
-) === "true";
-
-
-}
-
-
-
-
-
-// ===============================
-// XÓA TEAM AN TOÀN
-// ===============================
-
-function removeTTA(index){
-
-
-if(!checkTTAAdmin()){
-
-
-alert(
-"🔒 Cần đăng nhập Admin để xóa!"
-);
-
-
-return;
-
-
-}
-
-
-
-let data =
-JSON.parse(
-localStorage.getItem("TTA_LIST")
-)
-|| [];
-
-
-
-data.splice(index,1);
-
-
-
-localStorage.setItem(
-"TTA_LIST",
-JSON.stringify(data)
-);
-
-
-
-loadTTAList();
-
-
-
-alert(
-"✅ Đã xóa team"
-);
-
-
-
-}
-
-
-
-
-
-// ===============================
-// XUẤT BACKUP
-// ===============================
-
-function exportTTABackup(){
-
-
-let data =
-localStorage.getItem(
-"TTA_LIST"
-)
-|| "[]";
-
-
-
-let file =
-new Blob(
-[data],
-{
-type:"application/json"
-}
-);
-
-
-
-let url =
-URL.createObjectURL(file);
-
-
-
-let a =
-document.createElement("a");
-
-
-
-a.href=url;
-
-
-a.download=
-"TTA_Backup.json";
-
-
-
-a.click();
-
-
-
-URL.revokeObjectURL(url);
-
-
-
-alert(
-"📤 Đã xuất backup!"
-);
-
-
-
-}
-
-
-
-
-
-// ===============================
-// NHẬP BACKUP
-// ===============================
-
-function importTTABackup(event){
-
-
-if(!checkTTAAdmin()){
-
-
-alert(
-"🔒 Cần Admin để nhập dữ liệu!"
-);
-
-
-return;
-
-
-}
-
-
-
-let file =
-event.target.files[0];
-
-
-
-if(!file) return;
-
-
-
-let reader =
-new FileReader();
-
-
-
-reader.onload =
-function(e){
-
-
-try{
-
-
-let data =
-JSON.parse(
-e.target.result
-);
-
-
-
-localStorage.setItem(
-"TTA_LIST",
-JSON.stringify(data)
-);
-
-
-
-loadTTAList();
-
-
-
-alert(
-"📥 Khôi phục thành công!"
-);
-
-
-
-}
-
-catch{
-
-
-alert(
-"❌ File lỗi!"
-);
-
-
-}
-
-
-
-};
-
-
-
-reader.readAsText(file);
-
-
-
-}
-
-
-
-
-
-// ===============================
-// TẠO MENU BACKUP
-// ===============================
-
-window.addEventListener(
-"load",
-()=>{
-
-
-let box =
-document.getElementById(
-"tta-manager"
-);
-
-
-
-if(!box) return;
-
-
-
-box.innerHTML += `
-
-
-<div class="tta-backup">
-
-
-<h3>
-💾 BACKUP DATA
-</h3>
-
-
-<button onclick="exportTTABackup()">
-
-📤 Xuất file
-
-</button>
-
-
-
-<input 
-type="file"
-accept=".json"
-onchange="importTTABackup(event)">
-
-
-</div>
-
-
-`;
-
-
-
-});
-// =======================================
-// MENU FIX FINAL
-// =======================================
-
-
-window.addEventListener(
-"load",
-()=>{
-
-
-document.querySelectorAll(
-".menu button"
-).forEach(btn=>{
-
-
-btn.addEventListener(
-"click",
-function(){
-
-
-let page =
-this.getAttribute(
-"data-page"
-);
-
-
-
-console.log(
-"CLICK:",
-page
-);
-
-
-
-document.querySelectorAll(
-".page"
-).forEach(p=>{
-
-
-p.classList.add(
-"hidden"
-);
-
-
-});
-
-
-
-let target =
-document.getElementById(page);
-
-
-
-if(target){
-
-
-target.classList.remove(
-"hidden"
-);
-
-
-console.log(
-"OPEN:",
-page
-);
-
-
-}
-
-
-});
-
-
-});
-
-
-});window.openPage = function(page){
-
-    document.querySelectorAll(".page").forEach(p=>{
-        p.classList.add("hidden");
-    });
-
-    const target = document.getElementById(page);
-
-    if(target){
-        target.classList.remove("hidden");
     }else{
-        console.error("Không tìm thấy page:", page);
+
+
+        box.innerHTML =
+        "Chưa đăng nhập";
+
+
     }
 
+
 };
-console.log("APP CUỐI FILE");
-
-console.log(typeof window.openPage);
 
 
+
+
+// =======================================
+// LOGOUT
+// =======================================
+
+window.logout = function(){
+
+
+    TTA.currentUser = null;
+
+
+    TTA.checkLoginUI();
+
+
+    openPage(
+        "login"
+    );
+
+
+};
+
+
+
+
+// =======================================
+// INIT PAGE
+// =======================================
+
+TTA.initPage = function(){
+
+
+    let first =
+    document.querySelector(
+        ".page"
+    );
+
+
+
+    if(first){
+
+        document
+        .querySelectorAll(
+            ".page"
+        )
+        .forEach(
+            p =>
+            p.classList.add(
+                "hidden"
+            )
+        );
+
+
+
+        first.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+
+    console.log(
+        "Page System Ready"
+    );
+
+
+};
+
+
+
+
+// =======================================
+// AUTO START PAGE
+// =======================================
+
+document.addEventListener(
+"DOMContentLoaded",
+function(){
+
+
+    TTA.initPage();
+
+
+    TTA.checkLoginUI();
+
+
+});
+
+
+
+
+// =======================================
+// END PART 2A
+// =======================================
