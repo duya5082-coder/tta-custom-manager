@@ -1,51 +1,135 @@
 // =======================================
 // CUSTOM TTA MANAGER
-// FIREBASE CONNECT SYSTEM
-// FILE 2C
+// FIREBASE.JS
+// PHẦN 2M
+// FIREBASE SYNC SYSTEM
 // =======================================
 
-
-// chống load trùng
-
-if(window.TTA_FIREBASE_LOADED){
-
-console.warn(
-"Firebase đã được load"
-);
-
-
-}else{
-
-
-window.TTA_FIREBASE_LOADED=true;
 
 
 
 // =======================================
 // FIREBASE CONFIG
-// Thay bằng config thật của bạn sau
 // =======================================
 
 
-const firebaseConfig = {
+TTA.firebase = {
+
+    enabled:false,
+
+    db:null,
+
+    app:null
+
+};
 
 
-apiKey: "",
 
 
-authDomain: "",
 
 
-projectId: "",
+
+// =======================================
+// INIT FIREBASE
+// =======================================
+
+TTA.initFirebase = function(){
 
 
-storageBucket: "",
+
+    if(
+        typeof firebase === "undefined"
+    ){
 
 
-messagingSenderId: "",
+        console.warn(
+
+            "Firebase chưa tải - chạy Local Mode"
+
+        );
 
 
-appId: ""
+        return false;
+
+
+    }
+
+
+
+
+    if(
+        !window.FIREBASE_CONFIG
+    ){
+
+
+        console.warn(
+
+            "Chưa có Firebase Config - Local Mode"
+
+        );
+
+
+        return false;
+
+
+    }
+
+
+
+
+    try{
+
+
+        firebase.initializeApp(
+            FIREBASE_CONFIG
+        );
+
+
+
+        TTA.firebase.app =
+        firebase.app();
+
+
+
+        TTA.firebase.db =
+        firebase.firestore();
+
+
+
+        TTA.firebase.enabled =
+        true;
+
+
+
+        console.log(
+
+            "Firebase Online"
+
+        );
+
+
+
+        return true;
+
+
+
+    }
+    catch(e){
+
+
+
+        console.error(
+            "Firebase lỗi",
+            e
+        );
+
+
+
+        return false;
+
+
+    }
+
 
 
 };
@@ -53,177 +137,210 @@ appId: ""
 
 
 
-// =======================================
-// KIỂM TRA CONFIG
-// =======================================
-
-
-const FIREBASE_READY =
-
-firebaseConfig.apiKey !== "";
-
 
 
 
 
 // =======================================
-// KHỞI TẠO
+// SYNC DATABASE UP
+// =======================================
+
+TTA.syncFirebase = async function(){
+
+
+
+    if(
+        !TTA.firebase.enabled
+    ){
+
+
+        console.log(
+            "Local Mode"
+        );
+
+
+        return false;
+
+
+    }
+
+
+
+
+    try{
+
+
+        await TTA.firebase.db
+
+        .collection(
+            "tta_database"
+        )
+
+        .doc(
+            "main"
+        )
+
+        .set(
+            TTA.database
+        );
+
+
+
+        console.log(
+
+            "Sync thành công"
+
+        );
+
+
+
+        return true;
+
+
+
+    }
+    catch(e){
+
+
+
+        console.error(
+            e
+        );
+
+
+        return false;
+
+
+    }
+
+
+};
+
+
+
+
+
+
+
+
+// =======================================
+// LOAD DATABASE CLOUD
+// =======================================
+
+TTA.loadFirebaseData = async function(){
+
+
+
+    if(
+        !TTA.firebase.enabled
+    ){
+
+        return false;
+
+    }
+
+
+
+
+
+    try{
+
+
+        let snap =
+
+        await TTA.firebase.db
+
+        .collection(
+            "tta_database"
+        )
+
+        .doc(
+            "main"
+        )
+
+        .get();
+
+
+
+
+
+        if(
+            snap.exists
+        ){
+
+
+            TTA.database =
+            snap.data();
+
+
+
+            TTA.saveDatabase();
+
+
+
+            console.log(
+
+                "Đã tải dữ liệu Cloud"
+
+            );
+
+
+
+            return true;
+
+
+        }
+
+
+    }
+    catch(e){
+
+
+        console.error(e);
+
+
+    }
+
+
+    return false;
+
+
+};
+
+
+
+
+
+
+
+
+// =======================================
+// AUTO SYNC
 // =======================================
 
 
-if(FIREBASE_READY){
+setInterval(
+
+function(){
 
 
-
-console.log(
-
-"🔥 Firebase config detected"
-
-);
+    if(
+        TTA.firebase.enabled
+    ){
 
 
-
-// Sau này thêm:
-// initializeApp(firebaseConfig)
-// getFirestore()
-// getAuth()
+        TTA.syncFirebase();
 
 
-
-}else{
-
-
-
-console.warn(
-
-"⚠️ Firebase chưa cấu hình - đang chạy Local Mode"
-
-);
-
-
-
-}
-
-
-
-
-
-
-// =======================================
-// DATABASE CONNECTOR
-// =======================================
-
-
-
-window.TTA_DATABASE = {
-
-
-
-mode:
-
-FIREBASE_READY
-
-?
-
-"firebase"
-
-:
-
-"local",
-
-
-
-
-
-save:function(key,data){
-
-
-
-if(this.mode==="local"){
-
-
-
-localStorage.setItem(
-
-key,
-
-JSON.stringify(data)
-
-);
-
-
-
-return true;
-
-
-}
-
+    }
 
 
 },
 
+60000
 
+);
 
-
-
-get:function(key){
-
-
-
-if(this.mode==="local"){
-
-
-
-try{
-
-
-return JSON.parse(
-
-localStorage.getItem(key)
-
-)
-
-|| null;
-
-
-
-}catch(e){
-
-
-
-return null;
-
-
-
-}
-
-
-
-}
-
-
-
-},
-
-
-
-
-
-remove:function(key){
-
-
-
-localStorage.removeItem(key);
-
-
-
-}
-
-
-
-
-
-};
 
 
 
@@ -232,114 +349,47 @@ localStorage.removeItem(key);
 
 
 // =======================================
-// BACKUP DATA
+// FIREBASE STATUS
 // =======================================
 
-
-
-window.TTA_backupDatabase=function(){
-
-
-
-const data={
+TTA.firebaseStatus = function(){
 
 
 
-teams:
-
-localStorage.getItem(
-
-"CUSTOM_TTA_TEAMS"
-
-),
+    let box =
+    document.getElementById(
+        "firebaseStatus"
+    );
 
 
 
-session:
+    if(!box){
 
-localStorage.getItem(
+        return;
 
-"CUSTOM_TTA_SESSION"
-
-),
+    }
 
 
 
-date:
 
-new Date()
+    box.innerHTML =
 
-.toISOString()
+
+    TTA.firebase.enabled
+
+    ?
+
+    "🟢 Online"
+
+    :
+
+    "⚪ Local Mode";
 
 
 
 };
 
 
-
-
-const file=new Blob(
-
-[
-
-JSON.stringify(
-
-data,
-
-null,
-
-2
-
-)
-
-],
-
-
-{
-
-type:"application/json"
-
-}
-
-
-);
-
-
-
-
-const url=
-
-URL.createObjectURL(file);
-
-
-
-const a=document.createElement(
-
-"a"
-
-);
-
-
-
-a.href=url;
-
-
-
-a.download=
-
-"CUSTOM-TTA-backup.json";
-
-
-
-a.click();
-
-
-
-URL.revokeObjectURL(url);
-
-
-
-};
 
 
 
@@ -347,113 +397,27 @@ URL.revokeObjectURL(url);
 
 
 // =======================================
-// RESTORE DATA
+// START
 // =======================================
 
+document.addEventListener(
+"DOMContentLoaded",
+function(){
 
-window.TTA_restoreDatabase=function(file){
 
 
+    TTA.initFirebase();
 
-const reader=new FileReader();
 
+    TTA.firebaseStatus();
 
 
-reader.onload=function(){
 
+});
 
 
-try{
 
 
-
-const data=
-
-JSON.parse(
-
-reader.result
-
-);
-
-
-
-
-if(data.teams)
-
-
-localStorage.setItem(
-
-"CUSTOM_TTA_TEAMS",
-
-data.teams
-
-);
-
-
-
-
-if(data.session)
-
-
-localStorage.setItem(
-
-"CUSTOM_TTA_SESSION",
-
-data.session
-
-);
-
-
-
-
-alert(
-
-"Khôi phục thành công"
-
-);
-
-
-
-location.reload();
-
-
-
-}catch(e){
-
-
-
-alert(
-
-"File backup lỗi"
-
-);
-
-
-
-}
-
-
-
-};
-
-
-
-reader.readAsText(file);
-
-
-
-};
-
-
-
-
-
-console.log(
-
-"🔥 FIREBASE SYSTEM READY"
-
-);
-
-
-
-}
+// =======================================
+// END PART 2M
+// =======================================
