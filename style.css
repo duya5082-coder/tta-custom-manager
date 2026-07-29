@@ -1,943 +1,268 @@
-/* =======================================
-CUSTOM TTA MANAGER
-MAIN STYLE PC
-FILE 3A - style.css
-======================================= */
-
+/* ======================================
+   CUSTOM TTA MANAGER
+   STYLE.CSS
+====================================== */
 
 *{
-
-box-sizing:border-box;
-
-margin:0;
-
-padding:0;
-
-font-family:
-
-Arial, Helvetica, sans-serif;
-
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
 }
-
-
 
 body{
-
-
-background:#111827;
-
-
-color:#ffffff;
-
-
-min-height:100vh;
-
-
+    background:#f4f7fb;
+    color:#222;
 }
 
+/* LOGIN */
 
-
-/* ================================
-COMMON
-================================ */
-
-
-.hidden{
-
-
-display:none !important;
-
-
+.login-page{
+    width:100%;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f172a,#1e3a8a);
 }
 
-
-
-button{
-
-
-cursor:pointer;
-
-
-border:none;
-
-
-outline:none;
-
-
-transition:.2s;
-
-
+.login-box{
+    width:400px;
+    background:#fff;
+    border-radius:16px;
+    padding:35px;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
 }
 
-
-
-button:hover{
-
-
-opacity:.85;
-
-
+.login-box h1{
+    text-align:center;
+    color:#2563eb;
+    margin-bottom:10px;
 }
 
-
-
-input,
-select,
-textarea{
-
-
-width:100%;
-
-
-padding:12px;
-
-
-border-radius:10px;
-
-
-border:1px solid #374151;
-
-
-background:#1f2937;
-
-
-color:white;
-
-
-margin:8px 0;
-
-
-font-size:15px;
-
-
+.login-box p{
+    text-align:center;
+    color:#777;
+    margin-bottom:25px;
 }
 
-
-
-
-
-/* ================================
-LOADING
-================================ */
-
-
-#loading{
-
-
-position:fixed;
-
-
-top:0;
-
-
-left:0;
-
-
-width:100%;
-
-
-height:100%;
-
-
-background:#111827;
-
-
-display:flex;
-
-
-flex-direction:column;
-
-
-align-items:center;
-
-
-justify-content:center;
-
-
-z-index:9999;
-
-
+.login-box input{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    outline:none;
+    transition:.3s;
 }
 
-
-
-#loading h2{
-
-
-margin-top:15px;
-
-
-color:#ff6a00;
-
-
+.login-box input:focus{
+    border-color:#2563eb;
 }
 
-
-
-#loading p{
-
-
-color:#aaa;
-
-
+.login-box button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:#fff;
+    cursor:pointer;
+    font-size:16px;
+    transition:.3s;
 }
 
-
-
-/* ================================
-LOGIN
-================================ */
-
-
-#loginPage{
-
-
-width:100%;
-
-
-height:100vh;
-
-
-display:flex;
-
-
-justify-content:center;
-
-
-align-items:center;
-
-
+.login-box button:hover{
+    background:#1d4ed8;
 }
-
-
-
-.loginBox{
-
-
-width:380px;
-
-
-background:#1f2937;
-
-
-padding:35px;
-
-
-border-radius:20px;
-
-
-box-shadow:
-
-0 0 30px rgba(0,0,0,.4);
-
-
-text-align:center;
-
-
-}
-
-
-
-.loginBox h1{
-
-
-color:#ff6a00;
-
-
-margin:15px 0;
-
-
-}
-
-
-
-.loginBox button{
-
-
-width:100%;
-
-
-padding:14px;
-
-
-background:#ff6a00;
-
-
-color:white;
-
-
-border-radius:12px;
-
-
-font-weight:bold;
-
-
-}
-
-
 
 #loginError{
-
-
-color:#ef4444;
-
-
-margin-top:10px;
-
-
+    margin-top:15px;
+    color:red;
+    text-align:center;
 }
 
+/* APP */
 
-
-
-/* ================================
-APP HEADER
-================================ */
-
-
-#app header{
-
-
-height:80px;
-
-
-background:#1f2937;
-
-
-display:flex;
-
-
-align-items:center;
-
-
-justify-content:space-between;
-
-
-padding:0 30px;
-
-
+#app{
+    display:flex;
 }
 
+/* SIDEBAR */
 
-
-.brand{
-
-
-display:flex;
-
-
-align-items:center;
-
-
-gap:15px;
-
-
+.sidebar{
+    width:240px;
+    height:100vh;
+    position:fixed;
+    left:0;
+    top:0;
+    background:#111827;
+    color:#fff;
+    overflow:auto;
 }
 
-
-
-.brand h2{
-
-
-color:#ff6a00;
-
-
+.logo{
+    text-align:center;
+    font-size:22px;
+    font-weight:700;
+    padding:25px;
+    border-bottom:1px solid rgba(255,255,255,.08);
 }
 
-
-
-#welcome{
-
-
-color:#ccc;
-
-
+.menu-item{
+    padding:16px 22px;
+    cursor:pointer;
+    transition:.25s;
 }
 
-
-
-
-#logoutBtn{
-
-
-background:#dc2626;
-
-
-color:white;
-
-
-padding:12px 20px;
-
-
-border-radius:10px;
-
-
+.menu-item:hover{
+    background:#1f2937;
 }
 
-
-
-/* ================================
-MENU
-================================ */
-
-
-.menu{
-
-
-display:flex;
-
-
-gap:10px;
-
-
-padding:15px 30px;
-
-
-background:#111827;
-
-
+.menu-item.active{
+    background:#2563eb;
 }
 
+/* CONTENT */
 
-
-.menu button{
-
-
-background:#1f2937;
-
-
-color:white;
-
-
-padding:12px 18px;
-
-
-border-radius:12px;
-
-
+.content{
+    margin-left:240px;
+    width:calc(100% - 240px);
+    min-height:100vh;
+    padding:20px;
 }
 
+/* TOPBAR */
 
-
-.menu button:hover{
-
-
-background:#ff6a00;
-
-
+.topbar{
+    background:#fff;
+    border-radius:12px;
+    padding:18px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+    margin-bottom:25px;
 }
 
-
-
-
-
-/* ================================
-CONTENT
-================================ */
-
-
-main{
-
-
-padding:25px 30px;
-
-
-}
-
-
-
-.pageHeader{
-
-
-margin-bottom:20px;
-
-
-}
-
-
-
-.pageHeader h1{
-
-
-color:#ff6a00;
-
-
-}
-
-
-
-.panel{
-
-
-background:#1f2937;
-
-
-padding:25px;
-
-
-border-radius:18px;
-
-
-}
-
-
-
-
-
-/* ================================
-DASHBOARD
-================================ */
-
-
-.cards{
-
-
-display:grid;
-
-
-grid-template-columns:
-
-repeat(4,1fr);
-
-
-gap:20px;
-
-
-}
-
-
-
-.card{
-
-
-background:#1f2937;
-
-
-padding:25px;
-
-
-border-radius:18px;
-
-
-text-align:center;
-
-
-}
-
-
-
-.card h3{
-
-
-color:#aaa;
-
-
-margin-bottom:10px;
-
-
-}
-
-
-
-.card b{
-
-
-font-size:30px;
-
-
-color:#ff6a00;
-
-
-}
-
-
-
-
-
-/* ================================
-TEAM
-================================ */
-
-
-.toolbar{
-
-
-display:flex;
-
-
-gap:10px;
-
-
-margin-bottom:20px;
-
-
-}
-
-
-
-.teamItem{
-
-
-display:flex;
-
-
-justify-content:space-between;
-
-
-align-items:center;
-
-
-background:#111827;
-
-
-padding:15px;
-
-
-border-radius:12px;
-
-
-margin-bottom:10px;
-
-
-}
-
-
-
-.teamItem h3{
-
-
-color:#ff6a00;
-
-
-}
-
-
-
-.teamItem button{
-
-
-padding:10px;
-
-
-border-radius:8px;
-
-
-}
-
-
-
-.payBtn{
-
-
-background:#16a34a;
-
-
-}
-
-
-
-.deleteBtn{
-
-
-background:#dc2626;
-
-
-color:white;
-
-
-}
-
-
-
-
-
-/* ================================
-MONEY CARD
-================================ */
-
-
-.paymentSummary,
-.salaryGrid,
-.quickStats{
-
-
-display:grid;
-
-
-grid-template-columns:
-
-repeat(3,1fr);
-
-
-gap:20px;
-
-
-}
-
-
-
-.moneyCard,
-.salaryCard,
-.quickCard{
-
-
-background:#111827;
-
-
-padding:25px;
-
-
-border-radius:15px;
-
-
-text-align:center;
-
-
-}
-
-
-
-.moneyCard b,
-.salaryCard h1,
-.quickCard b{
-
-
-color:#22c55e;
-
-
-font-size:28px;
-
-
-}
-
-
-
-
-
-/* ================================
-BUTTON
-================================ */
-
-
-#addTeamBtn,
-#saveDebtBtn,
-#saveSettingBtn{
-
-
-background:#ff6a00;
-
-
-color:white;
-
-
-padding:14px;
-
-
-border-radius:12px;
-
-
-font-weight:bold;
-
-
-}
-
-
-
-
-
-/* ================================
-MODAL
-================================ */
-
-
-.modal{
-
-
-position:fixed;
-
-
-top:0;
-
-
-left:0;
-
-
-width:100%;
-
-
-height:100%;
-
-
-background:
-
-rgba(0,0,0,.7);
-
-
-display:flex;
-
-
-justify-content:center;
-
-
-align-items:center;
-
-
-z-index:1000;
-
-
-}
-
-
-
-.modalBox{
-
-
-width:450px;
-
-
-background:#1f2937;
-
-
-padding:30px;
-
-
-border-radius:20px;
-
-
-}
-
-
-
-.modalFooter{
-
-
-display:flex;
-
-
-gap:10px;
-
-
-margin-top:20px;
-
-
-}
-
-
-
-
-
-/* ================================
-TOAST
-================================ */
-
-
-#toast{
-
-
-position:fixed;
-
-
-right:25px;
-
-
-bottom:25px;
-
-
-background:#ff6a00;
-
-
-color:white;
-
-
-padding:15px 25px;
-
-
-border-radius:12px;
-
-
-display:none;
-
-
-z-index:9999;
-
-
-}
-
-
-
-#toast.show{
-
-
-display:block;
-
-
-}
-
-
-
-
-/* ================================
-NOTIFICATION
-================================ */
-
-
-.notificationItem{
-
-
-background:#111827;
-
-
-padding:15px;
-
-
-border-radius:10px;
-
-
-margin-bottom:10px;
-
-
-}
-
-
-
-.notificationItem small{
-
-
-color:#aaa;
-
-
-}
-
-
-
-
-/* ================================
-EMPTY
-================================ */
-
-
-.empty{
-
-
-text-align:center;
-
-
-padding:30px;
-
-
-color:#aaa;
-
-
-}/* FIX PAGE HIDDEN */
-
-.hidden{
-    display:none !important;
-}
-
+/* PAGE */
 
 .page{
-    display:block;
+    animation:fade .25s;
 }
-#loading{
-    display:none !important;
+
+.hidden{
+    display:none;
+}
+
+/* DASHBOARD */
+
+.card-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:#fff;
+    border-radius:14px;
+    padding:22px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.card h3{
+    color:#666;
+    font-size:15px;
+    margin-bottom:10px;
+}
+
+.card span{
+    font-size:34px;
+    font-weight:700;
+    color:#2563eb;
+}
+
+/* TABLE */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#fff;
+    border-radius:12px;
+    overflow:hidden;
+}
+
+table th{
+    background:#2563eb;
+    color:#fff;
+    padding:12px;
+}
+
+table td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+}
+
+/* BUTTON */
+
+.btn{
+    border:none;
+    border-radius:8px;
+    padding:10px 16px;
+    cursor:pointer;
+    color:#fff;
+}
+
+.btn-blue{
+    background:#2563eb;
+}
+
+.btn-green{
+    background:#16a34a;
+}
+
+.btn-red{
+    background:#dc2626;
+}
+
+.btn-orange{
+    background:#ea580c;
+}
+
+/* INPUT */
+
+input,
+select{
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    outline:none;
+}
+
+/* STATUS */
+
+.status-paid{
+    color:#16a34a;
+    font-weight:600;
+}
+
+.status-unpaid{
+    color:#dc2626;
+    font-weight:600;
+}
+
+/* ANIMATION */
+
+@keyframes fade{
+
+from{
+    opacity:0;
+    transform:translateY(10px);
+}
+
+to{
+    opacity:1;
+    transform:translateY(0);
+}
+
 }
