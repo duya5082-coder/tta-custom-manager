@@ -1,148 +1,201 @@
 // =======================================
 // CUSTOM TTA MANAGER
+// NOTIFICATION.JS
+// PHẦN 2K
 // NOTIFICATION SYSTEM
-// FILE 2G - notification.js
 // =======================================
-
-
-if(window.TTA_NOTIFICATION_LOADED){
-
-
-console.warn(
-"NOTIFICATION đã được load"
-);
-
-
-}else{
-
-
-window.TTA_NOTIFICATION_LOADED=true;
 
 
 
 
 // =======================================
-// TẠO THÔNG BÁO
+// CLOCK SYSTEM
 // =======================================
 
+TTA.startClock = function(){
 
-window.sendNotification=function(message){
 
 
+    let clock =
+    document.getElementById(
+        "clock"
+    );
 
-const list = document.getElementById(
 
-"notificationList"
 
-);
+    if(!clock){
 
+        return;
 
+    }
 
 
-// nếu chưa có khung thông báo
-// vẫn lưu lịch sử
 
+    setInterval(
+        function(){
 
-const history = JSON.parse(
 
-localStorage.getItem(
 
-"CUSTOM_TTA_HISTORY"
+            let now =
+            new Date();
 
-)
 
-|| "[]"
 
-);
+            clock.innerHTML =
 
+            now.toLocaleString(
+                "vi-VN"
+            );
 
 
 
+        },
+        1000
+    );
 
-history.unshift({
 
+};
 
-message:message,
 
 
-time:new Date()
 
-.toLocaleString()
 
+// =======================================
+// NOTIFICATION DATABASE
+// =======================================
 
+TTA.getNotifications = function(){
 
-});
 
+    if(
+        !Array.isArray(
+            TTA.database.notifications
+        )
+    ){
 
+        TTA.database.notifications = [];
 
+    }
 
 
-localStorage.setItem(
 
-"CUSTOM_TTA_HISTORY",
+    return TTA.database.notifications;
 
-JSON.stringify(history)
 
-);
+};
 
 
 
 
 
-if(!list){
 
 
+// =======================================
+// ADD NOTIFICATION
+// =======================================
 
-showToast(message);
+TTA.addNotification = function(
+    title,
+    message
+){
 
 
 
-return;
+    let list =
+    TTA.getNotifications();
 
 
-}
 
+    list.unshift({
 
+        id:
+        Date.now(),
 
+        title:title,
 
+        message:message,
 
+        read:false,
 
-const item=document.createElement(
+        created:
+        new Date()
+        .toISOString()
 
-"div"
+    });
 
-);
 
 
+    TTA.saveDatabase();
 
-item.className="notificationItem";
 
+};
 
 
-item.innerHTML=`
 
-<div>
 
-🔔 ${message}
 
-</div>
 
-<small>
 
-${new Date().toLocaleString()}
+// =======================================
+// CHECK SLOT WARNING
+// =======================================
 
-</small>
+TTA.checkSlotNotification = function(){
 
-`;
 
 
+    let slots =
+    TTA.getSlots();
 
-list.prepend(item);
 
 
+    let today =
+    new Date()
+    .toISOString()
+    .split("T")[0];
 
 
-showToast(message);
+
+
+    slots.forEach(
+        slot=>{
+
+
+
+            if(
+                slot.date === today
+            ){
+
+
+
+                if(
+                    slot.status !== "FULL"
+                ){
+
+
+
+                    TTA.addNotification(
+
+                        "Slot chưa đủ người",
+
+                        slot.title +
+                        " lúc " +
+                        slot.startTime
+
+                    );
+
+
+
+                }
+
+
+
+            }
+
+
+
+        }
+    );
 
 
 
@@ -156,167 +209,149 @@ showToast(message);
 
 
 // =======================================
-// TOAST
+// RENDER NOTIFICATION
 // =======================================
 
+TTA.renderNotification = function(){
 
-function showToast(message){
 
 
+    let box =
+    document.getElementById(
+        "notificationList"
+    );
 
-const toast=document.getElementById(
 
-"toast"
 
-);
+    if(!box){
 
+        return;
 
+    }
 
-if(!toast)
 
-return;
 
+    let data =
+    TTA.getNotifications();
 
 
 
+    if(
+        data.length === 0
+    ){
 
-toast.innerHTML=
 
-`
+        box.innerHTML =
+        "Không có thông báo";
 
-🔔 ${message}
 
-`;
+        return;
 
+    }
 
 
 
 
-toast.classList.add(
+    box.innerHTML = "";
 
-"show"
 
-);
 
+    data.slice(0,10)
+    .forEach(
+        item=>{
 
 
+            let div =
+            document.createElement(
+                "div"
+            );
 
 
-setTimeout(()=>{
 
+            div.className =
+            "card";
 
-toast.classList.remove(
 
-"show"
 
-);
+            div.innerHTML =
 
+            `
 
+            <b>
+            ${item.title}
+            </b>
 
-},3000);
+            <p>
+            ${item.message}
+            </p>
 
+            `;
 
 
-}
 
+            box.appendChild(
+                div
+            );
 
 
-
-
-// =======================================
-// HIỂN THỊ LỊCH SỬ
-// =======================================
-
-
-window.loadNotificationHistory=function(){
-
-
-
-const box=document.getElementById(
-
-"notificationList"
-
-);
-
-
-
-if(!box)
-
-return;
-
-
-
-
-
-const history=JSON.parse(
-
-localStorage.getItem(
-
-"CUSTOM_TTA_HISTORY"
-
-)
-
-|| "[]"
-
-);
-
-
-
-
-
-box.innerHTML="";
-
-
-
-
-
-history.forEach(item=>{
-
-
-
-const div=document.createElement(
-
-"div"
-
-);
-
-
-
-div.className=
-
-"notificationItem";
-
-
-
-
-div.innerHTML=
-
-`
-
-🔔 ${item.message}
-
-<br>
-
-<small>
-
-${item.time}
-
-</small>
-
-`;
-
-
-
-
-box.appendChild(div);
-
-
-
-});
+        }
+    );
 
 
 
 };
+
+
+
+
+
+
+
+// =======================================
+// MARK READ
+// =======================================
+
+TTA.clearNotifications = function(){
+
+
+
+    TTA.database.notifications =
+    [];
+
+
+
+    TTA.saveDatabase();
+
+
+
+    TTA.renderNotification();
+
+
+
+};
+
+
+
+
+
+
+
+
+// =======================================
+// AUTO CHECK
+// =======================================
+
+setInterval(
+function(){
+
+
+    TTA.checkSlotNotification();
+
+
+},
+60000
+);
+
 
 
 
@@ -326,16 +361,15 @@ box.appendChild(div);
 // START
 // =======================================
 
-
 document.addEventListener(
-
 "DOMContentLoaded",
+function(){
 
-()=>{
+
+    TTA.startClock();
 
 
-loadNotificationHistory();
-
+    TTA.renderNotification();
 
 
 });
@@ -344,12 +378,7 @@ loadNotificationHistory();
 
 
 
-console.log(
 
-"🔔 NOTIFICATION SYSTEM READY"
-
-);
-
-
-
-}
+// =======================================
+// END PART 2K
+// =======================================
