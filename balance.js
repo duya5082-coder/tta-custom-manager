@@ -6,114 +6,58 @@
 
 "use strict";
 
+TTA.renderBalance = function () {
 
+    const box = document.getElementById("balanceList");
 
-TTA.renderBalance=function(){
+    if (!box) return;
 
+    let html = "<h2>💰 Danh sách dư / nợ</h2>";
 
-    const box =
-    document.getElementById(
-        "balanceList"
-    );
+    if (!Array.isArray(TTA.slotData)) {
 
-
-    if(!box)
-    return;
-
-
-
-    let html=`
-
-    <h2>
-    💰 Danh sách dư / nợ
-    </h2>
-
-    `;
-
-
-
-    if(
-        !Array.isArray(
-            TTA.slotData
-        )
-    ){
-
-        box.innerHTML=
-        html+
-        "<p>Chưa có dữ liệu.</p>";
+        box.innerHTML = html + "<p>Chưa có dữ liệu.</p>";
 
         return;
 
     }
 
+    TTA.slotData.forEach(timeData => {
 
+        (timeData.boards || []).forEach(board => {
 
-    TTA.slotData.forEach(timeData=>{
+            (board.slots || []).forEach(slot => {
 
+                if (!slot.team) return;
 
-        timeData.boards.forEach(board=>{
+                if (slot.paid) return;
 
+                html += `
+                <div class="card">
 
-            board.slots.forEach(slot=>{
+                    <b>${slot.team}</b><br>
 
+                    ⏰ ${timeData.time}<br>
 
-                if(
-                    slot.team &&
-                    !slot.paid
-                ){
+                    📦 Box ${timeData.box}<br>
 
+                    🅰️ Bàn ${board.name}<br>
 
-                    html+=`
-
-                    <div class="card">
-
-                    <b>${slot.team}</b>
-
-                    <br>
-
-                    ⏰ ${timeData.time}
-
-                    <br>
-
-                    📦 Box ${timeData.box}
-
-                    <br>
-
-                    🅰️ Bàn ${board.name}
-
-                    <br>
-
-                    🎮 Slot ${slot.number}
-
-                    <br>
+                    🎮 Slot ${slot.number}<br>
 
                     🚫 Chưa thanh toán
 
-                    </div>
-
-                    `;
-
-
-                }
-
+                </div>
+                `;
 
             });
 
-
         });
-
 
     });
 
-
-
-    box.innerHTML=html;
-
+    box.innerHTML = html;
 
 };
 
-
-
-console.log(
-"BALANCE NEW SYSTEM READY"
-);
+console.log("BALANCE NEW SYSTEM READY");
