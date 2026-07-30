@@ -516,3 +516,150 @@ if(
 console.log(
 "SLOT SYSTEM READY"
 );
+// =======================================
+// CUSTOM TTA MANAGER
+// PART 3B
+// TABLE RENDER ENGINE
+// =======================================
+
+"use strict";
+
+
+TTA.renderTables = function(){
+
+
+    const container =
+    document.getElementById("tableContainer");
+
+
+    if(!container){
+
+        console.warn(
+            "Không tìm thấy tableContainer"
+        );
+
+        return;
+
+    }
+
+
+
+    container.innerHTML = "";
+
+
+
+    TTA.tables.forEach(table=>{
+
+
+        let html = `
+
+
+        <div class="table-box">
+
+
+        <h3>
+        🪑 BÀN ${table.name}
+        </h3>
+
+
+        <div class="slot-grid">
+
+
+        `;
+
+
+
+        table.slots.forEach((slot,index)=>{
+
+
+            html += `
+
+
+            <div class="slot-card">
+
+
+                <div>
+                <b>SLOT ${index+1}</b>
+                </div>
+
+
+                <br>
+
+
+                <div>
+
+                ${
+                    slot.team
+
+                    ?
+
+                    "🔴 "+slot.team
+
+                    :
+
+                    "🟢 Trống"
+
+                }
+
+                </div>
+
+
+                <br>
+
+
+                <button
+                onclick="
+                TTA.selectSlot('${table.id}',${index})
+                "
+                >
+
+                [Chọn]
+
+                </button>
+
+
+            </div>
+
+
+            `;
+
+
+        });
+
+
+
+        html += `
+
+        </div>
+
+        </div>
+
+        `;
+
+
+
+        container.innerHTML += html;
+
+
+
+    });
+
+
+
+};
+
+
+
+// AUTO LOAD
+
+window.addEventListener(
+"load",
+()=>{
+
+    if(TTA.renderTables){
+
+        TTA.renderTables();
+
+    }
+
+});
