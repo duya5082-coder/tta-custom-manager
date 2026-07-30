@@ -405,3 +405,116 @@ function(){
 // =======================================
 // END PART 2F
 // =======================================
+// =======================================
+// CUSTOM TTA MANAGER
+// PHẦN 3A
+// AUTO TABLE & SLOT GENERATOR
+// =======================================
+
+"use strict";
+
+TTA.tables = TTA.tables || [];
+
+// Tạo bàn
+TTA.createTable = function(name){
+
+    const table = {
+
+        id: Date.now(),
+
+        name: name,
+
+        slots: [],
+
+        status: "OPEN"
+
+    };
+
+    for(let i = 1; i <= 12; i++){
+
+        table.slots.push({
+
+            number: i,
+
+            team: "",
+
+            paid: false,
+
+            ctv: "",
+
+            created: Date.now()
+
+        });
+
+    }
+
+    TTA.tables.push(table);
+
+    return table;
+
+};
+
+// Lấy bàn đang mở
+TTA.getOpenTable = function(){
+
+    let table = TTA.tables.find(t=>t.status==="OPEN");
+
+    if(table) return table;
+
+    let letter =
+    String.fromCharCode(
+        65 + TTA.tables.length
+    );
+
+    return TTA.createTable(letter);
+
+};
+
+// Thêm team vào slot
+TTA.addTeamToSlot = function(teamName){
+
+    let table = TTA.getOpenTable();
+
+    let slot =
+    table.slots.find(
+        s=>!s.team
+    );
+
+    if(!slot){
+
+        table.status="FULL";
+
+        return TTA.addTeamToSlot(teamName);
+
+    }
+
+    slot.team=teamName;
+
+    if(
+        table.slots.every(
+            s=>s.team!==""
+        )
+    ){
+
+        table.status="FULL";
+
+    }
+
+    return {
+
+        table:table.name,
+
+        slot:slot.number
+
+    };
+
+};
+
+// Demo
+if(TTA.tables.length===0){
+
+    TTA.createTable("A");
+
+}
+
+console.log("AUTO TABLE READY");
