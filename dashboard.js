@@ -324,23 +324,26 @@ window.refreshDashboard=function(){
 // AUTO START
 // =======================================
 
+window.addEventListener(
 
-document.addEventListener(
-
-"DOMContentLoaded",
+"load",
 
 function(){
 
 
-    TTA.updateDashboard();
+    setTimeout(()=>{
 
 
-    TTA.renderTablesDashboard();
+        TTA.updateDashboard();
+
+
+        TTA.renderTablesDashboard();
+
+
+    },1000);
 
 
 });
-
-
 
 
 // =======================================
