@@ -1,8 +1,7 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // SLOT RENDER
-// PART 3B NEW SYSTEM
-// BOX + TIME + BOARD
+// PART 3B NEW SYSTEM UPDATE
 // =======================================
 
 "use strict";
@@ -10,9 +9,8 @@
 
 
 // =======================================
-// CURRENT SELECT
+// CURRENT VIEW
 // =======================================
-
 
 TTA.currentSlotView = {
 
@@ -26,48 +24,41 @@ TTA.currentSlotView = {
 
 
 // =======================================
-// OPEN SLOT PAGE
+// RENDER SLOT PAGE
 // =======================================
 
 
 TTA.renderSlots=function(){
 
 
-
-    let box =
+    let area =
     document.getElementById(
         "slotList"
     );
 
 
-
-    if(!box)
+    if(!area)
     return;
 
 
 
-    let html = "";
+    let html="";
 
 
 
-    // =========================
-    // TIME SELECT
-    // =========================
+    // =============================
+    // KHUNG GIỜ
+    // =============================
 
 
     html += `
 
-
     <div class="card">
-
 
     <h3>
     ⏰ KHUNG GIỜ
     </h3>
 
-
-
-    <div class="slot-filter">
 
     `;
 
@@ -78,7 +69,6 @@ TTA.renderSlots=function(){
 
         html += `
 
-
         <button onclick="
         TTA.changeSlotTime('${time}')
         ">
@@ -87,7 +77,6 @@ TTA.renderSlots=function(){
 
         </button>
 
-
         `;
 
 
@@ -99,45 +88,39 @@ TTA.renderSlots=function(){
 
     </div>
 
-
-    </div>
-
-
     `;
 
 
 
-    // =========================
-    // BOX SELECT
-    // =========================
+
+    // =============================
+    // BOX
+    // =============================
 
 
     html += `
 
-
     <div class="card">
-
 
     <h3>
     📦 BOX
     </h3>
 
-
     `;
 
 
 
-    TTA.BOX_LIST.forEach(boxNumber=>{
+    TTA.BOX_LIST.forEach(box=>{
 
 
         html += `
 
 
         <button onclick="
-        TTA.changeSlotBox(${boxNumber})
+        TTA.changeSlotBox(${box})
         ">
 
-        ${boxNumber}
+        ${box}
 
         </button>
 
@@ -157,9 +140,6 @@ TTA.renderSlots=function(){
 
 
 
-    // =========================
-    // LOAD DATA
-    // =========================
 
 
     let data =
@@ -174,8 +154,23 @@ TTA.renderSlots=function(){
 
 
 
-    if(!data)
-    return;
+    if(!data){
+
+        area.innerHTML =
+        "Không có dữ liệu";
+
+        return;
+
+    }
+
+
+
+
+
+
+    // =============================
+    // HEADER
+    // =============================
 
 
 
@@ -192,7 +187,6 @@ TTA.renderSlots=function(){
     </h2>
 
 
-
     <h3>
 
     📦 BOX ${data.box}
@@ -200,20 +194,29 @@ TTA.renderSlots=function(){
     </h3>
 
 
-
     <h3>
 
-    💸 ${TTA.SLOT_PRICE/1000}K
+    💸 5K
 
     </h3>
+
+
+    </div>
 
 
     `;
 
 
 
-    data.boards.forEach(board=>{
 
+
+
+    // =============================
+    // BOARD
+    // =============================
+
+
+    data.boards.forEach(board=>{
 
 
         html += `
@@ -224,12 +227,9 @@ TTA.renderSlots=function(){
 
         <h2>
 
-        🅱️ BẢNG ${board.name}
+        🅰️ BẢNG ${board.name}
 
         </h2>
-
-
-        <div>
 
 
         `;
@@ -239,7 +239,7 @@ TTA.renderSlots=function(){
         board.slots.forEach(slot=>{
 
 
-            let number =
+            let num =
             String(slot.number)
             .padStart(2,"0");
 
@@ -248,39 +248,41 @@ TTA.renderSlots=function(){
             html += `
 
 
-            <div class="slot-item">
+            <div class="slot-item"
+
+            onclick="
+            TTA.selectNewSlot(
+            '${data.time}',
+            ${data.box},
+            '${board.name}',
+            ${slot.number}
+            )
+            ">
 
 
-            ${number}️⃣
+            ${num}️⃣
+
 
 
             ${
-
             slot.team
-
             ?
-
             slot.team
-
             :
-
-            ""
-
+            "Trống"
             }
 
 
+
+            <br>
+
+
             ${
-
             slot.paid
-
             ?
-
-            "💸"
-
+            "💸 5K"
             :
-
-            ""
-
+            "🚫"
             }
 
 
@@ -298,28 +300,23 @@ TTA.renderSlots=function(){
 
         </div>
 
-        </div>
-
         `;
+
 
 
     });
 
 
 
-    html += `
-
-    </div>
-
-    `;
 
 
-
-    box.innerHTML = html;
+    area.innerHTML=html;
 
 
 
 };
+
+
 
 
 
@@ -340,6 +337,7 @@ TTA.changeSlotTime=function(time){
 
 
 };
+
 
 
 
@@ -366,5 +364,5 @@ TTA.changeSlotBox=function(box){
 
 
 console.log(
-"SLOT RENDER 3B READY"
+"SLOT RENDER 3B NEW READY"
 );
