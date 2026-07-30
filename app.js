@@ -2024,7 +2024,6 @@ window.logout = function(){
 
 document.getElementById("app").classList.add("hidden");
 document.getElementById("loginPage").classList.remove("hidden");
-    );
 
 
 };
