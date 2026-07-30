@@ -2026,9 +2026,8 @@ window.logout = function(){
 
     TTA.checkLoginUI();
 
-
-    openPage(
-        "login"
+document.getElementById("app").classList.add("hidden");
+document.getElementById("loginPage").classList.remove("hidden");
     );
 
 
