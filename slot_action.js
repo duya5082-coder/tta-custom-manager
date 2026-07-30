@@ -1,21 +1,10 @@
 // =======================================
 // CUSTOM TTA MANAGER
-// SLOT_ACTION.JS
-// PART 3C
-// SLOT INTERACTION
+// SLOT ACTION
+// PART 3C NEW SYSTEM
 // =======================================
 
 "use strict";
-
-
-
-// =======================================
-// CURRENT SELECT SLOT
-// =======================================
-
-
-TTA.selectedSlot = null;
-
 
 
 
@@ -24,37 +13,45 @@ TTA.selectedSlot = null;
 // =======================================
 
 
-TTA.selectSlot=function(
-tableId,
+TTA.selectedSlot = null;
+
+
+
+TTA.selectNewSlot=function(
+time,
+box,
+board,
 slotNumber
 ){
 
 
 
+    let data =
+
+    TTA.getBox(
+        time,
+        box
+    );
+
+
+
+    if(!data)
+    return;
+
+
+
     let table =
 
-    TTA.tables.find(
+    data.boards.find(
 
-        t=>
-
-        String(t.id)
-        ===
-        String(tableId)
+        b=>b.name===board
 
     );
 
 
 
-    if(!table){
-
-        alert(
-            "Không tìm thấy bàn"
-        );
-
-        return;
-
-    }
-
+    if(!table)
+    return;
 
 
 
@@ -62,9 +59,7 @@ slotNumber
 
     table.slots.find(
 
-        s=>
-
-        s.number==slotNumber
+        s=>s.number==slotNumber
 
     );
 
@@ -75,18 +70,21 @@ slotNumber
 
 
 
-
     TTA.selectedSlot={
 
-        table:table,
+
+        boxData:data,
+
+        board:table,
 
         slot:slot
+
 
     };
 
 
 
-    openSlotForm();
+    TTA.openSlotRegister();
 
 
 
@@ -101,59 +99,90 @@ slotNumber
 // =======================================
 
 
-function openSlotForm(){
+TTA.openSlotRegister=function(){
 
 
-    let html = `
+
+    let old =
+    document.getElementById(
+        "slotModal"
+    );
+
+
+    if(old)
+    old.remove();
+
+
+
+
+    let modal=`
 
 
     <div id="slotModal"
     class="slot-modal">
 
 
-        <div class="slot-modal-box">
+    <div class="slot-modal-box">
 
 
-        <h3>
-        Đăng ký SLOT
-        </h3>
-
-
-
-        <input
-        id="slotTeamName"
-        placeholder="Tên team">
+    <h3>
+    📝 Đăng ký SLOT
+    </h3>
 
 
 
-        <input
-        id="slotCTV"
-        placeholder="Tên CTV">
+    <input
+    id="newTeamName"
+    placeholder="Tên team">
 
 
 
-        <button
-        onclick="confirmAddSlot()">
-
-        Xác nhận
-
-        </button>
+    <input
+    id="newCTVName"
+    placeholder="Tên CTV">
 
 
 
-        <button
-        onclick="closeSlotForm()">
+    <label>
 
-        Hủy
+    <input
+    id="newPaid"
+    type="checkbox">
 
-        </button>
+    💸 Đã thanh toán 5K
+
+    </label>
 
 
-        </div>
+
+    <br><br>
+
+
+
+    <button onclick="
+    TTA.confirmNewSlot()
+    ">
+
+    Xác nhận
+
+    </button>
+
+
+
+    <button onclick="
+    TTA.closeNewSlot()
+    ">
+
+    Hủy
+
+    </button>
+
 
 
     </div>
 
+
+    </div>
 
 
     `;
@@ -161,9 +190,13 @@ function openSlotForm(){
 
 
     document.body.insertAdjacentHTML(
+
         "beforeend",
-        html
+
+        modal
+
     );
+
 
 
 };
@@ -173,18 +206,18 @@ function openSlotForm(){
 
 
 // =======================================
-// CONFIRM
+// SAVE SLOT
 // =======================================
 
 
-window.confirmAddSlot=function(){
+TTA.confirmNewSlot=function(){
 
 
 
     let team =
 
     document.getElementById(
-        "slotTeamName"
+        "newTeamName"
     ).value;
 
 
@@ -192,21 +225,32 @@ window.confirmAddSlot=function(){
     let ctv =
 
     document.getElementById(
-        "slotCTV"
+        "newCTVName"
     ).value;
+
+
+
+    let paid =
+
+    document.getElementById(
+        "newPaid"
+    ).checked;
 
 
 
 
     if(!team){
 
+
         alert(
-            "Nhập tên team"
+        "Nhập tên team"
         );
+
 
         return;
 
     }
+
 
 
 
@@ -231,75 +275,113 @@ window.confirmAddSlot=function(){
 
 
 
+    data.slot.paid =
+    paid;
+
+
+
     data.slot.created =
     Date.now();
 
 
 
 
-    // trừ số dư
 
-    data.slot.balanceUsed =
-    5000;
+    TTA.checkBoardFull(
 
+        data.boxData
 
-
-
-    // cộng lương CTV
-
-    data.slot.salaryAdded =
-    false;
-
-
-
-    if(
-
-        data.table.slots.every(
-
-            s=>s.team
-
-        )
-
-    ){
-
-        data.table.status="FULL";
-
-
-        if(
-            window.TTA_NOTIFY
-        ){
-
-            TTA_NOTIFY(
-                "Bàn "
-                +
-                data.table.name
-                +
-                " đã đầy"
-            );
-
-        }
-
-
-    }
+    );
 
 
 
 
-    TTA.saveTables();
-     if(TTA.afterAddSlot){
-
-    TTA.afterAddSlot(data.slot);
-
-}
-
-
-    closeSlotForm();
+    TTA.saveSlots();
 
 
 
-    if(window.refreshDashboard){
+    TTA.closeNewSlot();
 
-        refreshDashboard();
+
+
+    TTA.renderSlots();
+
+
+
+};
+
+
+
+
+
+// =======================================
+// CHECK FULL BOARD
+// =======================================
+
+
+TTA.checkBoardFull=function(boxData){
+
+
+
+    let last =
+
+    boxData.boards[
+        boxData.boards.length-1
+    ];
+
+
+
+    let full =
+
+    last.slots.every(
+
+        s=>s.team
+
+    );
+
+
+
+    if(!full)
+    return;
+
+
+
+
+
+    let next =
+
+    String.fromCharCode(
+
+        last.name.charCodeAt(0)+1
+
+    );
+
+
+
+    if(next <= "E"){
+
+
+
+        boxData.boards.push(
+
+
+            TTA.createBoard(
+                next
+            )
+
+
+        );
+
+
+
+        console.log(
+
+        "Tạo bảng",
+
+        next
+
+        );
+
 
     }
 
@@ -316,10 +398,11 @@ window.confirmAddSlot=function(){
 // =======================================
 
 
-window.closeSlotForm=function(){
+TTA.closeNewSlot=function(){
 
 
-    let modal =
+
+    let box =
 
     document.getElementById(
         "slotModal"
@@ -327,15 +410,14 @@ window.closeSlotForm=function(){
 
 
 
-    if(modal){
+    if(box)
 
-        modal.remove();
-
-    }
+    box.remove();
 
 
 
     TTA.selectedSlot=null;
+
 
 
 };
@@ -345,5 +427,5 @@ window.closeSlotForm=function(){
 
 
 console.log(
-"SLOT ACTION 3C READY"
+"SLOT ACTION 3C NEW READY"
 );
