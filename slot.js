@@ -639,10 +639,126 @@ if(
 
 }
 
+// =======================================
+// SLOT PAGE RENDER
+// =======================================
+
+
+TTA.renderSlots=function(){
+
+
+    let box =
+    document.getElementById(
+        "slotList"
+    );
+
+
+    if(!box)
+    return;
+
+
+
+    box.innerHTML="";
+
+
+
+    (TTA.tables || [])
+    .forEach(table=>{
+
+
+        let html=`
+
+
+        <div class="card">
+
+
+        <h3>
+        🪑 BÀN ${table.name}
+        </h3>
+
+
+        `;
+
+
+
+        table.slots.forEach(slot=>{
+
+
+            html += `
+
+
+            <div class="slot-card">
+
+
+            <b>
+            SLOT ${slot.number}
+            </b>
+
+
+            <br>
+
+
+            ${
+                slot.team
+                ?
+                "🔴 "+slot.team
+                :
+                "🟢 Trống"
+            }
+
+
+            <br>
+
+
+            ${
+                slot.paid
+                ?
+                "💸 Đã thanh toán"
+                :
+                "🚫 Chưa thanh toán"
+            }
+
+
+            <br>
+
+
+            <button onclick="
+            TTA.selectSlot(
+            '${table.id}',
+            ${slot.number}
+            )
+            ">
+
+            Chọn
+
+            </button>
+
+
+            </div>
+
+
+            `;
+
+
+        });
+
+
+
+        html+="</div>";
+
+
+
+        box.innerHTML += html;
+
+
+
+    });
+
+
+
+};
 
 
 console.log(
-
-"SLOT CORE ENGINE 3B-1 READY"
-
+"SLOT PAGE RENDER READY"
 );
