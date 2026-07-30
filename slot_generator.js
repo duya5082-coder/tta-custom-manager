@@ -1,79 +1,83 @@
 // =======================================
 // CUSTOM TTA MANAGER
-// SLOT_GENERATOR.JS
-// PART 3F
-// AUTO TABLE SYSTEM
+// SLOT GENERATOR
+// PART 3A NEW SYSTEM
+// AUTO CREATE BOARD
 // =======================================
-
 
 "use strict";
 
 
 
-
 // =======================================
-// CHECK FULL TABLE
+// AUTO CREATE BOARD
 // =======================================
 
 
-TTA.checkAutoCreateTable=function(){
-
-
-
-TTA.tables.forEach(table=>{
-
-
-
-if(
-table.slots.every(
-s=>s.team
-)
+TTA.checkAutoCreateBoard=function(
+boxData
 ){
 
 
-table.status="FULL";
+
+    if(!boxData)
+    return;
 
 
 
-let next =
-String.fromCharCode(
-65 + TTA.tables.length
-);
+    let lastBoard =
+
+    boxData.boards[
+        boxData.boards.length-1
+    ];
 
 
 
-let exist =
-TTA.tables.find(
-t=>t.name===next
-);
+    let full =
+
+    lastBoard.slots.every(
+
+        slot=>slot.team
+
+    );
 
 
 
-if(!exist){
-
-
-TTA.createTable(
-next
-);
+    if(!full)
+    return;
 
 
 
-TTA.notify(
 
-"Đã tạo BÀN "+next
+    let next =
 
-);
+    String.fromCharCode(
 
+        lastBoard.name.charCodeAt(0)+1
 
-
-}
-
-
-}
+    );
 
 
 
-});
+    if(next <= "E"){
+
+
+        boxData.boards.push(
+
+            TTA.createBoard(
+                next
+            )
+
+        );
+
+
+        console.log(
+            "AUTO CREATE BOARD",
+            next
+        );
+
+
+    }
 
 
 
@@ -83,18 +87,33 @@ TTA.notify(
 
 
 
-setInterval(()=>{
+// =======================================
+// CHECK ALL BOX
+// =======================================
 
 
-TTA.checkAutoCreateTable();
+TTA.checkAllBoards=function(){
 
 
-},3000);
+
+    TTA.slotData.forEach(box=>{
+
+
+        TTA.checkAutoCreateBoard(
+            box
+        );
+
+
+    });
+
+
+
+};
 
 
 
 
 
 console.log(
-"AUTO TABLE 3F READY"
+"SLOT GENERATOR 3A NEW READY"
 );
