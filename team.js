@@ -1,33 +1,48 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // TEAM.JS
-// PHẦN 2O
-// TEAM MANAGEMENT SYSTEM
+// PART 3E
+// CTV ACCOUNT ENGINE
 // =======================================
 
+"use strict";
+
+
+TTA.CTV_KEY =
+"CUSTOM_TTA_ACCOUNTS";
 
 
 
-// =======================================
-// GET TEAM DATA
-// =======================================
+
+// ===============================
+// LOAD ACCOUNT
+// ===============================
 
 
-TTA.getTeams = function(){
+TTA.getCTVAccounts=function(){
 
 
-    if(
-        !Array.isArray(
-            TTA.database.teams
-        )
-    ){
+    try{
 
-        TTA.database.teams = [];
+        let data =
+        localStorage.getItem(
+            TTA.CTV_KEY
+        );
+
+
+        return data
+        ?
+        JSON.parse(data)
+        :
+        [];
+
 
     }
+    catch(e){
 
+        return [];
 
-    return TTA.database.teams;
+    }
 
 
 };
@@ -36,85 +51,90 @@ TTA.getTeams = function(){
 
 
 
-
-// =======================================
-// CREATE TEAM
-// =======================================
-
-
-window.createTeam = function(){
+// ===============================
+// SAVE ACCOUNT
+// ===============================
 
 
+TTA.saveCTVAccounts=function(data){
 
-    if(
-        !TTA.hasPermission("all")
-    ){
 
-        alert(
-            "Chỉ Admin được tạo Team"
-        );
+    localStorage.setItem(
 
-        return;
+        TTA.CTV_KEY,
+
+        JSON.stringify(data)
+
+    );
+
+
+};
+
+
+
+
+
+// ===============================
+// ADD CTV
+// ===============================
+
+
+TTA.addCTV=function(
+username,
+password
+){
+
+
+
+    let list =
+    TTA.getCTVAccounts();
+
+
+
+    let exist =
+    list.find(
+        x=>x.username===username
+    );
+
+
+
+    if(exist){
+
+        return false;
 
     }
 
 
 
-
-    let name =
-    prompt(
-        "Tên Team"
-    );
+    list.push({
 
 
-
-    let leader =
-    prompt(
-        "Tên trưởng nhóm"
-    );
+        id:Date.now(),
 
 
-
-    if(!name){
-
-        return;
-
-    }
+        username:username,
 
 
-
-    let teams =
-    TTA.getTeams();
+        password:password,
 
 
+        role:"CTV",
 
-    teams.push({
 
-        id:
-        Date.now(),
-
-        name:name,
-
-        leader:
-        leader || "Chưa có",
-
-        members:[],
-
-        created:
-        new Date()
-        .toISOString()
+        active:true
 
 
     });
 
 
 
-    TTA.saveDatabase();
+    TTA.saveCTVAccounts(
+        list
+    );
 
 
 
-    TTA.renderTeams();
-
+    return true;
 
 
 };
@@ -123,134 +143,30 @@ window.createTeam = function(){
 
 
 
+// ===============================
+// DELETE CTV
+// ===============================
+
+
+TTA.removeCTV=function(username){
 
 
 
-// =======================================
-// RENDER TEAM
-// =======================================
-
-
-TTA.renderTeams = function(){
+    let list =
+    TTA.getCTVAccounts();
 
 
 
-    let box =
-    document.getElementById(
-        "teamList"
+    list =
+    list.filter(
+        x=>x.username!==username
     );
 
 
 
-    if(!box){
-
-        return;
-
-    }
-
-
-
-
-    let teams =
-    TTA.getTeams();
-
-
-
-    if(
-        teams.length === 0
-    ){
-
-
-        box.innerHTML =
-
-        `
-
-        <div class="card">
-
-        Chưa có Team
-
-        </div>
-
-        `;
-
-
-        return;
-
-    }
-
-
-
-    box.innerHTML = "";
-
-
-
-
-    teams.forEach(
-        team=>{
-
-
-            let div =
-            document.createElement(
-                "div"
-            );
-
-
-
-            div.className =
-            "card";
-
-
-
-            div.innerHTML =
-
-
-            `
-
-            <h3>
-            👥 ${team.name}
-            </h3>
-
-
-            <p>
-            👑 Trưởng nhóm:
-            ${team.leader}
-            </p>
-
-
-            <p>
-            👤 Thành viên:
-            ${team.members.length}
-            </p>
-
-
-
-            <button onclick="assignCTV(${team.id})">
-
-            + Gán CTV
-
-            </button>
-
-
-
-            <button onclick="deleteTeam(${team.id})">
-
-            Xóa
-
-            </button>
-
-
-            `;
-
-
-
-            box.appendChild(
-                div
-            );
-
-
-        }
+    TTA.saveCTVAccounts(
+        list
     );
-
 
 
 };
@@ -259,236 +175,6 @@ TTA.renderTeams = function(){
 
 
 
-
-
-
-// =======================================
-// ASSIGN CTV
-// =======================================
-
-
-window.assignCTV = function(teamId){
-
-
-
-    if(
-        !TTA.isAdmin()
-    ){
-
-        alert(
-            "Không có quyền"
-        );
-
-
-        return;
-
-    }
-
-
-
-
-    let username =
-    prompt(
-        "Nhập username CTV"
-    );
-
-
-
-    if(!username){
-
-        return;
-
-    }
-
-
-
-
-    let user =
-    TTA.getUsers()
-    .find(
-        u =>
-        u.username === username
-    );
-
-
-
-    if(
-        !user ||
-        user.role !== "CTV"
-    ){
-
-
-        alert(
-            "Không tìm thấy CTV"
-        );
-
-
-        return;
-
-
-    }
-
-
-
-
-
-    let team =
-    TTA.getTeams()
-    .find(
-        t =>
-        t.id === teamId
-    );
-
-
-
-
-    if(
-        !team.members.includes(
-            username
-        )
-    ){
-
-
-        team.members.push(
-            username
-        );
-
-
-    }
-
-
-
-
-
-    TTA.saveDatabase();
-
-
-    TTA.renderTeams();
-
-
-
-};
-
-
-
-
-
-
-
-
-// =======================================
-// DELETE TEAM
-// =======================================
-
-
-window.deleteTeam = function(id){
-
-
-
-    if(
-        !TTA.isAdmin()
-    ){
-
-        return;
-
-    }
-
-
-
-    if(
-        confirm(
-            "Xóa Team này?"
-        )
-    ){
-
-
-
-        TTA.database.teams =
-
-        TTA.getTeams()
-        .filter(
-            t =>
-            t.id !== id
-        );
-
-
-
-        TTA.saveDatabase();
-
-
-
-        TTA.renderTeams();
-
-
-    }
-
-
-
-};
-
-
-
-
-
-
-
-
-// =======================================
-// PAGE HOOK
-// =======================================
-
-
-let oldTeamOpenPage =
-window.openPage;
-
-
-
-window.openPage = function(page){
-
-
-
-    oldTeamOpenPage(page);
-
-
-
-    if(
-        page === "team"
-    ){
-
-
-        TTA.renderTeams();
-
-
-    }
-
-
-
-};
-
-
-
-
-
-
-
-
-// =======================================
-// AUTO LOAD
-// =======================================
-
-document.addEventListener(
-"DOMContentLoaded",
-function(){
-
-
-    TTA.renderTeams();
-
-
-});
-
-
-
-
-// =======================================
-// END PART 2O
-// =======================================
+console.log(
+"CTV ENGINE 3E READY"
+);
