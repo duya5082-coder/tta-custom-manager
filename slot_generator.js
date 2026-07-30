@@ -1,23 +1,14 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // SLOT GENERATOR
-// PART 3A NEW SYSTEM
-// AUTO CREATE BOARD
+// PART 3A NEW
 // =======================================
 
 "use strict";
 
 
 
-// =======================================
-// AUTO CREATE BOARD
-// =======================================
-
-
-TTA.checkAutoCreateBoard=function(
-boxData
-){
-
+TTA.checkAutoCreateBoard=function(boxData){
 
 
     if(!boxData)
@@ -25,8 +16,7 @@ boxData
 
 
 
-    let lastBoard =
-
+    let board =
     boxData.boards[
         boxData.boards.length-1
     ];
@@ -34,11 +24,8 @@ boxData
 
 
     let full =
-
-    lastBoard.slots.every(
-
-        slot=>slot.team
-
+    board.slots.every(
+        s=>s.team
     );
 
 
@@ -48,13 +35,9 @@ boxData
 
 
 
-
     let next =
-
     String.fromCharCode(
-
-        lastBoard.name.charCodeAt(0)+1
-
+        board.name.charCodeAt(0)+1
     );
 
 
@@ -64,21 +47,18 @@ boxData
 
         boxData.boards.push(
 
-            TTA.createBoard(
-                next
-            )
+            TTA.createBoard(next)
 
         );
 
 
         console.log(
-            "AUTO CREATE BOARD",
+            "AUTO CREATE BOARD:",
             next
         );
 
 
     }
-
 
 
 };
@@ -87,25 +67,25 @@ boxData
 
 
 
-// =======================================
-// CHECK ALL BOX
-// =======================================
-
-
 TTA.checkAllBoards=function(){
+
+
+    if(
+        !Array.isArray(
+            TTA.slotData
+        )
+    )
+    return;
 
 
 
     TTA.slotData.forEach(box=>{
 
 
-        TTA.checkAutoCreateBoard(
-            box
-        );
+        TTA.checkAutoCreateBoard(box);
 
 
     });
-
 
 
 };
@@ -115,5 +95,5 @@ TTA.checkAllBoards=function(){
 
 
 console.log(
-"SLOT GENERATOR 3A NEW READY"
+"SLOT GENERATOR NEW READY"
 );
