@@ -410,3 +410,23 @@ TTA.updateDashboard();
 console.log(
 "DASHBOARD PRO 3F READY"
 );
+window.addEventListener(
+"load",
+()=>{
+
+
+setTimeout(()=>{
+
+
+if(TTA.renderTablesDashboard){
+
+TTA.renderTablesDashboard();
+
+}
+
+
+},500);
+
+
+
+});
