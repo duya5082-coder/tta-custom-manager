@@ -1,8 +1,8 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // SLOT.JS
-// CORE SLOT + TABLE ENGINE
-// PART 2F + 3A CLEAN
+// PART 3B-1
+// FULL TABLE + SLOT CORE ENGINE
 // =======================================
 
 "use strict";
@@ -14,19 +14,21 @@
 
 TTA.tables = TTA.tables || [];
 
+
 TTA.TABLE_STORAGE_KEY =
 "CUSTOM_TTA_TABLES";
 
 
 
 // =======================================
-// STORAGE
+// SAVE TABLES
 // =======================================
 
+TTA.saveTables = function(){
 
-TTA.saveTables=function(){
 
     try{
+
 
         localStorage.setItem(
 
@@ -38,24 +40,34 @@ TTA.saveTables=function(){
 
         );
 
+
     }
     catch(e){
+
 
         console.error(
             "SAVE TABLE ERROR",
             e
         );
 
+
     }
+
 
 };
 
 
 
 
-TTA.loadTables=function(){
+// =======================================
+// LOAD TABLES
+// =======================================
+
+TTA.loadTables = function(){
+
 
     try{
+
 
         let data =
         localStorage.getItem(
@@ -63,25 +75,40 @@ TTA.loadTables=function(){
         );
 
 
+
         if(data){
+
 
             TTA.tables =
             JSON.parse(data);
 
+
         }
+        else{
+
+
+            TTA.tables=[];
+
+
+        }
+
 
 
     }
     catch(e){
+
 
         console.error(
             "LOAD TABLE ERROR",
             e
         );
 
+
         TTA.tables=[];
 
+
     }
+
 
 };
 
@@ -92,8 +119,8 @@ TTA.loadTables=function(){
 // CREATE TABLE
 // =======================================
 
-
 TTA.createTable=function(name){
+
 
 
     let table={
@@ -109,6 +136,10 @@ TTA.createTable=function(name){
         status:"OPEN",
 
 
+        created:
+        Date.now(),
+
+
         slots:[]
 
 
@@ -116,23 +147,44 @@ TTA.createTable=function(name){
 
 
 
+    // tạo 12 slot
+
     for(
         let i=1;
         i<=12;
         i++
     ){
 
+
         table.slots.push({
+
 
             number:i,
 
+
             team:"",
+
 
             paid:false,
 
+
             ctv:"",
 
+
+            customer:"",
+
+
+            phone:"",
+
+
+            balanceUsed:0,
+
+
+            salaryAdded:false,
+
+
             created:null
+
 
         });
 
@@ -144,7 +196,9 @@ TTA.createTable=function(name){
     TTA.tables.push(table);
 
 
+
     TTA.saveTables();
+
 
 
     return table;
@@ -155,18 +209,23 @@ TTA.createTable=function(name){
 
 
 
-// =======================================
-// GET OPEN TABLE
-// =======================================
 
+// =======================================
+// GET TABLE ĐANG MỞ
+// =======================================
 
 TTA.getOpenTable=function(){
 
 
 
     let table =
+
     TTA.tables.find(
-        t=>t.status==="OPEN"
+
+        t=>
+
+        t.status==="OPEN"
+
     );
 
 
@@ -179,14 +238,18 @@ TTA.getOpenTable=function(){
 
 
 
+
     let index =
     TTA.tables.length;
 
 
 
     let name =
+
     String.fromCharCode(
+
         65 + index
+
     );
 
 
@@ -202,11 +265,49 @@ TTA.getOpenTable=function(){
 
 
 // =======================================
-// ADD TEAM
+// GET ALL SLOTS
 // =======================================
 
+TTA.getSlots=function(){
 
-TTA.addTeamToSlot=function(teamName,ctv){
+
+    let result=[];
+
+
+
+    TTA.tables.forEach(table=>{
+
+
+        table.slots.forEach(slot=>{
+
+
+            result.push(slot);
+
+
+        });
+
+
+    });
+
+
+
+    return result;
+
+
+};
+
+
+
+
+
+// =======================================
+// ADD TEAM TO SLOT
+// =======================================
+
+TTA.addTeamToSlot=function(
+teamName,
+ctv
+){
 
 
 
@@ -216,13 +317,22 @@ TTA.addTeamToSlot=function(teamName,ctv){
 
 
     let slot =
+
     table.slots.find(
-        s=>!s.team
+
+        s=>
+
+        !s.team
+
     );
 
 
 
+
+    // nếu bàn đầy
+
     if(!slot){
+
 
 
         table.status="FULL";
@@ -231,13 +341,18 @@ TTA.addTeamToSlot=function(teamName,ctv){
         TTA.saveTables();
 
 
+
         return TTA.addTeamToSlot(
+
             teamName,
+
             ctv
+
         );
 
 
     }
+
 
 
 
@@ -257,14 +372,31 @@ TTA.addTeamToSlot=function(teamName,ctv){
 
 
 
+    slot.customer =
+    teamName;
+
+
+
+    slot.balanceUsed =
+    5000;
+
+
+
+    // kiểm tra full bàn
 
     if(
+
         table.slots.every(
+
             s=>s.team
+
         )
+
     ){
 
+
         table.status="FULL";
+
 
     }
 
@@ -274,17 +406,22 @@ TTA.addTeamToSlot=function(teamName,ctv){
 
 
 
+
     if(
-        window.refreshTableDashboard
+        window.refreshDashboard
     ){
 
-        window.refreshTableDashboard();
+
+        window.refreshDashboard();
+
 
     }
 
 
 
-    return {
+
+
+    return{
 
 
         table:
@@ -297,6 +434,8 @@ TTA.addTeamToSlot=function(teamName,ctv){
 
     };
 
+
+
 };
 
 
@@ -304,155 +443,29 @@ TTA.addTeamToSlot=function(teamName,ctv){
 
 
 // =======================================
-// PART 3B
-// SLOT CARD UI
+// REMOVE TEAM
 // =======================================
-
-
-TTA.renderSlots = function(){
-
-
-    const box =
-    document.getElementById("slotList")
-    ||
-    document.getElementById("slots")
-    ||
-    document.getElementById("slot");
-
-
-    if(!box) return;
-
-
-    box.innerHTML = "";
-
-
-    let tables = TTA.tables || [];
-
-
-    tables.forEach(table=>{
-
-
-        let tableTitle =
-        document.createElement("h3");
-
-
-        tableTitle.innerHTML =
-        "🪑 BÀN " + table.name;
-
-
-        box.appendChild(tableTitle);
-
-
-
-        let grid =
-        document.createElement("div");
-
-
-        grid.className =
-        "slot-grid";
-
-
-
-        table.slots.forEach(slot=>{
-
-
-            let card =
-            document.createElement("div");
-
-
-            card.className =
-            "slot-card";
-
-
-
-            let status =
-            slot.team
-            ?
-            "🔴 Đã có team"
-            :
-            "🟢 Trống";
-
-
-
-            if(slot.team && slot.paid){
-
-                status="💸 Đã thanh toán";
-
-            }
-
-
-
-            card.innerHTML = `
-
-                <div class="slot-number">
-                    SLOT ${slot.number}
-                </div>
-
-
-                <div class="slot-team">
-
-                    ${
-                        slot.team
-                        ?
-                        slot.team
-                        :
-                        "Chưa có team"
-                    }
-
-                </div>
-
-
-                <div class="slot-status">
-
-                    ${status}
-
-                </div>
-
-
-                <button onclick="
-                TTA.selectSlot(${table.id},${slot.number})
-                ">
-                    Chọn
-                </button>
-
-
-            `;
-
-
-
-            grid.appendChild(card);
-
-
-        });
-
-
-
-        box.appendChild(grid);
-
-
-    });
-
-
-};
-
-
-
-
-// =======================================
-// DELETE TEAM SLOT
-// =======================================
-
 
 TTA.removeTeamFromSlot=function(
+
 tableName,
+
 slotNumber
+
 ){
 
 
+
     let table =
+
     TTA.tables.find(
-        t=>t.name===tableName
+
+        t=>
+
+        t.name===tableName
+
     );
+
 
 
     if(!table)
@@ -461,8 +474,13 @@ slotNumber
 
 
     let slot =
+
     table.slots.find(
-        s=>s.number===slotNumber
+
+        s=>
+
+        s.number===slotNumber
+
     );
 
 
@@ -472,13 +490,30 @@ slotNumber
 
 
 
+
     slot.team="";
+
+
+    slot.customer="";
+
+
+    slot.phone="";
+
 
     slot.paid=false;
 
+
     slot.ctv="";
 
+
+    slot.balanceUsed=0;
+
+
+    slot.salaryAdded=false;
+
+
     slot.created=null;
+
 
 
 
@@ -489,13 +524,102 @@ slotNumber
     TTA.saveTables();
 
 
+
+    if(
+        window.refreshDashboard
+    ){
+
+
+        window.refreshDashboard();
+
+
+    }
+
+
+
 };
 
 
 
 
+
 // =======================================
-// AUTO LOAD
+// PAYMENT STATUS
+// =======================================
+
+TTA.updateSlotPayment=function(
+
+tableName,
+
+slotNumber,
+
+status
+
+){
+
+
+
+    let table =
+
+    TTA.tables.find(
+
+        t=>
+
+        t.name===tableName
+
+    );
+
+
+
+    if(!table)
+    return;
+
+
+
+    let slot =
+
+    table.slots.find(
+
+        s=>
+
+        s.number===slotNumber
+
+    );
+
+
+
+    if(!slot)
+    return;
+
+
+
+    slot.paid =
+    status;
+
+
+
+    TTA.saveTables();
+
+
+
+    if(
+        window.refreshDashboard
+    ){
+
+        window.refreshDashboard();
+
+    }
+
+
+
+};
+
+
+
+
+
+// =======================================
+// INIT SYSTEM
 // =======================================
 
 
@@ -504,147 +628,21 @@ TTA.loadTables();
 
 
 if(
+
     TTA.tables.length===0
+
 ){
 
+
     TTA.createTable("A");
+
 
 }
 
 
 
 console.log(
-"SLOT SYSTEM READY"
+
+"SLOT CORE ENGINE 3B-1 READY"
+
 );
-// =======================================
-// CUSTOM TTA MANAGER
-// PART 3B
-// TABLE RENDER ENGINE
-// =======================================
-
-"use strict";
-
-
-TTA.renderTables = function(){
-
-
-   const container =
-document.getElementById("tableContainer")
-||
-document.getElementById("dashboardTables");
-
-    if(!container){
-
-        console.warn(
-            "Không tìm thấy tableContainer"
-        );
-
-        return;
-
-    }
-
-
-
-    container.innerHTML = "";
-
-
-
-    TTA.tables.forEach(table=>{
-
-
-        let html = `
-
-
-        <div class="table-box">
-
-
-        <h3>
-        🪑 BÀN ${table.name}
-        </h3>
-
-
-        <div class="slot-grid">
-
-
-        `;
-
-
-
-        table.slots.forEach((slot,index)=>{
-
-
-            html += `
-
-
-            <div class="slot-card">
-
-
-                <div>
-                <b>SLOT ${index+1}</b>
-                </div>
-
-
-                <br>
-
-
-                <div>
-
-                ${
-                    slot.team
-
-                    ?
-
-                    "🔴 "+slot.team
-
-                    :
-
-                    "🟢 Trống"
-
-                }
-
-                </div>
-
-
-                <br>
-
-
-                <button
-                onclick="
-                TTA.selectSlot('${table.id}',${index})
-                "
-                >
-
-                [Chọn]
-
-                </button>
-
-
-            </div>
-
-
-            `;
-
-
-        });
-
-
-
-        html += `
-
-        </div>
-
-        </div>
-
-        `;
-
-
-
-        container.innerHTML += html;
-
-
-
-    });
-
-
-
-};
