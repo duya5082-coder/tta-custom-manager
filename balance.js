@@ -1,19 +1,19 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // BALANCE.JS
-// PART 3J
-// DEBT MANAGEMENT
+// NEW SLOT SYSTEM
 // =======================================
 
 "use strict";
 
 
+
 TTA.renderBalance=function(){
 
 
-    let box =
+    const box =
     document.getElementById(
-        "balance"
+        "balanceList"
     );
 
 
@@ -32,39 +32,72 @@ TTA.renderBalance=function(){
 
 
 
-    TTA.tables.forEach(table=>{
+    if(
+        !Array.isArray(
+            TTA.slotData
+        )
+    ){
+
+        box.innerHTML=
+        html+
+        "<p>Chưa có dữ liệu.</p>";
+
+        return;
+
+    }
 
 
-        table.slots.forEach(slot=>{
+
+    TTA.slotData.forEach(timeData=>{
 
 
-            if(slot.team && !slot.paid){
+        timeData.boards.forEach(board=>{
 
 
-                html+=`
-
-                <div class="card">
-
-                🏷️ ${slot.team}
-
-                <br>
-
-                Bàn ${table.name}
-                -
-                Slot ${slot.number}
+            board.slots.forEach(slot=>{
 
 
-                <br>
-
-                🚫 Chưa thanh toán
-
-
-                </div>
-
-                `;
+                if(
+                    slot.team &&
+                    !slot.paid
+                ){
 
 
-            }
+                    html+=`
+
+                    <div class="card">
+
+                    <b>${slot.team}</b>
+
+                    <br>
+
+                    ⏰ ${timeData.time}
+
+                    <br>
+
+                    📦 Box ${timeData.box}
+
+                    <br>
+
+                    🅰️ Bàn ${board.name}
+
+                    <br>
+
+                    🎮 Slot ${slot.number}
+
+                    <br>
+
+                    🚫 Chưa thanh toán
+
+                    </div>
+
+                    `;
+
+
+                }
+
+
+            });
 
 
         });
@@ -81,7 +114,6 @@ TTA.renderBalance=function(){
 
 
 
-
 console.log(
-"BALANCE SYSTEM 3J READY"
+"BALANCE NEW SYSTEM READY"
 );
