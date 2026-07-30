@@ -1,187 +1,90 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // MESSENGER.JS
-// PHẦN 2I
-// MESSENGER COPY SYSTEM
+// PART 3G
+// COPY MESSENGER EXPORT
 // =======================================
 
+"use strict";
 
 
 
-// =======================================
-// SELECTED SLOT
-// =======================================
-
-TTA.selectedSlots =
-TTA.selectedSlots || [];
-
-
-
-
-// =======================================
-// TOGGLE SLOT SELECT
-// =======================================
-
-window.toggleMessengerSlot = function(id){
-
-
-
-    let index =
-    TTA.selectedSlots.indexOf(id);
-
-
-
-    if(index === -1){
-
-
-        TTA.selectedSlots.push(id);
-
-
-    }else{
-
-
-        TTA.selectedSlots.splice(
-            index,
-            1
-        );
-
-
-    }
-
-
-
-    TTA.renderSlots();
-
-
-};
-
-
-
-
-
-
-// =======================================
-// GET SELECTED SLOTS
-// =======================================
-
-TTA.getSelectedMessengerSlots = function(){
-
-
-
-    return TTA.getSlots()
-    .filter(
-        slot =>
-        TTA.selectedSlots.includes(
-            slot.id
-        )
-    );
-
-
-};
-
-
-
-
-
-
-
-// =======================================
-// FORMAT MULTI SLOT MESSAGE
-// =======================================
-
-TTA.formatMultiSlotMessage = function(){
-
-
-
-    let slots =
-    TTA.getSelectedMessengerSlots();
-
-
-
-    if(
-        slots.length === 0
-    ){
-
-
-        return "Chưa chọn Slot";
-
-
-    }
+TTA.copyMessenger=function(){
 
 
 
     let text =
-    "📢 LỊCH SLOT CUSTOM TTA\n\n";
+    "🔥 CUSTOM TTA 🔥\n\n";
 
 
 
+    TTA.tables.forEach(table=>{
 
-    slots.forEach(
-        (slot,index)=>{
+
+        text +=
+        "🪑 BÀN "
+        +
+        table.name
+        +
+        "\n";
+
+
+
+        table.slots.forEach(slot=>{
 
 
             text +=
 
-            `
-
-${index + 1}. 📌 ${slot.title}
-
-📅 Ngày: ${slot.date}
-
-⏰ ${slot.startTime} - ${slot.endTime}
-
-📊 ${slot.status}
-
-
-`;
-
-
-
-        }
-    );
-
-
-
-    return text.trim();
-
-
-
-};
+            "Slot "
+            +
+            slot.number
+            +
+            ": "
+            +
+            (
+                slot.team
+                ?
+                slot.team
+                :
+                "Trống"
+            )
+            +
+            (
+                slot.paid
+                ?
+                " 💸"
+                :
+                ""
+            )
+            +
+            "\n";
 
 
-
+        });
 
 
 
+        text+="\n";
 
-// =======================================
-// COPY MULTI SLOT
-// =======================================
 
-window.copyAllMessengerSlot = function(){
+    });
 
 
 
-    let text =
-    TTA.formatMultiSlotMessage();
 
-
-
-    navigator.clipboard
-    .writeText(
+    navigator.clipboard.writeText(
         text
-    )
-    .then(
-        function(){
-
-
-            alert(
-                "Đã copy lịch Slot Messenger"
-            );
-
-
-        }
     );
+
+
+
+    alert(
+        "Đã copy bảng đấu"
+    );
+
+
+
+    return text;
 
 
 };
@@ -190,243 +93,6 @@ window.copyAllMessengerSlot = function(){
 
 
 
-
-
-
-// =======================================
-// COPY SINGLE SLOT
-// =======================================
-
-window.copySingleMessengerSlot = function(id){
-
-
-
-    let slot =
-    TTA.findSlot(id);
-
-
-
-    if(!slot){
-
-        return;
-
-    }
-
-
-
-    navigator.clipboard
-    .writeText(
-        TTA.formatSlotMessage(
-            slot
-        )
-    )
-    .then(
-        function(){
-
-            alert(
-                "Đã copy Slot"
-            );
-
-        }
-    );
-
-
-};
-
-
-
-
-
-
-
-
-// =======================================
-// RENDER MESSENGER TOOL
-// =======================================
-
-TTA.renderMessengerTool = function(){
-
-
-
-    let box =
-    document.getElementById(
-        "messengerTool"
-    );
-
-
-
-    if(!box){
-
-        return;
-
-    }
-
-
-
-    box.innerHTML =
-
-
-    `
-
-    <button onclick="copyAllMessengerSlot()">
-
-    📋 Copy tất cả Slot đã chọn
-
-    </button>
-
-
-    `;
-
-
-
-};
-
-
-
-
-
-
-
-// =======================================
-// ADD CHECKBOX SLOT
-// =======================================
-
-TTA.renderSlotMessengerCheck = function(){
-
-
-
-    let slots =
-    document.querySelectorAll(
-        "#slotList .card"
-    );
-
-
-
-    slots.forEach(
-        (card,index)=>{
-
-
-            let slot =
-            TTA.getSlots()[index];
-
-
-
-            if(!slot){
-
-                return;
-
-            }
-
-
-
-            let check =
-            document.createElement(
-                "input"
-            );
-
-
-
-            check.type =
-            "checkbox";
-
-
-
-            check.onclick =
-            function(){
-
-
-                toggleMessengerSlot(
-                    slot.id
-                );
-
-
-            };
-
-
-
-            card.prepend(
-                check
-            );
-
-
-
-        }
-    );
-
-
-};
-
-
-
-
-
-
-
-// =======================================
-// PAGE HOOK
-// =======================================
-
-
-let oldMessengerOpenPage =
-window.openPage;
-
-
-
-window.openPage = function(page){
-
-
-
-    oldMessengerOpenPage(page);
-
-
-
-    if(
-        page === "slot"
-    ){
-
-
-        setTimeout(
-            function(){
-
-
-                TTA.renderSlotMessengerCheck();
-
-
-            },
-            300
-        );
-
-
-    }
-
-
-
-};
-
-
-
-
-
-
-
-// =======================================
-// AUTO LOAD
-// =======================================
-
-document.addEventListener(
-"DOMContentLoaded",
-function(){
-
-
-    TTA.renderMessengerTool();
-
-
-});
-
-
-
-
-
-// =======================================
-// END PART 2I
-// =======================================
+console.log(
+"MESSENGER EXPORT 3G READY"
+);
