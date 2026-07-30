@@ -528,9 +528,10 @@ console.log(
 TTA.renderTables = function(){
 
 
-    const container =
-    document.getElementById("tableContainer");
-
+   const container =
+document.getElementById("tableContainer")
+||
+document.getElementById("dashboardTables");
 
     if(!container){
 
