@@ -5,7 +5,7 @@
 // =======================================
 
 "use strict";
-
+console.log("slot_payment.js loaded");
 
 
 // =======================================
@@ -255,3 +255,4 @@ TTA.confirmPayment = function(time, box, board, slot){
     return TTA.paySlot(time, box, board, slot);
 
 };
+console.log("confirmPayment =", typeof TTA.confirmPayment);
