@@ -663,3 +663,23 @@ window.addEventListener(
     }
 
 });
+// =======================================
+// REFRESH TABLE UI
+// =======================================
+
+window.addEventListener(
+"load",
+()=>{
+
+    setTimeout(()=>{
+
+        if(TTA.renderTables){
+
+            TTA.renderTables();
+
+        }
+
+    },300);
+
+
+});
