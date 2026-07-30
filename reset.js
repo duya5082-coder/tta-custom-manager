@@ -5,15 +5,14 @@
 // AUTO DAILY RESET
 // =======================================
 
-
 "use strict";
 
 
+(function(){
 
 
 
 TTA.resetDaily=function(){
-
 
 
     TTA.tables.forEach(table=>{
@@ -42,7 +41,6 @@ TTA.resetDaily=function(){
 
 
 
-
     TTA.saveTables();
 
 
@@ -50,7 +48,6 @@ TTA.resetDaily=function(){
     console.log(
         "Đã reset slot ngày mới"
     );
-
 
 
 };
@@ -62,24 +59,25 @@ TTA.resetDaily=function(){
 // CHECK NGÀY
 
 
-let lastDate =
+const resetLastDate =
 localStorage.getItem(
 "CUSTOM_TTA_DATE"
 );
 
 
 
-let today =
+const resetToday =
 new Date()
 .toDateString();
 
 
 
 
+
 if(
-lastDate
+resetLastDate
 &&
-lastDate!==today
+resetLastDate !== resetToday
 ){
 
 
@@ -90,11 +88,12 @@ lastDate!==today
 
 
 
+
+
 localStorage.setItem(
 "CUSTOM_TTA_DATE",
-today
+resetToday
 );
-
 
 
 
@@ -102,3 +101,7 @@ today
 console.log(
 "AUTO RESET 3G READY"
 );
+
+
+
+})();
