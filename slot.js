@@ -653,17 +653,7 @@ document.getElementById("dashboardTables");
 
 // AUTO LOAD
 
-window.addEventListener(
-"load",
-()=>{
 
-    if(TTA.renderTables){
-
-        TTA.renderTables();
-
-    }
-
-});
 // =======================================
 // REFRESH TABLE UI
 // =======================================
