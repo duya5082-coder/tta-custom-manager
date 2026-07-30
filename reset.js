@@ -1,4 +1,3 @@
-// =======================================
 // CUSTOM TTA MANAGER
 // RESET.JS
 // PART 3G
