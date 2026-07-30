@@ -249,3 +249,9 @@ TTA.getPaymentTotal=function(){
 console.log(
 "SLOT PAYMENT 3D READY"
 );
+// Tương thích với hệ cũ
+TTA.confirmPayment = function(time, box, board, slot){
+
+    return TTA.paySlot(time, box, board, slot);
+
+};
