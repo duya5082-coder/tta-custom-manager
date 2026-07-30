@@ -1,7 +1,7 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // SLOT GENERATOR
-// PART 3A NEW
+// PART 3A NEW SYSTEM
 // =======================================
 
 "use strict";
@@ -20,6 +20,11 @@ TTA.checkAutoCreateBoard=function(boxData){
     boxData.boards[
         boxData.boards.length-1
     ];
+
+
+
+    if(!board)
+    return;
 
 
 
@@ -53,7 +58,7 @@ TTA.checkAutoCreateBoard=function(boxData){
 
 
         console.log(
-            "AUTO CREATE BOARD:",
+            "AUTO CREATE BOARD",
             next
         );
 
@@ -68,6 +73,7 @@ TTA.checkAutoCreateBoard=function(boxData){
 
 
 TTA.checkAllBoards=function(){
+
 
 
     if(
