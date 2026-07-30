@@ -2304,12 +2304,8 @@ window.openPage = function(page){
 
 };
 
-
-
-
-
 // =======================================
-// AUTO UPDATE
+// AUTO UPDATE ALL PAGE
 // =======================================
 
 document.addEventListener(
@@ -2320,7 +2316,81 @@ function(){
     setTimeout(
         function(){
 
-            TTA.updateDashboard();
+
+            // Dashboard
+
+            if(TTA.updateDashboard){
+
+                TTA.updateDashboard();
+
+            }
+
+
+
+            // Bàn / Slot
+
+            if(TTA.renderSlots){
+
+                TTA.renderSlots();
+
+            }
+
+
+
+            // Dashboard Table
+
+            if(TTA.renderTables){
+
+                TTA.renderTables();
+
+            }
+
+
+
+            // Payment
+
+            if(TTA.renderPaymentPage){
+
+                TTA.renderPaymentPage();
+
+            }
+
+
+
+            // Balance
+
+            if(TTA.renderBalance){
+
+                TTA.renderBalance();
+
+            }
+
+
+
+            // Salary
+
+            if(TTA.renderSalary){
+
+                TTA.renderSalary();
+
+            }
+
+
+
+            // CTV
+
+            if(TTA.renderCTVManager){
+
+                TTA.renderCTVManager();
+
+            }
+
+
+
+            console.log(
+                "ALL PAGE AUTO UPDATE READY"
+            );
+
 
         },
         500
@@ -2328,4 +2398,3 @@ function(){
 
 
 });
-
