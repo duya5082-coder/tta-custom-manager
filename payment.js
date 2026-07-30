@@ -1,33 +1,35 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // PAYMENT.JS
-// PHẦN 2Q
-// PAYMENT MANAGEMENT SYSTEM
+// PART 3D
+// PAYMENT ENGINE
+// =======================================
+
+"use strict";
+
+
+
+TTA.PAYMENT_STORAGE =
+"CUSTOM_TTA_PAYMENTS";
+
+
+
+
+// =======================================
+// SAVE PAYMENT HISTORY
 // =======================================
 
 
+TTA.savePayments=function(data){
 
 
-// =======================================
-// PAYMENT DATABASE
-// =======================================
+    localStorage.setItem(
 
+        TTA.PAYMENT_STORAGE,
 
-TTA.getPayments = function(){
+        JSON.stringify(data)
 
-
-    if(
-        !Array.isArray(
-            TTA.database.payments
-        )
-    ){
-
-        TTA.database.payments = [];
-
-    }
-
-
-    return TTA.database.payments;
+    );
 
 
 };
@@ -36,356 +38,220 @@ TTA.getPayments = function(){
 
 
 
-
 // =======================================
-// CREATE PAYMENT
+// LOAD PAYMENT HISTORY
 // =======================================
 
 
-window.createPayment = function(){
+TTA.getPayments=function(){
 
 
+    try{
 
-    if(
-        !TTA.hasPermission("bill")
-        &&
-        !TTA.isAdmin()
-    ){
 
-        alert(
-            "Không có quyền"
+        let data =
+        localStorage.getItem(
+            TTA.PAYMENT_STORAGE
         );
 
-        return;
+
+        return data
+        ?
+        JSON.parse(data)
+        :
+        [];
+
+
+    }
+    catch(e){
+
+        return [];
 
     }
 
 
+};
 
 
-    let name =
-    prompt(
-        "Tên khách"
+
+
+
+// =======================================
+// PAYMENT SLOT
+// =======================================
+
+
+TTA.paySlot=function(
+
+tableName,
+
+slotNumber
+
+){
+
+
+
+    let table =
+
+    TTA.tables.find(
+
+        t=>
+
+        t.name===tableName
+
     );
 
 
 
-    let amount =
-    Number(
-        prompt(
-            "Số tiền"
-        )
+    if(!table)
+    return;
+
+
+
+    let slot =
+
+    table.slots.find(
+
+        s=>
+
+        s.number===slotNumber
+
     );
 
 
 
-    let note =
-    prompt(
-        "Nội dung"
-    );
-
-
-
-    if(
-        !name ||
-        !amount
-    ){
-
-        return;
-
-    }
+    if(!slot || !slot.team)
+    return;
 
 
 
 
-    TTA.getPayments()
-    .push({
+    slot.paid=true;
 
 
-        id:
-        Date.now(),
+
+    // lưu lịch sử
 
 
-        customer:
-        name,
+    let history =
+    TTA.getPayments();
 
 
-        amount:
-        amount,
+
+    history.push({
 
 
-        note:
-        note || "",
+        table:tableName,
 
 
-        status:
-        "PENDING",
+        slot:slotNumber,
 
 
-        date:
-        new Date()
-        .toISOString()
+        team:slot.team,
+
+
+        amount:5000,
+
+
+        time:Date.now()
 
 
     });
 
 
 
-    TTA.saveDatabase();
-
-
-
-    TTA.renderPayments();
-
-
-
-};
-
-
-
-
-
-
-
-
-// =======================================
-// RENDER PAYMENT
-// =======================================
-
-
-TTA.renderPayments = function(){
-
-
-
-    let box =
-    document.getElementById(
-        "paymentList"
+    TTA.savePayments(
+        history
     );
 
 
 
-    if(!box){
 
-        return;
-
-    }
-
-
-
-
-
-    let payments =
-    TTA.getPayments();
-
-
-
+    // cộng lương CTV
 
     if(
-        payments.length === 0
+        slot.ctv
     ){
 
-
-        box.innerHTML =
-
-        `
-        <div class="card">
-
-        Chưa có giao dịch
-
-        </div>
-        `;
-
-
-        return;
-
-    }
-
-
-
-
-
-    box.innerHTML = "";
-
-
-
-
-
-    payments.forEach(
-        p=>{
-
-
-            let div =
-            document.createElement(
-                "div"
-            );
-
-
-
-            div.className =
-            "card";
-
-
-
-            div.innerHTML =
-
-
-            `
-
-            <h3>
-            ${p.customer}
-            </h3>
-
-
-            <p>
-            💰
-            ${p.amount.toLocaleString()}
-            </p>
-
-
-            <p>
-            📌
-            ${p.status}
-            </p>
-
-
-            <p>
-            ${p.note}
-            </p>
-
-
-
-            ${
-            p.status === "PENDING"
-
-            ?
-
-            `
-
-            <button onclick="confirmPayment(${p.id})">
-
-            ✅ Đã nhận tiền
-
-            </button>
-
-            `
-
-            :
-
-            ""
-
-            }
-
-
-
-
-            <button onclick="deletePayment(${p.id})">
-
-            🗑 Xóa
-
-            </button>
-
-
-            `;
-
-
-
-            box.appendChild(
-                div
-            );
-
-
-        }
-    );
-
-
-
-};
-
-
-
-
-
-
-
-
-// =======================================
-// CONFIRM PAYMENT
-// =======================================
-
-
-window.confirmPayment = function(id){
-
-
-
-    let payment =
-    TTA.getPayments()
-    .find(
-        p =>
-        p.id === id
-    );
-
-
-
-    if(payment){
-
-
-        payment.status =
-        "PAID";
-
-
-    }
-
-
-
-    TTA.saveDatabase();
-
-
-
-    TTA.renderPayments();
-
-
-
-};
-
-
-
-
-
-
-
-
-// =======================================
-// DELETE PAYMENT
-// =======================================
-
-
-window.deletePayment = function(id){
-
-
-
-    if(
-        confirm(
-            "Xóa giao dịch?"
-        )
-    ){
-
-
-
-        TTA.database.payments =
-
-        TTA.getPayments()
-        .filter(
-            p =>
-            p.id !== id
+        TTA.addSalary(
+            slot.ctv,
+            slot.team,
+            500
         );
 
-
-
-        TTA.saveDatabase();
+    }
 
 
 
-        TTA.renderPayments();
+    TTA.saveTables();
+
+
+
+    if(window.refreshDashboard){
+
+        refreshDashboard();
+
+    }
+
+
+
+};
+
+
+
+
+
+// =======================================
+// UNPAY
+// =======================================
+
+
+TTA.unPaySlot=function(
+
+tableName,
+
+slotNumber
+
+){
+
+
+
+    let table =
+
+    TTA.tables.find(
+
+        t=>
+
+        t.name===tableName
+
+    );
+
+
+
+    if(!table)
+    return;
+
+
+
+    let slot =
+
+    table.slots.find(
+
+        s=>
+
+        s.number===slotNumber
+
+    );
+
+
+
+    if(slot){
+
+
+        slot.paid=false;
+
+
+        TTA.saveTables();
 
 
     }
@@ -397,139 +263,6 @@ window.deletePayment = function(id){
 
 
 
-
-
-
-// =======================================
-// TOTAL REVENUE
-// =======================================
-
-
-TTA.totalRevenue = function(){
-
-
-
-    return TTA.getPayments()
-
-    .filter(
-        p =>
-        p.status === "PAID"
-    )
-
-    .reduce(
-
-        (sum,p)=>
-
-        sum + p.amount,
-
-        0
-
-    );
-
-
-};
-
-
-
-
-
-
-
-
-// =======================================
-// TODAY REVENUE
-// =======================================
-
-
-TTA.todayRevenue = function(){
-
-
-
-    let today =
-    new Date()
-    .toISOString()
-    .split("T")[0];
-
-
-
-    return TTA.getPayments()
-
-    .filter(
-        p =>
-        p.status === "PAID"
-        &&
-        p.date.includes(today)
-    )
-
-    .reduce(
-
-        (sum,p)=>
-
-        sum+p.amount,
-
-        0
-
-    );
-
-
-};
-
-
-
-
-
-
-
-
-// =======================================
-// PAGE LOAD
-// =======================================
-
-
-let oldPaymentOpenPage =
-window.openPage;
-
-
-
-window.openPage = function(page){
-
-
-
-    oldPaymentOpenPage(page);
-
-
-
-    if(
-        page === "payment"
-    ){
-
-
-        TTA.renderPayments();
-
-
-    }
-
-
-};
-
-
-
-
-
-
-
-
-document.addEventListener(
-"DOMContentLoaded",
-function(){
-
-    TTA.renderPayments();
-
-});
-
-
-
-
-// =======================================
-// END PART 2Q
-// =======================================
+console.log(
+"PAYMENT ENGINE 3D READY"
+);
