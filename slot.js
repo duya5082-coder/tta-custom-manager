@@ -304,106 +304,133 @@ TTA.addTeamToSlot=function(teamName,ctv){
 
 
 // =======================================
-// SLOT UI SYSTEM
+// PART 3B
+// SLOT CARD UI
 // =======================================
 
 
-TTA.renderSlots=function(){
+TTA.renderSlots = function(){
 
 
-    let box =
-    document.getElementById(
-        "slotList"
-    );
+    const box =
+    document.getElementById("slotList")
+    ||
+    document.getElementById("slots")
+    ||
+    document.getElementById("slot");
 
 
     if(!box) return;
 
 
-
-    box.innerHTML="";
-
-
-    if(
-        !TTA.tables.length
-    ){
-
-        box.innerHTML=
-        "Chưa có slot";
+    box.innerHTML = "";
 
 
-        return;
-
-    }
+    let tables = TTA.tables || [];
 
 
+    tables.forEach(table=>{
 
-    TTA.tables.forEach(table=>{
+
+        let tableTitle =
+        document.createElement("h3");
+
+
+        tableTitle.innerHTML =
+        "🪑 BÀN " + table.name;
+
+
+        box.appendChild(tableTitle);
+
+
+
+        let grid =
+        document.createElement("div");
+
+
+        grid.className =
+        "slot-grid";
+
 
 
         table.slots.forEach(slot=>{
 
 
-            let div =
-            document.createElement(
-                "div"
-            );
+            let card =
+            document.createElement("div");
 
 
-            div.className="card";
+            card.className =
+            "slot-card";
 
 
 
-            div.innerHTML=`
-
-            <h3>
-            Bàn ${table.name}
-            -
-            Slot ${slot.number}
-            </h3>
-
-
-            <p>
-
-            ${
-            slot.team ||
-            "Trống"
-            }
-
-            </p>
-
-
-            <p>
-
-            ${
-            slot.paid
-            ?
-            "💸"
-            :
+            let status =
             slot.team
             ?
-            "🚫"
+            "🔴 Đã có team"
             :
-            "⭕"
+            "🟢 Trống";
+
+
+
+            if(slot.team && slot.paid){
+
+                status="💸 Đã thanh toán";
+
             }
 
-            </p>
+
+
+            card.innerHTML = `
+
+                <div class="slot-number">
+                    SLOT ${slot.number}
+                </div>
+
+
+                <div class="slot-team">
+
+                    ${
+                        slot.team
+                        ?
+                        slot.team
+                        :
+                        "Chưa có team"
+                    }
+
+                </div>
+
+
+                <div class="slot-status">
+
+                    ${status}
+
+                </div>
+
+
+                <button onclick="
+                TTA.selectSlot(${table.id},${slot.number})
+                ">
+                    Chọn
+                </button>
 
 
             `;
 
 
 
-            box.appendChild(div);
-
+            grid.appendChild(card);
 
 
         });
 
 
 
-    });
+        box.appendChild(grid);
 
+
+    });
 
 
 };
