@@ -1,430 +1,308 @@
 // =======================================
 // CUSTOM TTA MANAGER
-// EXPORT SYSTEM
-// FILE 2D - export.js
+// EXPORT.JS
+// PHẦN 2S
 // =======================================
 
+"use strict";
 
-if(window.TTA_EXPORT_LOADED){
+// =======================================
+// EXPORT JSON
+// =======================================
 
-console.warn(
-"EXPORT đã được load"
-);
+window.exportJSON = function () {
 
+    const data = JSON.stringify(
+        TTA.database,
+        null,
+        2
+    );
 
-}else{
+    const blob = new Blob(
+        [data],
+        {
+            type: "application/json"
+        }
+    );
 
+    const url =
+        URL.createObjectURL(blob);
 
-window.TTA_EXPORT_LOADED=true;
+    const a =
+        document.createElement("a");
 
+    a.href = url;
 
+    a.download =
+        "CUSTOM_TTA_BACKUP.json";
 
-// ===============================
-// LẤY DỮ LIỆU TEAM
-// ===============================
+    a.click();
 
-
-function TTA_getExportTeams(){
-
-
-try{
-
-
-return JSON.parse(
-
-localStorage.getItem(
-"CUSTOM_TTA_TEAMS"
-)
-
-)
-
-|| [];
-
-
-}catch(e){
-
-
-return [];
-
-
-}
-
-
-}
-
-
-
-
-
-// ===============================
-// TẠO FILE DOWNLOAD
-// ===============================
-
-
-function TTA_downloadFile(
-data,
-filename
-){
-
-
-
-const blob = new Blob(
-
-[
-
-JSON.stringify(
-data,
-null,
-2
-)
-
-],
-
-
-{
-
-type:"application/json"
-
-}
-
-);
-
-
-
-const url=
-
-URL.createObjectURL(blob);
-
-
-
-const a=document.createElement(
-"a"
-);
-
-
-
-a.href=url;
-
-
-
-a.download=filename;
-
-
-
-document.body.appendChild(a);
-
-
-
-a.click();
-
-
-
-a.remove();
-
-
-
-URL.revokeObjectURL(url);
-
-
-
-}
-
-
-
-
-// ===============================
-// EXPORT TEAM
-// ===============================
-
-
-window.exportTeams=function(){
-
-
-
-const teams=
-
-TTA_getExportTeams();
-
-
-
-if(teams.length===0){
-
-
-alert(
-"Chưa có dữ liệu Team"
-);
-
-
-return;
-
-
-}
-
-
-
-TTA_downloadFile(
-
-{
-
-app:"CUSTOM TTA",
-
-type:"teams",
-
-created:
-
-new Date()
-
-.toLocaleString(),
-
-data:teams
-
-},
-
-
-"CUSTOM-TTA-TEAMS.json"
-
-
-);
-
-
+    URL.revokeObjectURL(url);
 
 };
 
+// =======================================
+// EXPORT CSV
+// =======================================
 
+window.exportCSV = function () {
 
+    let csv = [];
 
+    csv.push(
+        [
+            "Tên",
+            "Ngày",
+            "Khung giờ",
+            "Trạng thái"
+        ].join(",")
+    );
 
-// ===============================
-// EXPORT THANH TOÁN
-// ===============================
+    TTA.getSlots().forEach(slot => {
 
+        csv.push(
 
-window.exportPayments=function(){
+            [
 
+                slot.title,
 
+                slot.date,
 
-const teams=
+                slot.startTime +
+                "-" +
+                slot.endTime,
 
-TTA_getExportTeams();
+                slot.status
 
+            ].join(",")
 
+        );
 
-const paymentData=teams.map(
+    });
 
-team=>({
+    const blob = new Blob(
 
+        [csv.join("\n")],
 
-name:team.name,
+        {
 
+            type:
+            "text/csv"
 
-box:team.box,
+        }
 
+    );
 
-time:team.time,
+    const url =
+        URL.createObjectURL(blob);
 
+    const a =
+        document.createElement("a");
 
-status:
+    a.href = url;
 
-team.paid
+    a.download =
+        "CUSTOM_TTA_SLOT.csv";
 
-?
+    a.click();
 
-"Đã thanh toán"
-
-:
-
-"Chưa thanh toán",
-
-
-
-amount:
-
-team.paid
-
-?
-
-5000
-
-:
-
-0
-
-
-
-})
-
-
-);
-
-
-
-
-TTA_downloadFile(
-
-{
-
-app:"CUSTOM TTA",
-
-type:"payments",
-
-data:paymentData
-
-},
-
-
-"CUSTOM-TTA-PAYMENT.json"
-
-
-);
-
-
+    URL.revokeObjectURL(url);
 
 };
 
+// =======================================
+// EXPORT HTML REPORT
+// =======================================
 
+window.exportReport = function () {
 
+    let html = `
 
+    <html>
 
+    <head>
 
-// ===============================
-// EXPORT DOANH THU
-// ===============================
+    <title>
 
+    CUSTOM TTA REPORT
 
-window.exportRevenue=function(){
+    </title>
 
+    <style>
 
+    body{
 
-const teams=
+        font-family:Arial;
 
-TTA_getExportTeams();
+        padding:30px;
 
+    }
 
+    table{
 
-const paidTeams=
+        width:100%;
 
-teams.filter(
+        border-collapse:collapse;
 
-t=>t.paid
+    }
 
-);
+    td,th{
 
+        border:1px solid #000;
 
+        padding:8px;
 
+    }
 
-const revenue=
+    </style>
 
-paidTeams.length
+    </head>
 
-*
+    <body>
 
-5000;
+    <h2>
 
+    CUSTOM TTA REPORT
 
+    </h2>
 
+    <table>
 
+    <tr>
 
-TTA_downloadFile(
+    <th>Slot</th>
 
-{
+    <th>Ngày</th>
 
-app:"CUSTOM TTA",
+    <th>Giờ</th>
 
-type:"revenue",
+    <th>Trạng thái</th>
 
+    </tr>
 
-totalTeam:
+    `;
 
-teams.length,
+    TTA.getSlots().forEach(slot => {
 
+        html += `
 
-paidTeam:
+        <tr>
 
-paidTeams.length,
+        <td>${slot.title}</td>
 
+        <td>${slot.date}</td>
 
-revenue:
+        <td>${slot.startTime} - ${slot.endTime}</td>
 
-revenue,
+        <td>${slot.status}</td>
 
+        </tr>
 
-date:
+        `;
 
-new Date()
+    });
 
-.toLocaleString()
+    html += `
 
+    </table>
 
-},
+    </body>
 
+    </html>
 
-"CUSTOM-TTA-REVENUE.json"
+    `;
 
+    const w =
+        window.open("");
 
-);
+    w.document.write(html);
 
-
+    w.document.close();
 
 };
 
+// =======================================
+// PRINT
+// =======================================
 
+window.printReport = function(){
 
+    exportReport();
 
+    setTimeout(function(){
 
-// ===============================
-// BUTTON
-// ===============================
+        window.print();
 
-
-document.addEventListener(
-
-"DOMContentLoaded",
-
-()=>{
-
-
-
-const btn=
-
-document.getElementById(
-"exportBtn"
-);
-
-
-
-if(btn){
-
-
-
-btn.onclick=function(){
-
-
-exportTeams();
-
-
+    },500);
 
 };
 
+// =======================================
+// REVENUE REPORT
+// =======================================
 
+window.exportRevenue = function(){
 
-}
+    let revenue = 0;
 
+    if(TTA.getPayments){
 
+        TTA.getPayments().forEach(item=>{
 
+            if(item.status==="PAID"){
 
+                revenue +=
+                item.amount;
 
-});
+            }
 
+        });
 
+    }
 
+    alert(
 
+        "Tổng doanh thu: " +
 
-console.log(
+        revenue.toLocaleString()
 
-"🔥 EXPORT SYSTEM READY"
+        + "đ"
 
-);
+    );
 
+};
 
+// =======================================
+// SALARY REPORT
+// =======================================
 
-}
+window.exportSalary = function(){
+
+    let salary = 0;
+
+    if(TTA.getSalaryData){
+
+        TTA.getSalaryData().forEach(item=>{
+
+            salary += item.salary;
+
+        });
+
+    }
+
+    alert(
+
+        "Tổng lương: " +
+
+        salary.toLocaleString()
+
+        + "đ"
+
+    );
+
+};
+
+// =======================================
+// END
+// =======================================
