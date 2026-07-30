@@ -1,57 +1,83 @@
 // =======================================
 // CUSTOM TTA MANAGER
-// SLOT.JS
-// PART 3B-1
-// FULL TABLE + SLOT CORE ENGINE
+// SLOT CORE
+// PART 3A NEW SYSTEM
+// BOX + TIME + TABLE
 // =======================================
 
 "use strict";
 
 
-// =======================================
-// INIT
-// =======================================
-
-TTA.tables = TTA.tables || [];
-
-
-TTA.TABLE_STORAGE_KEY =
-"CUSTOM_TTA_TABLES";
+window.TTA = window.TTA || {};
 
 
 
 // =======================================
-// SAVE TABLES
+// CONFIG
 // =======================================
 
-TTA.saveTables = function(){
+
+TTA.SLOT_PRICE = 5000;
 
 
-    try{
+TTA.SLOT_TIMES = [
+
+    "10H00",
+    "13H00",
+    "15H00",
+    "18H00",
+    "20H00",
+    "22H00",
+    "23H50"
+
+];
 
 
-        localStorage.setItem(
+TTA.BOX_LIST = [
 
-            TTA.TABLE_STORAGE_KEY,
+    1,2,3,4,5,
+    6,7,8,9,10
 
-            JSON.stringify(
-                TTA.tables
-            )
-
-        );
+];
 
 
-    }
-    catch(e){
+
+// =======================================
+// DATA
+// =======================================
 
 
-        console.error(
-            "SAVE TABLE ERROR",
-            e
-        );
+TTA.slotData =
+TTA.slotData || [];
 
 
-    }
+
+
+// =======================================
+// CREATE SLOT
+// =======================================
+
+
+TTA.createSlot=function(number){
+
+
+    return {
+
+        number:number,
+
+        team:"",
+
+        customer:"",
+
+        ctv:"",
+
+        paid:false,
+
+        created:null,
+
+        salary:false
+
+    };
 
 
 };
@@ -60,84 +86,17 @@ TTA.saveTables = function(){
 
 
 // =======================================
-// LOAD TABLES
+// CREATE TABLE A
 // =======================================
 
-TTA.loadTables = function(){
+
+TTA.createBoard=function(name){
 
 
-    try{
-
-
-        let data =
-        localStorage.getItem(
-            TTA.TABLE_STORAGE_KEY
-        );
-
-
-
-        if(data){
-
-
-            TTA.tables =
-            JSON.parse(data);
-
-
-        }
-        else{
-
-
-            TTA.tables=[];
-
-
-        }
-
-
-
-    }
-    catch(e){
-
-
-        console.error(
-            "LOAD TABLE ERROR",
-            e
-        );
-
-
-        TTA.tables=[];
-
-
-    }
-
-
-};
-
-
-
-
-// =======================================
-// CREATE TABLE
-// =======================================
-
-TTA.createTable=function(name){
-
-
-
-    let table={
-
-
-        id:
-        Date.now(),
+    let board={
 
 
         name:name,
-
-
-        status:"OPEN",
-
-
-        created:
-        Date.now(),
 
 
         slots:[]
@@ -147,206 +106,12 @@ TTA.createTable=function(name){
 
 
 
-    // tạo 12 slot
+    for(let i=1;i<=12;i++){
 
-    for(
-        let i=1;
-        i<=12;
-        i++
-    ){
 
+        board.slots.push(
 
-        table.slots.push({
-
-
-            number:i,
-
-
-            team:"",
-
-
-            paid:false,
-
-
-            ctv:"",
-
-
-            customer:"",
-
-
-            phone:"",
-
-
-            balanceUsed:0,
-
-
-            salaryAdded:false,
-
-
-            created:null
-
-
-        });
-
-
-    }
-
-
-
-    TTA.tables.push(table);
-
-
-
-    TTA.saveTables();
-
-
-
-    return table;
-
-
-};
-
-
-
-
-
-// =======================================
-// GET TABLE ĐANG MỞ
-// =======================================
-
-TTA.getOpenTable=function(){
-
-
-
-    let table =
-
-    TTA.tables.find(
-
-        t=>
-
-        t.status==="OPEN"
-
-    );
-
-
-
-    if(table){
-
-        return table;
-
-    }
-
-
-
-
-    let index =
-    TTA.tables.length;
-
-
-
-    let name =
-
-    String.fromCharCode(
-
-        65 + index
-
-    );
-
-
-
-    return TTA.createTable(name);
-
-
-
-};
-
-
-
-
-
-// =======================================
-// GET ALL SLOTS
-// =======================================
-
-TTA.getSlots=function(){
-
-
-    let result=[];
-
-
-
-    TTA.tables.forEach(table=>{
-
-
-        table.slots.forEach(slot=>{
-
-
-            result.push(slot);
-
-
-        });
-
-
-    });
-
-
-
-    return result;
-
-
-};
-
-
-
-
-
-// =======================================
-// ADD TEAM TO SLOT
-// =======================================
-
-TTA.addTeamToSlot=function(
-teamName,
-ctv
-){
-
-
-
-    let table =
-    TTA.getOpenTable();
-
-
-
-    let slot =
-
-    table.slots.find(
-
-        s=>
-
-        !s.team
-
-    );
-
-
-
-
-    // nếu bàn đầy
-
-    if(!slot){
-
-
-
-        table.status="FULL";
-
-
-        TTA.saveTables();
-
-
-
-        return TTA.addTeamToSlot(
-
-            teamName,
-
-            ctv
+            TTA.createSlot(i)
 
         );
 
@@ -355,410 +120,194 @@ ctv
 
 
 
+    return board;
 
 
-    slot.team =
-    teamName;
-
-
-
-    slot.ctv =
-    ctv || "";
-
-
-
-    slot.created =
-    Date.now();
-
-
-
-    slot.customer =
-    teamName;
-
-
-
-    slot.balanceUsed =
-    5000;
-
-
-
-    // kiểm tra full bàn
-
-    if(
-
-        table.slots.every(
-
-            s=>s.team
-
-        )
-
-    ){
-
-
-        table.status="FULL";
-
-
-    }
-
-
-
-    TTA.saveTables();
+};
 
 
 
 
-    if(
-        window.refreshDashboard
-    ){
+// =======================================
+// CREATE BOX
+// =======================================
 
 
-        window.refreshDashboard();
-
-
-    }
-
-
+TTA.createBox=function(
+time,
+box
+){
 
 
 
-    return{
+    return {
 
 
-        table:
-        table.name,
+        id:
+        Date.now()
+        +
+        Math.random(),
 
 
-        slot:
-        slot.number
+        time:time,
 
+
+        box:box,
+
+
+        boards:[
+
+            TTA.createBoard("A")
+
+        ]
 
     };
 
 
-
 };
 
 
 
 
-
 // =======================================
-// REMOVE TEAM
+// INIT SLOT SYSTEM
 // =======================================
 
-TTA.removeTeamFromSlot=function(
 
-tableName,
-
-slotNumber
-
-){
+TTA.initSlots=function(){
 
 
 
-    let table =
-
-    TTA.tables.find(
-
-        t=>
-
-        t.name===tableName
-
+    let old =
+    localStorage.getItem(
+        "CUSTOM_TTA_SLOT_DATA"
     );
 
 
 
-    if(!table)
-    return;
+    if(old){
+
+
+        try{
+
+
+            TTA.slotData =
+            JSON.parse(old);
 
 
 
-    let slot =
-
-    table.slots.find(
-
-        s=>
-
-        s.number===slotNumber
-
-    );
+            return;
 
 
+        }
+        catch(e){}
 
-    if(!slot)
-    return;
-
-
-
-
-    slot.team="";
-
-
-    slot.customer="";
-
-
-    slot.phone="";
-
-
-    slot.paid=false;
-
-
-    slot.ctv="";
-
-
-    slot.balanceUsed=0;
-
-
-    slot.salaryAdded=false;
-
-
-    slot.created=null;
-
-
-
-
-    table.status="OPEN";
-
-
-
-    TTA.saveTables();
-
-
-
-    if(
-        window.refreshDashboard
-    ){
-
-
-        window.refreshDashboard();
 
 
     }
 
 
 
-};
 
+    TTA.slotData=[];
 
 
 
+    TTA.SLOT_TIMES.forEach(time=>{
 
-// =======================================
-// PAYMENT STATUS
-// =======================================
 
-TTA.updateSlotPayment=function(
+        TTA.BOX_LIST.forEach(box=>{
 
-tableName,
 
-slotNumber,
+            TTA.slotData.push(
 
-status
+                TTA.createBox(
+                    time,
+                    box
+                )
 
-){
-
-
-
-    let table =
-
-    TTA.tables.find(
-
-        t=>
-
-        t.name===tableName
-
-    );
-
-
-
-    if(!table)
-    return;
-
-
-
-    let slot =
-
-    table.slots.find(
-
-        s=>
-
-        s.number===slotNumber
-
-    );
-
-
-
-    if(!slot)
-    return;
-
-
-
-    slot.paid =
-    status;
-
-
-
-    TTA.saveTables();
-
-
-
-    if(
-        window.refreshDashboard
-    ){
-
-        window.refreshDashboard();
-
-    }
-
-
-
-};
-
-
-
-
-
-// =======================================
-// INIT SYSTEM
-// =======================================
-
-
-TTA.loadTables();
-
-
-
-if(
-
-    TTA.tables.length===0
-
-){
-
-
-    TTA.createTable("A");
-
-
-}
-
-// =======================================
-// SLOT PAGE RENDER
-// =======================================
-
-
-TTA.renderSlots=function(){
-
-
-    let box =
-    document.getElementById(
-        "slotList"
-    );
-
-
-    if(!box)
-    return;
-
-
-
-    box.innerHTML="";
-
-
-
-    (TTA.tables || [])
-    .forEach(table=>{
-
-
-        let html=`
-
-
-        <div class="card">
-
-
-        <h3>
-        🪑 BÀN ${table.name}
-        </h3>
-
-
-        `;
-
-
-
-        table.slots.forEach(slot=>{
-
-
-            html += `
-
-
-            <div class="slot-card">
-
-
-            <b>
-            SLOT ${slot.number}
-            </b>
-
-
-            <br>
-
-
-            ${
-                slot.team
-                ?
-                "🔴 "+slot.team
-                :
-                "🟢 Trống"
-            }
-
-
-            <br>
-
-
-            ${
-                slot.paid
-                ?
-                "💸 Đã thanh toán"
-                :
-                "🚫 Chưa thanh toán"
-            }
-
-
-            <br>
-
-
-            <button onclick="
-            TTA.selectSlot(
-            '${table.id}',
-            ${slot.number}
-            )
-            ">
-
-            Chọn
-
-            </button>
-
-
-            </div>
-
-
-            `;
+            );
 
 
         });
-
-
-
-        html+="</div>";
-
-
-
-        box.innerHTML += html;
-
 
 
     });
 
 
 
+
+    TTA.saveSlots();
+
+
+
 };
 
 
+
+
+// =======================================
+// SAVE
+// =======================================
+
+
+TTA.saveSlots=function(){
+
+
+    localStorage.setItem(
+
+        "CUSTOM_TTA_SLOT_DATA",
+
+        JSON.stringify(
+            TTA.slotData
+        )
+
+    );
+
+
+};
+
+
+
+
+
+// =======================================
+// GET BOX
+// =======================================
+
+
+TTA.getBox=function(
+time,
+box
+){
+
+
+    return TTA.slotData.find(
+
+        x=>
+
+        x.time===time
+        &&
+        x.box==box
+
+    );
+
+
+};
+
+
+
+
+
+// =======================================
+// START
+// =======================================
+
+
+TTA.initSlots();
+
+
+
 console.log(
-"SLOT PAGE RENDER READY"
+"SLOT CORE 3A NEW SYSTEM READY"
 );
