@@ -648,29 +648,3 @@ document.getElementById("dashboardTables");
 
 
 };
-
-
-
-// AUTO LOAD
-
-
-// =======================================
-// REFRESH TABLE UI
-// =======================================
-
-window.addEventListener(
-"load",
-()=>{
-
-    setTimeout(()=>{
-
-        if(TTA.renderTables){
-
-            TTA.renderTables();
-
-        }
-
-    },1000);
-
-
-});
