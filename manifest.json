@@ -26,3 +26,12 @@
 
   "prefer_related_applications": false
 }
+{
+  "name": "CUSTOM TTA MANAGER",
+  "short_name": "TTA",
+  "display": "standalone",
+  "start_url": "./",
+  "scope": "./",
+  "background_color": "#111827",
+  "theme_color": "#2563eb"
+}
