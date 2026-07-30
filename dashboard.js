@@ -116,3 +116,147 @@ function(){
 }
 
 );
+// =======================================
+// PART 3A-3
+// TABLE DASHBOARD RENDER
+// =======================================
+
+
+TTA.renderTablesDashboard=function(){
+
+
+    const box =
+    document.getElementById(
+        "dashboardTables"
+    );
+
+
+    if(!box) return;
+
+
+    if(!TTA.tables){
+
+        box.innerHTML =
+        "Chưa có dữ liệu bàn";
+
+        return;
+
+    }
+
+
+
+    let html="";
+
+
+
+    TTA.tables.forEach(table=>{
+
+
+        html += `
+
+        <div class="tta-table">
+
+        <h3>
+        BÀN ${table.name}
+        ${
+        table.status==="FULL"
+        ?
+        "🔒"
+        :
+        "🟢"
+        }
+        </h3>
+
+
+        <div class="slot-list">
+
+        `;
+
+
+
+        table.slots.forEach(slot=>{
+
+
+            let icon =
+            "⭕";
+
+
+            if(slot.team){
+
+                icon =
+                slot.paid
+                ?
+                "💸"
+                :
+                "🚫";
+
+            }
+
+
+
+            html += `
+
+
+            <div class="slot-item">
+
+            <b>
+            Slot ${slot.number}
+            </b>
+
+
+            <br>
+
+
+            ${
+            slot.team
+            ||
+            "Trống"
+            }
+
+
+            <br>
+
+            ${icon}
+
+
+            </div>
+
+
+            `;
+
+
+
+        });
+
+
+
+        html += `
+
+        </div>
+
+        </div>
+
+        `;
+
+
+
+    });
+
+
+
+    box.innerHTML=html;
+
+
+};
+
+
+
+
+
+// AUTO UPDATE
+
+window.refreshTableDashboard=function(){
+
+    TTA.renderTablesDashboard();
+
+};
