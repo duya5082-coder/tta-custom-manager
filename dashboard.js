@@ -1,8 +1,8 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // DASHBOARD.JS
-// PART 3B-2
-// FULL DASHBOARD + TABLE RENDER
+// PART 3F
+// DASHBOARD PRO ENGINE
 // =======================================
 
 "use strict";
@@ -10,7 +10,7 @@
 
 
 // =======================================
-// UPDATE STATISTICS
+// UPDATE DASHBOARD
 // =======================================
 
 
@@ -18,46 +18,70 @@ TTA.updateDashboard=function(){
 
 
 
-    let slots =
-    TTA.getSlots
-    ?
-    TTA.getSlots()
-    :
-    [];
+    let totalSlot=0;
+
+    let usedSlot=0;
+
+    let paidSlot=0;
+
+    let revenue=0;
+
+    let tables=0;
 
 
 
-    let totalSlot =
-    slots.length;
+    if(TTA.tables){
+
+
+        tables =
+        TTA.tables.length;
 
 
 
-    let fullSlot =
-    slots.filter(
-        s=>s.team
-    ).length;
+        TTA.tables.forEach(table=>{
+
+
+            table.slots.forEach(slot=>{
+
+
+                totalSlot++;
 
 
 
-    let totalCTV=[];
+                if(slot.team){
+
+                    usedSlot++;
+
+
+                }
 
 
 
-    slots.forEach(slot=>{
+                if(slot.paid){
 
 
-        if(
-            slot.ctv &&
-            !totalCTV.includes(slot.ctv)
-        ){
-
-            totalCTV.push(slot.ctv);
-
-        }
+                    paidSlot++;
 
 
-    });
+                    revenue +=5000;
 
+
+                }
+
+
+
+            });
+
+
+        });
+
+
+    }
+
+
+
+    let empty =
+    totalSlot-usedSlot;
 
 
 
@@ -67,25 +91,40 @@ TTA.updateDashboard=function(){
     );
 
 
-
     setValue(
         "fullSlot",
-        fullSlot
+        usedSlot
     );
 
 
 
     setValue(
         "totalPlayer",
-        fullSlot
+        usedSlot
     );
 
 
 
     setValue(
         "totalCTV",
-        totalCTV.length
+        getCTVCount()
     );
+
+
+
+
+    renderDashboardInfo({
+
+        tables,
+
+        empty,
+
+        revenue,
+
+        paidSlot
+
+
+    });
 
 
 
@@ -94,14 +133,57 @@ TTA.updateDashboard=function(){
 
 
 
+// =======================================
+// CTV COUNT
+// =======================================
+
+
+function getCTVCount(){
+
+
+    let list=[];
+
+
+
+    TTA.tables.forEach(t=>{
+
+
+        t.slots.forEach(s=>{
+
+
+            if(
+                s.ctv
+                &&
+                !list.includes(s.ctv)
+            ){
+
+                list.push(s.ctv);
+
+            }
+
+
+        });
+
+
+    });
+
+
+
+    return list.length;
+
+
+}
+
+
+
+
 
 // =======================================
-// RENDER TABLES
+// EXTRA INFO
 // =======================================
 
 
-TTA.renderTablesDashboard=function(){
-
+function renderDashboardInfo(data){
 
 
     let box =
@@ -120,192 +202,36 @@ TTA.renderTablesDashboard=function(){
 
 
 
-    if(
-        !TTA.tables ||
-        TTA.tables.length===0
-    ){
+    html+=`
 
-        box.innerHTML=
-        "Chưa có bàn";
+    <div class="dashboard-info">
 
-        return;
+    🪑 Số bàn:
+    ${data.tables}
 
-    }
+    <br>
 
+    🟢 Slot trống:
+    ${data.empty}
 
+    <br>
 
+    💸 Doanh thu:
+    ${data.revenue.toLocaleString()}đ
 
-    TTA.tables.forEach(table=>{
 
+    </div>
 
+    `;
 
-        html+=`
 
-        <div class="table-box">
 
-
-        <h3>
-
-        🪑 BÀN ${table.name}
-
-        ${
-            table.status==="FULL"
-            ?
-            " 🔒"
-            :
-            " 🟢"
-        }
-
-
-        </h3>
-
-
-
-        <div class="slot-grid">
-
-
-        `;
-
-
-
-
-        table.slots.forEach(slot=>{
-
-
-
-            let status =
-            "🟢 Trống";
-
-
-
-            if(slot.team){
-
-
-                status =
-                slot.paid
-                ?
-                "💸 Đã thanh toán"
-                :
-                "🚫 Chưa thanh toán";
-
-
-            }
-
-
-
-
-            html+=`
-
-            <div class="slot-card">
-
-
-                <div class="slot-number">
-
-                    SLOT ${slot.number}
-
-                </div>
-
-
-
-                <div class="slot-team">
-
-                    ${
-                        slot.team
-                        ?
-                        slot.team
-                        :
-                        "Trống"
-                    }
-
-                </div>
-
-
-
-                <div class="slot-status">
-
-                    ${status}
-
-                </div>
-
-
-
-                <button
-
-                onclick="
-                TTA.selectSlot(
-                '${table.id}',
-                ${slot.number}
-                )
-                "
-
-                >
-
-                [Chọn]
-
-                </button>
-
-
-
-            </div>
-
-
-            `;
-
-
-
-        });
-
-
-
-
-        html+=`
-
-        </div>
-
-
-        </div>
-
-
-        `;
-
-
-
-    });
-
+    html+=
+    renderTablesHTML();
 
 
 
     box.innerHTML=html;
-
-
-
-};
-
-
-
-
-
-// =======================================
-// SET VALUE
-// =======================================
-
-
-function setValue(
-id,
-value
-){
-
-
-    let el =
-    document.getElementById(id);
-
-
-
-    if(el){
-
-        el.textContent=value;
-
-    }
 
 
 }
@@ -314,18 +240,144 @@ value
 
 
 
+
 // =======================================
-// REFRESH GLOBAL
+// TABLE HTML
 // =======================================
+
+
+function renderTablesHTML(){
+
+
+let html="";
+
+
+
+TTA.tables.forEach(table=>{
+
+
+html+=`
+
+<div class="tta-table">
+
+
+<h3>
+🪑 BÀN ${table.name}
+
+${
+table.status==="FULL"
+?
+" 🔒"
+:
+" 🟢"
+}
+
+</h3>
+
+
+<div class="slot-grid">
+
+`;
+
+
+
+table.slots.forEach(slot=>{
+
+
+html+=`
+
+<div class="slot-card">
+
+
+<b>
+SLOT ${slot.number}
+</b>
+
+
+<br>
+
+
+${
+slot.team
+?
+slot.team
+:
+"🟢 Trống"
+}
+
+
+
+<br>
+
+
+
+${
+slot.paid
+?
+"💸"
+:
+slot.team
+?
+"🚫"
+:
+""
+}
+
+
+
+</div>
+
+
+`;
+
+
+
+});
+
+
+
+html+=`
+
+</div>
+
+</div>
+
+`;
+
+
+
+});
+
+
+return html;
+
+
+}
+
+
+
+
+
+function setValue(id,value){
+
+
+let el =
+document.getElementById(id);
+
+
+if(el)
+el.textContent=value;
+
+
+}
+
+
 
 
 window.refreshDashboard=function(){
 
 
-    TTA.updateDashboard();
-
-
-    TTA.renderTablesDashboard();
+TTA.updateDashboard();
 
 
 };
@@ -334,23 +386,19 @@ window.refreshDashboard=function(){
 
 
 
-// =======================================
-// START
-// =======================================
-
-
 window.addEventListener(
 "load",
 ()=>{
 
 
-    setTimeout(()=>{
+setTimeout(()=>{
 
 
-        refreshDashboard();
+TTA.updateDashboard();
 
 
-    },500);
+},500);
+
 
 
 });
@@ -360,5 +408,5 @@ window.addEventListener(
 
 
 console.log(
-"DASHBOARD 3B-2 READY"
+"DASHBOARD PRO 3F READY"
 );
