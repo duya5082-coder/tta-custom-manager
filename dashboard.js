@@ -1,11 +1,179 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // DASHBOARD.JS
-// PART 3F
-// DASHBOARD PRO ENGINE
+// NEW SLOT SYSTEM
 // =======================================
 
 "use strict";
+
+
+
+// =======================================
+// COUNT SLOT
+// =======================================
+
+
+TTA.getTotalSlot=function(){
+
+
+    let total=0;
+
+
+    if(!Array.isArray(TTA.slotData))
+    return 0;
+
+
+
+    TTA.slotData.forEach(box=>{
+
+
+        box.boards.forEach(board=>{
+
+
+            total += board.slots.length;
+
+
+        });
+
+
+    });
+
+
+
+    return total;
+
+
+};
+
+
+
+
+
+// =======================================
+// COUNT FULL
+// =======================================
+
+
+TTA.getFullSlot=function(){
+
+
+    let total=0;
+
+
+    if(!Array.isArray(TTA.slotData))
+    return 0;
+
+
+
+    TTA.slotData.forEach(box=>{
+
+
+        box.boards.forEach(board=>{
+
+
+            if(
+                board.slots.every(
+                    s=>s.team
+                )
+            ){
+
+                total++;
+
+            }
+
+
+        });
+
+
+    });
+
+
+
+    return total;
+
+
+};
+
+
+
+
+
+// =======================================
+// COUNT TEAM
+// =======================================
+
+
+TTA.getTeamCount=function(){
+
+
+    let total=0;
+
+
+    if(!Array.isArray(TTA.slotData))
+    return 0;
+
+
+
+    TTA.slotData.forEach(box=>{
+
+
+        box.boards.forEach(board=>{
+
+
+            board.slots.forEach(slot=>{
+
+
+                if(slot.team){
+
+                    total++;
+
+                }
+
+
+            });
+
+
+        });
+
+
+    });
+
+
+
+    return total;
+
+
+};
+
+
+
+
+
+// =======================================
+// COUNT CTV
+// =======================================
+
+
+TTA.getCTVCount=function(){
+
+
+
+    if(!Array.isArray(TTA.accounts))
+    return 0;
+
+
+
+    return TTA.accounts.filter(
+
+        u=>u.role==="CTV"
+
+    ).length;
+
+
+
+};
+
+
 
 
 
@@ -18,415 +186,96 @@ TTA.updateDashboard=function(){
 
 
 
-    let totalSlot=0;
-
-    let usedSlot=0;
-
-    let paidSlot=0;
-
-    let revenue=0;
-
-    let tables=0;
+    let totalSlot =
+    document.getElementById(
+        "totalSlot"
+    );
 
 
-
-    if(TTA.tables){
-
-
-        tables =
-        TTA.tables.length;
+    let fullSlot =
+    document.getElementById(
+        "fullSlot"
+    );
 
 
+    let player =
+    document.getElementById(
+        "totalPlayer"
+    );
 
-        TTA.tables.forEach(table=>{
 
-
-            table.slots.forEach(slot=>{
-
-
-                totalSlot++;
+    let ctv =
+    document.getElementById(
+        "totalCTV"
+    );
 
 
 
-                if(slot.team){
+    if(totalSlot)
 
-                    usedSlot++;
-
-
-                }
+    totalSlot.innerHTML =
+    TTA.getTotalSlot();
 
 
 
-                if(slot.paid){
 
+    if(fullSlot)
 
-                    paidSlot++;
-
-
-                    revenue +=5000;
-
-
-                }
+    fullSlot.innerHTML =
+    TTA.getFullSlot();
 
 
 
-            });
+
+    if(player)
+
+    player.innerHTML =
+    TTA.getTeamCount();
 
 
-        });
 
+
+    if(ctv)
+
+    ctv.innerHTML =
+    TTA.getCTVCount();
+
+
+
+    if(
+        TTA.renderDashboardSlots
+    ){
+
+        TTA.renderDashboardSlots();
 
     }
 
 
 
-    let empty =
-    totalSlot-usedSlot;
-
-
-
-    setValue(
-        "totalSlot",
-        totalSlot
-    );
-
-
-    setValue(
-        "fullSlot",
-        usedSlot
-    );
-
-
-
-    setValue(
-        "totalPlayer",
-        usedSlot
-    );
-
-
-
-    setValue(
-        "totalCTV",
-        getCTVCount()
-    );
-
-
-
-
-    renderDashboardInfo({
-
-        tables,
-
-        empty,
-
-        revenue,
-
-        paidSlot
-
-
-    });
-
-
-
 };
 
-
-
-
-// =======================================
-// CTV COUNT
-// =======================================
-
-
-function getCTVCount(){
-
-
-    let list=[];
-
-
-
-    TTA.tables.forEach(t=>{
-
-
-        t.slots.forEach(s=>{
-
-
-            if(
-                s.ctv
-                &&
-                !list.includes(s.ctv)
-            ){
-
-                list.push(s.ctv);
-
-            }
-
-
-        });
-
-
-    });
-
-
-
-    return list.length;
-
-
-}
-
-
-
-
-
-// =======================================
-// EXTRA INFO
-// =======================================
-
-
-function renderDashboardInfo(data){
-
-
-    let box =
-    document.getElementById(
-        "dashboardTables"
-    );
-
-
-
-    if(!box)
-    return;
-
-
-
-    let html="";
-
-
-
-    html+=`
-
-    <div class="dashboard-info">
-
-    🪑 Số bàn:
-    ${data.tables}
-
-    <br>
-
-    🟢 Slot trống:
-    ${data.empty}
-
-    <br>
-
-    💸 Doanh thu:
-    ${data.revenue.toLocaleString()}đ
-
-
-    </div>
-
-    `;
-
-
-
-    html+=
-    renderTablesHTML();
-
-
-
-    box.innerHTML=html;
-
-
-}
-
-
-
-
-
-
-// =======================================
-// TABLE HTML
-// =======================================
-
-
-function renderTablesHTML(){
-
-
-let html="";
-
-
-
-TTA.tables.forEach(table=>{
-
-
-html+=`
-
-<div class="tta-table">
-
-
-<h3>
-🪑 BÀN ${table.name}
-
-${
-table.status==="FULL"
-?
-" 🔒"
-:
-" 🟢"
-}
-
-</h3>
-
-
-<div class="slot-grid">
-
-`;
-
-
-
-table.slots.forEach(slot=>{
-
-
-html+=`
-
-<div class="slot-card">
-
-
-<b>
-SLOT ${slot.number}
-</b>
-
-
-<br>
-
-
-${
-slot.team
-?
-slot.team
-:
-"🟢 Trống"
-}
-
-
-
-<br>
-
-
-
-${
-slot.paid
-?
-"💸"
-:
-slot.team
-?
-"🚫"
-:
-""
-}
-
-
-
-</div>
-
-
-`;
-
-
-
-});
-
-
-
-html+=`
-
-</div>
-
-</div>
-
-`;
-
-
-
-});
-
-
-return html;
-
-
-}
-
-
-
-
-
-function setValue(id,value){
-
-
-let el =
-document.getElementById(id);
-
-
-if(el)
-el.textContent=value;
-
-
-}
 
 
 
 
 window.refreshDashboard=function(){
 
-
-TTA.updateDashboard();
-
+    TTA.updateDashboard();
 
 };
 
 
 
+setTimeout(function(){
 
 
-window.addEventListener(
-"load",
-()=>{
+    TTA.updateDashboard();
 
 
-setTimeout(()=>{
-
-
-TTA.updateDashboard();
-
-
-},500);
-
-
-
-});
-
-
+},1000);
 
 
 
 console.log(
-"DASHBOARD PRO 3F READY"
+"DASHBOARD NEW SYSTEM READY"
 );
-window.addEventListener(
-"load",
-()=>{
-
-
-setTimeout(()=>{
-
-
-if(TTA.renderTablesDashboard){
-
-TTA.renderTablesDashboard();
-
-}
-
-
-},500);
-
-
-
-});
