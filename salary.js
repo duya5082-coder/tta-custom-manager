@@ -6,7 +6,7 @@
 
 "use strict";
 
-const SLOT_SALARY = 500;
+window.SLOT_SALARY = 500;
 
 // =========================
 // INIT
