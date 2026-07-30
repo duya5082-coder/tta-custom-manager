@@ -1,85 +1,16 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // PAYMENT MANAGER
-// PART 3T
+// NEW SLOT SYSTEM
 // =======================================
 
 "use strict";
 
 
 
-// =======================================
-// PAYMENT UPDATE
-// =======================================
-
-
-TTA.markPaid=function(
-tableId,
-slotNumber
-){
-
-
-    let table =
-    TTA.tables.find(
-        t=>String(t.id)===String(tableId)
-    );
-
-
-
-    if(!table)
-    return;
-
-
-
-    let slot =
-    table.slots.find(
-        s=>s.number==slotNumber
-    );
-
-
-
-    if(!slot)
-    return;
-
-
-
-    slot.paid=true;
-
-
-
-    slot.paidTime =
-    Date.now();
-
-
-
-    TTA.saveTables();
-
-
-
-    if(TTA.renderPaymentPage){
-
-        TTA.renderPaymentPage();
-
-    }
-
-
-
-    if(TTA.updateDashboard){
-
-        TTA.updateDashboard();
-
-    }
-
-
-
-};
-
-
-
-
 
 // =======================================
-// PAYMENT LIST
+// RENDER PAYMENT
 // =======================================
 
 
@@ -89,7 +20,7 @@ TTA.renderPaymentPage=function(){
 
     let box =
     document.getElementById(
-        "payment"
+        "paymentList"
     );
 
 
@@ -99,43 +30,37 @@ TTA.renderPaymentPage=function(){
 
 
 
-    let html=`
-
-
-    <h2>
-    💸 Quản lý thanh toán
-    </h2>
-
-
-    <div class="card">
-
-
-    `;
+    let html="";
 
 
 
-    let count=0;
+    if(!Array.isArray(TTA.slotData)){
+
+
+        box.innerHTML =
+        "Chưa có dữ liệu";
+
+
+        return;
+
+
+    }
 
 
 
-    TTA.tables.forEach(table=>{
 
 
-        table.slots.forEach(slot=>{
+    TTA.slotData.forEach(data=>{
 
 
-            if(slot.team){
+        data.boards.forEach(board=>{
 
 
-                count++;
+            board.slots.forEach(slot=>{
 
 
-                let status =
-                slot.paid
-                ?
-                "💸 Đã thanh toán"
-                :
-                "🚫 Chưa thanh toán";
+                if(!slot.team)
+                return;
 
 
 
@@ -145,46 +70,61 @@ TTA.renderPaymentPage=function(){
                 <div class="card">
 
 
-                🪑 Bàn ${table.name}
-
-                -
-
-                Slot ${slot.number}
+                🎮 ${slot.team}
 
 
                 <br>
 
 
-                👥 ${slot.team}
+                CTV:
+                ${slot.ctv || "-"}
 
 
                 <br>
 
 
-                ${status}
+                Trạng thái:
+
+                ${
+                slot.paid
+                ?
+                "💸 Đã thanh toán"
+                :
+                "🚫 Chưa thanh toán"
+                }
 
 
 
                 ${
-                    slot.paid
-                    ?
-                    ""
-                    :
-                    `
+                !slot.paid
 
-                    <button onclick="
-                    TTA.markPaid(
-                    '${table.id}',
-                    ${slot.number}
-                    )
-                    ">
+                ?
 
-                    Thanh toán
+                `
 
-                    </button>
+                <br>
 
-                    `
+                <button onclick="
+                TTA.confirmPayment(
+                '${data.time}',
+                ${data.box},
+                '${board.name}',
+                ${slot.number}
+                )
+                ">
+
+                💸 Thu tiền
+
+                </button>
+
+                `
+
+                :
+
+                ""
+
                 }
+
 
 
                 </div>
@@ -193,31 +133,17 @@ TTA.renderPaymentPage=function(){
                 `;
 
 
-            }
+
+            });
+
 
 
         });
 
 
+
     });
 
-
-
-    if(count===0){
-
-        html +=
-        "Chưa có slot";
-
-
-    }
-
-
-
-    html += `
-
-    </div>
-
-    `;
 
 
 
@@ -231,50 +157,6 @@ TTA.renderPaymentPage=function(){
 
 
 
-// =======================================
-// OPEN PAGE HOOK
-// =======================================
-
-
-let oldPaymentOpen =
-window.openPage;
-
-
-
-window.openPage=function(page){
-
-
-
-    if(oldPaymentOpen){
-
-        oldPaymentOpen(page);
-
-    }
-
-
-
-    if(page==="payment"){
-
-
-        setTimeout(()=>{
-
-
-            TTA.renderPaymentPage();
-
-
-        },100);
-
-
-    }
-
-
-
-};
-
-
-
-
-
 console.log(
-"PAYMENT MANAGER 3T READY"
+"PAYMENT MANAGER NEW READY"
 );
