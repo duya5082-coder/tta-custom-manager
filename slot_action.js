@@ -286,7 +286,11 @@ window.confirmAddSlot=function(){
 
 
     TTA.saveTables();
+     if(TTA.afterAddSlot){
 
+    TTA.afterAddSlot(data.slot);
+
+}
 
 
     closeSlotForm();
