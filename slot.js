@@ -518,3 +518,168 @@ if(TTA.tables.length===0){
 }
 
 console.log("AUTO TABLE READY");
+// =======================================
+// SAVE TABLE DATABASE
+// =======================================
+
+TTA.saveTables=function(){
+
+    localStorage.setItem(
+        "TTA_TABLES",
+        JSON.stringify(TTA.tables)
+    );
+
+};
+
+
+// LOAD TABLE DATABASE
+
+TTA.loadTables=function(){
+
+    let data =
+    localStorage.getItem(
+        "TTA_TABLES"
+    );
+
+
+    if(data){
+
+        TTA.tables =
+        JSON.parse(data);
+
+    }
+
+};
+
+
+// AUTO LOAD
+
+TTA.loadTables();
+
+
+console.log(
+"TTA TABLE STORAGE READY"
+);
+// =======================================
+// CUSTOM TTA MANAGER
+// PHẦN 3A-2
+// TABLE STORAGE ENGINE
+// =======================================
+
+
+// KEY DATABASE
+
+TTA.TABLE_STORAGE_KEY = "CUSTOM_TTA_TABLES";
+
+
+// =======================================
+// SAVE TABLES
+// =======================================
+
+TTA.saveTables = function(){
+
+    try{
+
+        localStorage.setItem(
+
+            TTA.TABLE_STORAGE_KEY,
+
+            JSON.stringify(
+                TTA.tables
+            )
+
+        );
+
+
+        console.log(
+            "TABLES SAVED"
+        );
+
+
+    }catch(e){
+
+        console.error(
+            "SAVE TABLE ERROR",
+            e
+        );
+
+    }
+
+};
+
+
+
+// =======================================
+// LOAD TABLES
+// =======================================
+
+TTA.loadTables = function(){
+
+    try{
+
+        let data =
+        localStorage.getItem(
+            TTA.TABLE_STORAGE_KEY
+        );
+
+
+        if(data){
+
+            TTA.tables =
+            JSON.parse(data);
+
+
+            console.log(
+                "TABLES LOADED"
+            );
+
+
+        }else{
+
+            console.log(
+                "NO TABLE DATA"
+            );
+
+        }
+
+
+
+    }catch(e){
+
+        console.error(
+            "LOAD TABLE ERROR",
+            e
+        );
+
+        TTA.tables=[];
+
+    }
+
+};
+
+
+
+// =======================================
+// AUTO LOAD START
+// =======================================
+
+
+TTA.loadTables();
+
+
+
+if(
+    TTA.tables.length===0
+){
+
+    TTA.createTable("A");
+
+    TTA.saveTables();
+
+}
+
+
+
+console.log(
+    "TTA STORAGE READY"
+);
