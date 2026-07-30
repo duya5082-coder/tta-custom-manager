@@ -173,7 +173,7 @@ let result=[];
 
 
 
-TTA.tables.forEach(table=>{
+TTA.slotData.forEach(table=>{
 
 
 table.slots.forEach(slot=>{
