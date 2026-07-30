@@ -2,31 +2,30 @@
 // CUSTOM TTA MANAGER
 // TEAM.JS
 // PART 3E
-// CTV ACCOUNT ENGINE
+// ACCOUNT + CTV MANAGER
 // =======================================
 
 "use strict";
 
 
-TTA.CTV_KEY =
+
+TTA.ACCOUNT_KEY =
 "CUSTOM_TTA_ACCOUNTS";
 
 
 
+// =======================================
+// GET ACCOUNTS
+// =======================================
 
-// ===============================
-// LOAD ACCOUNT
-// ===============================
 
-
-TTA.getCTVAccounts=function(){
-
+TTA.getAccounts=function(){
 
     try{
 
         let data =
         localStorage.getItem(
-            TTA.CTV_KEY
+            TTA.ACCOUNT_KEY
         );
 
 
@@ -44,24 +43,22 @@ TTA.getCTVAccounts=function(){
 
     }
 
-
 };
 
 
 
 
+// =======================================
+// SAVE ACCOUNTS
+// =======================================
 
-// ===============================
-// SAVE ACCOUNT
-// ===============================
 
-
-TTA.saveCTVAccounts=function(data){
+TTA.saveAccounts=function(data){
 
 
     localStorage.setItem(
 
-        TTA.CTV_KEY,
+        TTA.ACCOUNT_KEY,
 
         JSON.stringify(data)
 
@@ -74,26 +71,112 @@ TTA.saveCTVAccounts=function(data){
 
 
 
-// ===============================
+// =======================================
+// INIT DEFAULT ACCOUNT
+// =======================================
+
+
+TTA.initAccounts=function(){
+
+
+    let accounts =
+    TTA.getAccounts();
+
+
+
+    if(accounts.length===0){
+
+
+        accounts=[
+
+
+            {
+
+                id:1,
+
+                username:"admin",
+
+                password:"123456",
+
+                role:"ADMIN",
+
+                name:"Admin",
+
+                active:true
+
+            },
+
+
+            {
+
+                id:2,
+
+                username:"ctv1",
+
+                password:"123",
+
+                role:"CTV",
+
+                name:"CTV 1",
+
+                active:true
+
+            },
+
+
+            {
+
+                id:3,
+
+                username:"ctv2",
+
+                password:"123",
+
+                role:"CTV",
+
+                name:"CTV 2",
+
+                active:true
+
+            }
+
+
+        ];
+
+
+
+        TTA.saveAccounts(accounts);
+
+
+    }
+
+
+};
+
+
+
+
+
+// =======================================
 // ADD CTV
-// ===============================
+// =======================================
 
 
 TTA.addCTV=function(
 username,
-password
+password,
+name
 ){
 
 
-
-    let list =
-    TTA.getCTVAccounts();
+    let accounts =
+    TTA.getAccounts();
 
 
 
     let exist =
-    list.find(
-        x=>x.username===username
+    accounts.find(
+        a=>a.username===username
     );
 
 
@@ -106,31 +189,26 @@ password
 
 
 
-    list.push({
 
+    accounts.push({
 
         id:Date.now(),
 
-
         username:username,
-
 
         password:password,
 
+        name:name || username,
 
         role:"CTV",
 
-
         active:true
-
 
     });
 
 
 
-    TTA.saveCTVAccounts(
-        list
-    );
+    TTA.saveAccounts(accounts);
 
 
 
@@ -143,29 +221,66 @@ password
 
 
 
-// ===============================
+// =======================================
 // DELETE CTV
-// ===============================
+// =======================================
 
 
-TTA.removeCTV=function(username){
-
-
-
-    let list =
-    TTA.getCTVAccounts();
+TTA.deleteCTV=function(username){
 
 
 
-    list =
-    list.filter(
-        x=>x.username!==username
+    let accounts =
+    TTA.getAccounts();
+
+
+
+    accounts =
+    accounts.filter(
+
+        a=>
+
+        a.username!==username
+
     );
 
 
 
-    TTA.saveCTVAccounts(
-        list
+    TTA.saveAccounts(accounts);
+
+
+};
+
+
+
+
+
+// =======================================
+// FIND USER
+// =======================================
+
+
+TTA.findAccount=function(
+username,
+password
+){
+
+
+    let accounts =
+    TTA.getAccounts();
+
+
+
+    return accounts.find(
+
+        a=>
+
+        a.username===username
+        &&
+        a.password===password
+        &&
+        a.active
+
     );
 
 
@@ -175,6 +290,12 @@ TTA.removeCTV=function(username){
 
 
 
+// INIT
+
+TTA.initAccounts();
+
+
+
 console.log(
-"CTV ENGINE 3E READY"
+"ACCOUNT ENGINE 3E READY"
 );
