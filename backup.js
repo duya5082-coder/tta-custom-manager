@@ -1,190 +1,51 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // BACKUP.JS
-// PHẦN 2J
-// BACKUP & RESTORE SYSTEM
+// PART 3G
 // =======================================
 
 
+"use strict";
 
 
 
-// =======================================
-// EXPORT DATABASE
-// =======================================
-
-window.exportDatabase = function(){
-
-
-
-    let data =
-    JSON.stringify(
-        TTA.database,
-        null,
-        2
-    );
-
-
-
-    let blob =
-    new Blob(
-        [
-            data
-        ],
-        {
-            type:
-            "application/json"
-        }
-    );
-
-
-
-    let url =
-    URL.createObjectURL(
-        blob
-    );
-
-
-
-    let a =
-    document.createElement(
-        "a"
-    );
-
-
-
-    a.href =
-    url;
-
-
-
-    a.download =
-    "CUSTOM_TTA_BACKUP.json";
-
-
-
-    a.click();
-
-
-
-    URL.revokeObjectURL(
-        url
-    );
-
-
-
-    alert(
-        "Đã xuất dữ liệu"
-    );
-
-
-};
-
-
-
+TTA.BACKUP_KEY =
+"CUSTOM_TTA_BACKUP";
 
 
 
 
 // =======================================
-// IMPORT DATABASE
+// BACKUP
 // =======================================
 
-window.importDatabase = function(event){
+
+TTA.backup=function(){
 
 
 
-    let file =
-    event.target.files[0];
+    let data={
 
 
 
-    if(!file){
-
-        return;
-
-    }
+        tables:TTA.tables,
 
 
-
-    let reader =
-    new FileReader();
-
+        salary:
+        TTA.getSalary
+        ?
+        TTA.getSalary()
+        :
+        {},
 
 
 
-    reader.onload =
-    function(e){
-
-
-
-        try{
-
-
-            let data =
-            JSON.parse(
-                e.target.result
-            );
-
-
-
-            if(
-                !data.users ||
-                !data.slots ||
-                !data.bills
-            ){
-
-
-                alert(
-                    "File backup không hợp lệ"
-                );
-
-
-                return;
-
-            }
-
-
-
-
-
-            TTA.database =
-            data;
-
-
-
-            TTA.saveDatabase();
-
-
-
-
-            alert(
-                "Khôi phục thành công"
-            );
-
-
-
-            location.reload();
-
-
-
-        }
-        catch(error){
-
-
-
-            alert(
-                "File lỗi"
-            );
-
-
-
-            console.error(
-                error
-            );
-
-
-        }
+        payments:
+        TTA.getPayments
+        ?
+        TTA.getPayments()
+        :
+        []
 
 
 
@@ -192,91 +53,19 @@ window.importDatabase = function(event){
 
 
 
-    reader.readAsText(
-        file
-    );
-
-
-};
-
-
-
-
-
-
-
-
-// =======================================
-// RESET DATABASE
-// =======================================
-
-window.resetAllData = function(){
-
-
-
-    if(
-        confirm(
-            "Xóa toàn bộ dữ liệu?"
-        )
-    ){
-
-
-
-        localStorage.removeItem(
-            "CUSTOM_TTA_DATABASE"
-        );
-
-
-
-        localStorage.removeItem(
-            "CUSTOM_TTA_SESSION"
-        );
-
-
-
-        alert(
-            "Đã reset"
-        );
-
-
-
-        location.reload();
-
-
-
-    }
-
-
-};
-
-
-
-
-
-
-
-
-// =======================================
-// AUTO BACKUP
-// =======================================
-
-TTA.autoBackup = function(){
-
-
-
-    let data =
-    JSON.stringify(
-        TTA.database
-    );
-
-
 
     localStorage.setItem(
 
-        "CUSTOM_TTA_AUTO_BACKUP",
+        TTA.BACKUP_KEY,
 
-        data
+        JSON.stringify(data)
 
+    );
+
+
+
+    alert(
+        "Backup thành công"
     );
 
 
@@ -286,58 +75,69 @@ TTA.autoBackup = function(){
 
 
 
-
-
-
 // =======================================
-// RESTORE AUTO BACKUP
+// RESTORE
 // =======================================
 
-TTA.restoreAutoBackup = function(){
+
+TTA.restore=function(){
 
 
 
     let data =
+
     localStorage.getItem(
-        "CUSTOM_TTA_AUTO_BACKUP"
+
+        TTA.BACKUP_KEY
+
     );
 
 
 
     if(!data){
 
-        return false;
 
-    }
-
-
-
-    try{
-
-
-        TTA.database =
-        JSON.parse(
-            data
+        alert(
+            "Không có backup"
         );
 
 
-
-        TTA.saveDatabase();
-
-
-
-        return true;
-
-
+        return;
 
     }
-    catch(e){
 
 
-        return false;
 
+
+
+    data =
+    JSON.parse(data);
+
+
+
+
+    TTA.tables =
+    data.tables || [];
+
+
+
+    if(
+        TTA.saveTables
+    ){
+
+        TTA.saveTables();
 
     }
+
+
+
+    alert(
+        "Khôi phục thành công"
+    );
+
+
+
+    refreshDashboard();
 
 
 };
@@ -346,39 +146,6 @@ TTA.restoreAutoBackup = function(){
 
 
 
-
-
-// =======================================
-// AUTO SAVE
-// =======================================
-
-setInterval(
-
-function(){
-
-
-    if(
-        TTA.database
-    ){
-
-
-        TTA.autoBackup();
-
-
-    }
-
-
-},
-
-30000
-
+console.log(
+"BACKUP SYSTEM 3G READY"
 );
-
-
-
-
-
-
-// =======================================
-// END PART 2J
-// =======================================
