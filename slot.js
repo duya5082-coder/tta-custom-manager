@@ -670,7 +670,7 @@ window.addEventListener(
 
         }
 
-    },300);
+    },1000);
 
 
 });
