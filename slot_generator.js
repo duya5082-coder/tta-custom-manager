@@ -1,332 +1,79 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // SLOT_GENERATOR.JS
-// PHẦN 2P
-// AUTO SLOT GENERATOR
+// PART 3F
+// AUTO TABLE SYSTEM
 // =======================================
 
 
-
-
-
-// =======================================
-// CREATE MULTI SLOT
-// =======================================
-
-
-window.generateSlots = function(){
-
-
-
-    if(
-        !TTA.isAdmin()
-    ){
-
-        alert(
-            "Chỉ Admin được tạo Slot"
-        );
-
-        return;
-
-    }
-
-
-
-
-    let date =
-    prompt(
-        "Ngày tạo Slot (VD: 29/07)"
-    );
-
-
-
-    let start =
-    prompt(
-        "Giờ bắt đầu Slot đầu tiên (VD: 19:00)"
-    );
-
-
-
-    let total =
-    Number(
-        prompt(
-            "Số lượng Slot"
-        )
-    );
-
-
-
-    let duration =
-    Number(
-        prompt(
-            "Mỗi Slot bao nhiêu phút?"
-        )
-    );
-
-
-
-    if(
-        !date ||
-        !start ||
-        !total
-    ){
-
-        return;
-
-    }
-
-
-
-
-    for(
-        let i = 0;
-        i < total;
-        i++
-    ){
-
-
-
-        let time =
-        calculateTime(
-            start,
-            i * duration
-        );
-
-
-
-        let end =
-        calculateTime(
-            start,
-            (i+1) * duration
-        );
-
-
-
-
-
-        TTA.createSlot({
-
-            title:
-            "Slot " +
-            (i+1),
-
-
-            date:
-            date,
-
-
-            startTime:
-            time,
-
-
-            endTime:
-            end,
-
-
-            status:
-            "OPEN"
-
-
-
-        });
-
-
-
-    }
-
-
-
-
-    TTA.saveDatabase();
-
-
-
-    TTA.renderSlots();
-
-
-    TTA.updateDashboard();
-
-
-
-    alert(
-        "Đã tạo " + total + " Slot"
-    );
-
-
-
-};
-
-
-
-
+"use strict";
 
 
 
 
 // =======================================
-// TIME CALCULATOR
+// CHECK FULL TABLE
 // =======================================
 
 
-function calculateTime(
-    time,
-    addMinute
+TTA.checkAutoCreateTable=function(){
+
+
+
+TTA.tables.forEach(table=>{
+
+
+
+if(
+table.slots.every(
+s=>s.team
+)
 ){
 
 
+table.status="FULL";
 
-    let parts =
-    time.split(":");
 
 
+let next =
+String.fromCharCode(
+65 + TTA.tables.length
+);
 
-    let hour =
-    Number(parts[0]);
 
 
+let exist =
+TTA.tables.find(
+t=>t.name===next
+);
 
-    let minute =
-    Number(parts[1]);
 
 
+if(!exist){
 
-    let total =
-    hour * 60 +
-    minute +
-    addMinute;
 
+TTA.createTable(
+next
+);
 
 
-    let newHour =
-    Math.floor(
-        total / 60
-    )
-    % 24;
 
+TTA.notify(
 
+"Đã tạo BÀN "+next
 
-    let newMinute =
-    total % 60;
+);
 
 
 
+}
 
-    return (
 
-        String(newHour)
-        .padStart(2,"0")
+}
 
-        +
 
-        ":"
 
-        +
-
-        String(newMinute)
-        .padStart(2,"0")
-
-    );
-
-
-};
-
-
-
-
-
-
-
-
-// =======================================
-// DUPLICATE DAY SLOT
-// =======================================
-
-
-window.copySlotToDate = function(){
-
-
-
-    let oldDate =
-    prompt(
-        "Ngày cũ"
-    );
-
-
-
-    let newDate =
-    prompt(
-        "Ngày mới"
-    );
-
-
-
-    if(
-        !oldDate ||
-        !newDate
-    ){
-
-        return;
-
-    }
-
-
-
-    let slots =
-    TTA.getSlots()
-    .filter(
-        s =>
-        s.date === oldDate
-    );
-
-
-
-
-    slots.forEach(
-        slot=>{
-
-
-            TTA.createSlot({
-
-                title:
-                slot.title,
-
-
-                date:
-                newDate,
-
-
-                startTime:
-                slot.startTime,
-
-
-                endTime:
-                slot.endTime,
-
-
-                status:
-                "OPEN"
-
-
-            });
-
-
-        }
-    );
-
-
-
-
-    TTA.saveDatabase();
-
-
-
-    TTA.renderSlots();
-
-
-
-    alert(
-        "Đã copy lịch"
-    );
+});
 
 
 
@@ -336,104 +83,18 @@ window.copySlotToDate = function(){
 
 
 
+setInterval(()=>{
 
 
-
-// =======================================
-// QUICK TEMPLATE
-// =======================================
+TTA.checkAutoCreateTable();
 
 
-window.createDailyTemplate = function(){
-
-
-
-    let date =
-    prompt(
-        "Ngày"
-    );
-
-
-
-    if(!date){
-
-        return;
-
-    }
-
-
-
-
-    let times = [
-
-
-        ["19:00","19:30"],
-
-        ["19:30","20:00"],
-
-        ["20:00","20:30"],
-
-        ["20:30","21:00"]
-
-
-    ];
+},3000);
 
 
 
 
 
-    times.forEach(
-        (t,index)=>{
-
-
-            TTA.createSlot({
-
-
-                title:
-                "Custom " +
-                (index+1),
-
-
-                date:
-                date,
-
-
-                startTime:
-                t[0],
-
-
-                endTime:
-                t[1],
-
-
-                status:
-                "OPEN"
-
-
-            });
-
-
-        }
-    );
-
-
-
-
-    TTA.saveDatabase();
-
-
-    TTA.renderSlots();
-
-
-};
-
-
-
-
-
-
-
-
-// =======================================
-// END PART 2P
-// =======================================
+console.log(
+"AUTO TABLE 3F READY"
+);
