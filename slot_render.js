@@ -1,368 +1,173 @@
 // =======================================
 // CUSTOM TTA MANAGER
-// SLOT RENDER
-// PART 3B NEW SYSTEM UPDATE
+// SLOT_RENDER.JS
+// PART 4A-3.1
+// SLOT UI ENGINE
 // =======================================
 
 "use strict";
 
+TTA.TIME_LIST = [
+    "10H00",
+    "13H00",
+    "15H00",
+    "18H00",
+    "20H00",
+    "22H00",
+    "23H50"
+];
 
+TTA.BOX_LIST = [
+    1,2,3,4,5,
+    6,7,8,9,10
+];
 
-// =======================================
-// CURRENT VIEW
-// =======================================
+TTA.renderSlots = function(){
 
-TTA.currentSlotView = {
+    const root = document.getElementById("slotList");
 
-    time:"10H00",
+    if(!root) return;
 
-    box:1
+    let html = "";
 
-};
-
-
-
-
-// =======================================
-// RENDER SLOT PAGE
-// =======================================
-
-
-TTA.renderSlots=function(){
-
-
-    let area =
-    document.getElementById(
-        "slotList"
-    );
-
-
-    if(!area)
-    return;
-
-
-
-    let html="";
-
-
-
-    // =============================
-    // KHUNG GIỜ
-    // =============================
-
-
-    html += `
-
-    <div class="card">
-
-    <h3>
-    ⏰ KHUNG GIỜ
-    </h3>
-
-
-    `;
-
-
-
-    TTA.SLOT_TIMES.forEach(time=>{
-
+    TTA.TIME_LIST.forEach(time=>{
 
         html += `
+        <div class="slot-time-card">
 
-        <button onclick="
-        TTA.changeSlotTime('${time}')
-        ">
-
-        ${time}
-
-        </button>
-
-        `;
-
-
-    });
-
-
-
-    html += `
-
-    </div>
-
-    `;
-
-
-
-
-    // =============================
-    // BOX
-    // =============================
-
-
-    html += `
-
-    <div class="card">
-
-    <h3>
-    📦 BOX
-    </h3>
-
-    `;
-
-
-
-    TTA.BOX_LIST.forEach(box=>{
-
-
-        html += `
-
-
-        <button onclick="
-        TTA.changeSlotBox(${box})
-        ">
-
-        ${box}
-
-        </button>
-
-
-        `;
-
-
-    });
-
-
-
-    html += `
-
-    </div>
-
-    `;
-
-
-
-
-
-    let data =
-
-    TTA.getBox(
-
-        TTA.currentSlotView.time,
-
-        TTA.currentSlotView.box
-
-    );
-
-
-
-    if(!data){
-
-        area.innerHTML =
-        "Không có dữ liệu";
-
-        return;
-
-    }
-
-
-
-
-
-
-    // =============================
-    // HEADER
-    // =============================
-
-
-
-    html += `
-
-
-    <div class="card">
-
-
-    <h2>
-
-    ⏰ ${data.time}
-
-    </h2>
-
-
-    <h3>
-
-    📦 BOX ${data.box}
-
-    </h3>
-
-
-    <h3>
-
-    💸 5K
-
-    </h3>
-
-
-    </div>
-
-
-    `;
-
-
-
-
-
-
-    // =============================
-    // BOARD
-    // =============================
-
-
-    data.boards.forEach(board=>{
-
-
-        html += `
-
-
-        <div class="card">
-
-
-        <h2>
-
-        🅰️ BẢNG ${board.name}
-
-        </h2>
-
-
-        `;
-
-
-
-        board.slots.forEach(slot=>{
-
-
-            let num =
-            String(slot.number)
-            .padStart(2,"0");
-
-
-
-            html += `
-
-
-            <div class="slot-item"
-
-            onclick="
-            TTA.selectNewSlot(
-            '${data.time}',
-            ${data.box},
-            '${board.name}',
-            ${slot.number}
-            )
-            ">
-
-
-            ${num}️⃣
-
-
-
-            ${
-            slot.team
-            ?
-            slot.team
-            :
-            "Trống"
-            }
-
-
-
-            <br>
-
-
-            ${
-            slot.paid
-            ?
-            "💸 5K"
-            :
-            "🚫"
-            }
-
-
+            <div class="slot-time-title">
+                ⏰ ${time}
             </div>
 
+            <div class="slot-box-list">
+        `;
 
+        TTA.BOX_LIST.forEach(box=>{
+
+            html += `
+            <button
+                class="slot-box-btn"
+                onclick="TTA.selectBox('${time}',${box})">
+
+                BOX ${box}
+
+            </button>
             `;
-
 
         });
 
-
-
         html += `
+            </div>
+
+            <div
+                id="board_${time.replace(/[^0-9]/g,'')}"
+                class="slot-board-area">
+
+                <div class="slot-empty">
+
+                    Chọn BOX để hiển thị bảng
+
+                </div>
+
+            </div>
 
         </div>
-
         `;
-
-
 
     });
 
-
-
-
-
-    area.innerHTML=html;
-
-
+    root.innerHTML = html;
 
 };
 
+TTA.selectBox = function(time,box){
 
+    const id =
+    "board_" +
+    time.replace(/[^0-9]/g,'');
 
+    const board =
+    document.getElementById(id);
 
+    if(!board) return;
 
+    board.innerHTML = `
+        <div class="slot-board">
 
+            <div class="board-header">
 
-// =======================================
-// CHANGE TIME
-// =======================================
+                ⏰ ${time}
+                &nbsp;&nbsp;
+                💸 5K
+                &nbsp;&nbsp;
+                BOX ${box}
+                &nbsp;&nbsp;
+                BẢNG A
 
+            </div>
 
-TTA.changeSlotTime=function(time){
+            <div class="board-prize">
 
+                👑 5K - 25K / 10K / 5K
 
-    TTA.currentSlotView.time=time;
+            </div>
 
+            <div class="slot-list">
 
-    TTA.renderSlots();
+                ${TTA.renderBoardSlots()}
 
+            </div>
+
+        </div>
+    `;
 
 };
 
+TTA.renderBoardSlots = function(){
 
+    let html = "";
 
+    for(let i=1;i<=12;i++){
 
+        let number =
+        String(i).padStart(2,"0");
 
+        html += `
+        <div class="slot-item">
 
-// =======================================
-// CHANGE BOX
-// =======================================
+            <span class="slot-number">
 
+                ${number}
 
-TTA.changeSlotBox=function(box){
+            </span>
 
+            <span class="slot-team">
 
-    TTA.currentSlotView.box=box;
+                Trống
 
+            </span>
 
-    TTA.renderSlots();
+        </div>
+        `;
 
+    }
+
+    return html;
 
 };
 
+document.addEventListener(
+"DOMContentLoaded",
+function(){
 
+    setTimeout(function(){
 
+        TTA.renderSlots();
 
+    },300);
+
+});
 
 console.log(
-"SLOT RENDER 3B NEW READY"
+"PART 4A-3.1 READY"
 );
