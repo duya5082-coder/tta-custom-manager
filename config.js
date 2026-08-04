@@ -1,257 +1,201 @@
 // =======================================
 // CUSTOM TTA MANAGER
 // CONFIG.JS
-// VERSION 1.0
+// PART 4A-1
+// SYSTEM CONFIG
 // =======================================
 
-const APP_CONFIG = {
+"use strict";
 
-    appName: "CUSTOM TTA MANAGER",
+window.TTA = window.TTA || {};
 
-    version: "1.0.0",
-
-    company: "CUSTOM TTA",
-
-    developer: "CUSTOM",
-
-    storageKey: "CUSTOM_TTA_DATABASE",
-
-    loginKey: "CUSTOM_TTA_LOGIN"
-
-};
 
 // =======================================
-// ROLE
+// VERSION
 // =======================================
 
-const ROLE = {
+TTA.version = "3.0.0";
 
-    ADMIN: "admin",
-
-    CTV: "ctv"
-
-};
 
 // =======================================
-// LOGIN
+// STORAGE
 // =======================================
 
-const LOGIN = {
+TTA.STORAGE_KEY = "CUSTOM_TTA_SLOTDATA";
 
-    ADMIN:{
+TTA.BALANCE_KEY = "CUSTOM_TTA_BALANCE";
 
-        username:"admin",
+TTA.SALARY_KEY = "CUSTOM_TTA_SALARY";
 
-        password:"123"
+TTA.CTV_KEY = "CUSTOM_TTA_CTV";
 
-    },
+TTA.SETTING_KEY = "CUSTOM_TTA_SETTING";
 
-    CTV1:{
+TTA.HISTORY_KEY = "CUSTOM_TTA_HISTORY";
 
-        username:"ctv1",
-
-        password:"101"
-
-    },
-
-    CTV2:{
-
-        username:"ctv2",
-
-        password:"102"
-
-    }
-
-};
 
 // =======================================
 // SLOT
 // =======================================
 
-const SLOT = {
+TTA.SLOT_PRICE = 5000;
 
-    LIMIT:12,
+TTA.SLOT_COUNT = 12;
 
-    TABLES:[
 
-        "A",
+// =======================================
+// BOX
+// =======================================
 
-        "B",
+TTA.BOXES = [
 
-        "C",
+1,2,3,4,5,
 
-        "D"
+6,7,8,9,10
 
-    ],
+];
 
-    AUTO_CREATE:true,
 
-    AUTO_DELETE_NEXT_DAY:true
+// =======================================
+// TIME
+// =======================================
+
+TTA.TIMES = [
+
+"10H00",
+
+"13H00",
+
+"15H00",
+
+"18H00",
+
+"20H00",
+
+"22H00",
+
+"23H50"
+
+];
+
+
+// =======================================
+// BOARD
+// =======================================
+
+TTA.BOARDS = [
+
+"A",
+
+"B",
+
+"C",
+
+"D",
+
+"E"
+
+];
+
+
+// =======================================
+// PAYMENT STATUS
+// =======================================
+
+TTA.PAYMENT = {
+
+PAID : "PAID",
+
+UNPAID : "UNPAID",
+
+BALANCE : "BALANCE"
 
 };
 
-// =======================================
-// PAYMENT
-// =======================================
-
-const PAYMENT = {
-
-    PAID:"💸",
-
-    UNPAID:"🚫",
-
-    WAIT:"⏳",
-
-    CANCEL:"❌",
-
-    DEDUCT:5000
-
-};
 
 // =======================================
 // SALARY
 // =======================================
 
-const SALARY = {
+TTA.SALARY_PER_SLOT = 500;
 
-    SLOT_PRICE:500,
+TTA.SALARY_DELAY = 2 * 60 * 60 * 1000;
 
-    DELAY:90,
 
-    AUTO_ADD:true
+// =======================================
+// SLOT DEFAULT
+// =======================================
+
+TTA.createEmptySlot = function(number){
+
+    return{
+
+        number:number,
+
+        team:"",
+
+        customer:"",
+
+        ctv:"",
+
+        box:null,
+
+        paid:false,
+
+        paymentType:"UNPAID",
+
+        created:0,
+
+        paymentTime:0,
+
+        salaryAdded:false
+
+    };
 
 };
 
+
 // =======================================
-// MENU
+// TABLE DEFAULT
 // =======================================
 
-const MENU = [
+TTA.createBoard=function(name){
 
-    {
+    let board={
 
-        id:"dashboard",
+        name:name,
 
-        icon:"🏠",
+        status:"OPEN",
 
-        name:"Dashboard"
+        slots:[]
 
-    },
+    };
 
-    {
+    for(
 
-        id:"slot",
+        let i=1;
 
-        icon:"🎮",
+        i<=TTA.SLOT_COUNT;
 
-        name:"Slot"
+        i++
 
-    },
+    ){
 
-    {
+        board.slots.push(
 
-        id:"payment",
+            TTA.createEmptySlot(i)
 
-        icon:"💸",
-
-        name:"Thanh toán"
-
-    },
-
-    {
-
-        id:"balance",
-
-        icon:"💰",
-
-        name:"Danh sách dư"
-
-    },
-
-    {
-
-        id:"salary",
-
-        icon:"📊",
-
-        name:"Bảng lương"
-
-    },
-
-    {
-
-        id:"ctv",
-
-        icon:"👥",
-
-        name:"CTV"
-
-    },
-
-    {
-
-        id:"setting",
-
-        icon:"⚙️",
-
-        name:"Cài đặt"
+        );
 
     }
 
-];
-
-// =======================================
-// COLOR
-// =======================================
-
-const COLOR = {
-
-    PRIMARY:"#2563eb",
-
-    SUCCESS:"#16a34a",
-
-    WARNING:"#f59e0b",
-
-    DANGER:"#dc2626",
-
-    DARK:"#111827",
-
-    LIGHT:"#f4f7fb"
+    return board;
 
 };
 
-// =======================================
-// MESSAGE
-// =======================================
-
-const MESSAGE = {
-
-    LOGIN_SUCCESS:"Đăng nhập thành công",
-
-    LOGIN_ERROR:"Sai tài khoản hoặc mật khẩu",
-
-    FULL_SLOT:"Slot đã đủ 12 người",
-
-    SAVE_SUCCESS:"Đã lưu dữ liệu",
-
-    DELETE_SUCCESS:"Đã xóa",
-
-    UPDATE_SUCCESS:"Đã cập nhật"
-
-};
 
 // =======================================
-// SYSTEM
+// READY
 // =======================================
 
-const SYSTEM = {
-
-    DEBUG:true,
-
-    AUTO_SAVE:true,
-
-    AUTO_BACKUP:false
-
-};
-
-console.log(APP_CONFIG.appName + " CONFIG READY");
+console.log("CONFIG 4A-1 READY");
