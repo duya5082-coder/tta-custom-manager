@@ -2,10 +2,16 @@
 // CUSTOM TTA MANAGER
 // SLOT_RENDER.JS
 // PART 4A-3.1
-// SLOT UI ENGINE
+// SLOT UI ENGINE (REWRITE)
 // =======================================
 
 "use strict";
+
+// =======================================
+// DEFAULT DATA
+// =======================================
+
+window.TTA = window.TTA || {};
 
 TTA.TIME_LIST = [
     "10H00",
@@ -22,29 +28,59 @@ TTA.BOX_LIST = [
     6,7,8,9,10
 ];
 
+TTA.BOARD_LIST = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E"
+];
+
+// =======================================
+// SLOT PAGE
+// =======================================
+
 TTA.renderSlots = function(){
 
-    const root = document.getElementById("slotList");
+    const root =
+    document.getElementById("slotList");
 
-    if(!root) return;
+    if(!root){
+        return;
+    }
 
     let html = "";
 
-    TTA.TIME_LIST.forEach(time=>{
+    TTA.TIME_LIST.forEach(function(time){
 
         html += `
+
         <div class="slot-time-card">
 
-            <div class="slot-time-title">
-                ⏰ ${time}
+            <div class="slot-time-header">
+
+                <div class="slot-time-title">
+
+                    ⏰ ${time}
+
+                </div>
+
+                <div class="slot-time-count">
+
+                    ${TTA.BOX_LIST.length} BOX
+
+                </div>
+
             </div>
 
             <div class="slot-box-list">
+
         `;
 
-        TTA.BOX_LIST.forEach(box=>{
+        TTA.BOX_LIST.forEach(function(box){
 
             html += `
+
             <button
                 class="slot-box-btn"
                 onclick="TTA.selectBox('${time}',${box})">
@@ -52,26 +88,29 @@ TTA.renderSlots = function(){
                 BOX ${box}
 
             </button>
+
             `;
 
         });
 
         html += `
+
             </div>
 
             <div
-                id="board_${time.replace(/[^0-9]/g,'')}"
-                class="slot-board-area">
+                class="slot-board-area"
+                id="board_${time.replace(/[^0-9]/g,"")}">
 
                 <div class="slot-empty">
 
-                    Chọn BOX để hiển thị bảng
+                    Chọn BOX để xem danh sách Slot
 
                 </div>
 
             </div>
 
         </div>
+
         `;
 
     });
@@ -80,29 +119,174 @@ TTA.renderSlots = function(){
 
 };
 
+// =======================================
+// BOARD ROOT
+// =======================================
+
 TTA.selectBox = function(time,box){
 
-    const id =
+    const boardId =
     "board_" +
-    time.replace(/[^0-9]/g,'');
+    time.replace(/[^0-9]/g,"");
 
-    const board =
-    document.getElementById(id);
+    const root =
+    document.getElementById(boardId);
 
-    if(!board) return;
+    if(!root){
+        return;
+    }
 
-    board.innerHTML = `
+    root.innerHTML = `
+
+    <div class="slot-loading">
+
+        Đang tải dữ liệu...
+
+    </div>
+
+    `;
+
+    setTimeout(function(){
+
+        if(typeof TTA.renderBoards==="function"){
+
+            TTA.renderBoards(
+                time,
+                box
+            );
+
+        }
+
+    },50);
+
+};
+
+// =======================================
+// AUTO START
+// =======================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        setTimeout(function(){
+
+            TTA.renderSlots();
+
+        },200);
+
+    }
+);
+
+console.log(
+    "PART 4A-3.1 READY"
+);
+// =======================================
+// CUSTOM TTA MANAGER
+// SLOT_RENDER.JS
+// PART 4A-3.2
+// BOARD RENDER ENGINE
+// =======================================
+
+"use strict";
+
+// =======================================
+// LẤY DỮ LIỆU BẢNG
+// =======================================
+
+TTA.getBoardData = function(time, box, boardName){
+
+    if(!Array.isArray(TTA.slotData)){
+        return null;
+    }
+
+    const timeData = TTA.slotData.find(
+        item => item.time === time
+    );
+
+    if(!timeData){
+        return null;
+    }
+
+    const boxData = timeData.boxes.find(
+        item => item.box == box
+    );
+
+    if(!boxData){
+        return null;
+    }
+
+    return boxData.boards.find(
+        item => item.name === boardName
+    ) || null;
+
+};
+
+// =======================================
+// RENDER TOÀN BỘ BOARD
+// =======================================
+
+TTA.renderBoards = function(time,box){
+
+    const boardId =
+    "board_" +
+    time.replace(/[^0-9]/g,"");
+
+    const root =
+    document.getElementById(boardId);
+
+    if(!root){
+        return;
+    }
+
+    let html = "";
+
+    TTA.BOARD_LIST.forEach(function(boardName){
+
+        const board =
+        TTA.getBoardData(
+            time,
+            box,
+            boardName
+        );
+
+        // Chỉ hiển thị bảng đã tồn tại
+        // Riêng bảng A luôn hiển thị
+
+        if(
+            boardName !== "A" &&
+            !board
+        ){
+            return;
+        }
+
+        html += `
+
         <div class="slot-board">
 
             <div class="board-header">
 
-                ⏰ ${time}
-                &nbsp;&nbsp;
-                💸 5K
-                &nbsp;&nbsp;
-                BOX ${box}
-                &nbsp;&nbsp;
-                BẢNG A
+                <div>
+
+                    ⏰ ${time}
+
+                    &nbsp;&nbsp;
+
+                    BOX ${box}
+
+                    &nbsp;&nbsp;
+
+                    BẢNG ${boardName}
+
+                </div>
+
+                <button
+                    class="copy-board-btn"
+                    onclick="TTA.copyMessenger('${time}',${box},'${boardName}')">
+
+                    📋 Copy
+
+                </button>
 
             </div>
 
@@ -114,88 +298,33 @@ TTA.selectBox = function(time,box){
 
             <div class="slot-list">
 
-                ${TTA.renderBoardSlots()}
+                ${TTA.renderBoardSlots(
+                    time,
+                    box,
+                    boardName
+                )}
 
             </div>
 
         </div>
-    `;
 
-};
-
-TTA.renderBoardSlots = function(){
-
-    let html = "";
-
-    for(let i=1;i<=12;i++){
-
-        let number =
-        String(i).padStart(2,"0");
-
-        html += `
-        <div class="slot-item">
-
-            <span class="slot-number">
-
-                ${number}
-
-            </span>
-
-            <span class="slot-team">
-
-                Trống
-
-            </span>
-
-        </div>
         `;
 
-    }
+    });
 
-    return html;
-
-};
-
-document.addEventListener(
-"DOMContentLoaded",
-function(){
-
-    setTimeout(function(){
-
-        TTA.renderSlots();
-
-    },300);
-
-});
-
-console.log(
-"PART 4A-3.1 READY"
-);
-// =======================================
-// PART 4A-3.2
-// HIỂN THỊ DỮ LIỆU THẬT CỦA SLOT
-// =======================================
-
-TTA.getBoardData = function(time, box, boardName){
-
-    if(!Array.isArray(TTA.slotData)) return null;
-
-    const timeData = TTA.slotData.find(t=>t.time===time);
-
-    if(!timeData) return null;
-
-    const boxData = timeData.boxes.find(b=>b.box==box);
-
-    if(!boxData) return null;
-
-    return boxData.boards.find(
-        b=>b.name===boardName
-    ) || null;
+    root.innerHTML = html;
 
 };
 
+// =======================================
+// RENDER SLOT
+// =======================================
 
-TTA.renderBoardSlots = function(time,box,boardName){
+TTA.renderBoardSlots = function(
+time,
+box,
+boardName
+){
 
     const board =
     TTA.getBoardData(
@@ -204,14 +333,17 @@ TTA.renderBoardSlots = function(time,box,boardName){
         boardName
     );
 
-    let html="";
+    let html = "";
+
+    // Nếu chưa có bảng
 
     if(!board){
 
         for(let i=1;i<=12;i++){
 
-            html+=`
-            <div class="slot-item">
+            html += `
+
+            <div class="slot-item empty">
 
                 <span class="slot-number">
 
@@ -226,6 +358,7 @@ TTA.renderBoardSlots = function(time,box,boardName){
                 </span>
 
             </div>
+
             `;
 
         }
@@ -234,47 +367,60 @@ TTA.renderBoardSlots = function(time,box,boardName){
 
     }
 
+    board.slots.forEach(function(slot){
 
-    board.slots.forEach(slot=>{
+        const pay =
+        slot.paid
+        ? "💸"
+        : "🚫";
 
-        let pay="🚫";
+        const team =
+        slot.team && slot.team.trim()
+        ? slot.team
+        : "Trống";
 
-        if(slot.paid){
-
-            pay="💸";
-
-        }
-
-        html+=`
+        html += `
 
         <div
-        class="slot-item">
+            class="slot-item"
+            onclick="TTA.openSlotPopup(
+                '${time}',
+                ${box},
+                '${boardName}',
+                ${slot.number}
+            )">
 
-            <span
-            class="slot-number">
+            <div class="slot-left">
 
-            ${String(slot.number).padStart(2,"0")}
+                <span class="slot-number">
 
-            </span>
+                    ${String(slot.number).padStart(2,"0")}
 
-            <span
-            class="slot-team">
+                </span>
 
-            ${slot.team || "Trống"}
+                <span class="slot-team">
 
-            </span>
+                    ${team}
 
-            <span>
+                </span>
 
-            BOX ${slot.box || "-"}
+            </div>
 
-            </span>
+            <div class="slot-right">
 
-            <span>
+                <span class="slot-box">
 
-            ${pay}
+                    BOX ${slot.box || box}
 
-            </span>
+                </span>
+
+                <span class="slot-pay">
+
+                    ${pay}
+
+                </span>
+
+            </div>
 
         </div>
 
@@ -286,268 +432,36 @@ TTA.renderBoardSlots = function(time,box,boardName){
 
 };
 
-
-
-TTA.selectBox=function(time,box){
-
-    const id =
-    "board_"+time.replace(/[^0-9]/g,'');
-
-    const root =
-    document.getElementById(id);
-
-    if(!root) return;
-
-    root.innerHTML=`
-
-    <div class="slot-board">
-
-        <div class="board-header">
-
-            ⏰ ${time}
-            &nbsp;&nbsp;
-            💸 5K
-            &nbsp;&nbsp;
-            BOX ${box}
-            &nbsp;&nbsp;
-            BẢNG A
-
-        </div>
-
-        <div class="board-prize">
-
-            👑 5K - 25K / 10K / 5K
-
-        </div>
-
-        <div class="slot-list">
-
-            ${TTA.renderBoardSlots(
-                time,
-                box,
-                "A"
-            )}
-
-        </div>
-
-    </div>
-
-    `;
-
-};
+console.log(
+    "PART 4A-3.2 READY"
+);
 // =======================================
+// CUSTOM TTA MANAGER
+// SLOT_RENDER.JS
 // PART 4A-3.3
-// MULTI BOARD RENDER
+// SLOT POPUP & QUICK ACTION
 // =======================================
 
-TTA.BOARD_LIST=[
-"A",
-"B",
-"C",
-"D",
-"E"
-];
-
-TTA.selectBox=function(time,box){
-
-    const id=
-    "board_"+time.replace(/[^0-9]/g,'');
-
-    const root=
-    document.getElementById(id);
-
-    if(!root) return;
-
-    let html="";
-
-    TTA.BOARD_LIST.forEach(function(boardName){
-
-        const board=
-        TTA.getBoardData(
-            time,
-            box,
-            boardName
-        );
-
-        if(
-            boardName!="A" &&
-            !board
-        ){
-            return;
-        }
-
-        html+=`
-
-        <div class="slot-board">
-
-            <div class="board-header">
-
-                ⏰ ${time}
-                &nbsp;&nbsp;
-                💸 5K
-                &nbsp;&nbsp;
-                BOX ${box}
-                &nbsp;&nbsp;
-                BẢNG ${boardName}
-
-            </div>
-
-            <div class="board-prize">
-
-                👑 5K - 25K / 10K / 5K
-
-            </div>
-
-            <div class="slot-list">
-
-                ${
-                TTA.renderBoardSlots(
-                    time,
-                    box,
-                    boardName
-                )
-                }
-
-            </div>
-
-        </div>
-
-        `;
-
-    });
-
-    root.innerHTML=html;
-
-};
-// =======================================
-// PART 4A-3.4
-// AUTO CREATE BOARD A→E
-// =======================================
-
-TTA.createNextBoard=function(time,box){
-
-    const data=TTA.slotData.find(
-        t=>t.time===time
-    );
-
-    if(!data) return;
-
-    const boxData=data.boxes.find(
-        b=>b.box==box
-    );
-
-    if(!boxData) return;
-
-    const boardNames=["A","B","C","D","E"];
-
-    for(let i=0;i<boardNames.length-1;i++){
-
-        const current=
-        boxData.boards.find(
-            b=>b.name===boardNames[i]
-        );
-
-        if(!current) break;
-
-        const full=
-        current.slots.every(
-            s=>s.team
-        );
-
-        if(!full) break;
-
-        let next=
-        boxData.boards.find(
-            b=>b.name===boardNames[i+1]
-        );
-
-        if(next) continue;
-
-        next={
-
-            name:boardNames[i+1],
-
-            slots:[]
-
-        };
-
-        for(let n=1;n<=12;n++){
-
-            next.slots.push({
-
-                number:n,
-
-                team:"",
-
-                paid:false,
-
-                box:box,
-
-                ctv:""
-
-            });
-
-        }
-
-        boxData.boards.push(next);
-
-        if(TTA.saveSlots){
-
-            TTA.saveSlots();
-
-        }
-
-        if(TTA.notify){
-
-            TTA.notify(
-                `🎉 ${time} BOX ${box} - Bảng ${boardNames[i+1]} đã được tạo`
-            );
-
-        }else{
-
-            alert(
-                `🎉 ${time} BOX ${box}\nĐã tạo bảng ${boardNames[i+1]}`
-            );
-
-        }
-
-    }
-
-};
-
+"use strict";
 
 // =======================================
-// TỰ KIỂM TRA
+// CURRENT SLOT
 // =======================================
 
-setInterval(function(){
+TTA.currentSlot = null;
 
-    if(!Array.isArray(TTA.slotData)) return;
-
-    TTA.slotData.forEach(function(time){
-
-        time.boxes.forEach(function(box){
-
-            TTA.createNextBoard(
-                time.time,
-                box.box
-            );
-
-        });
-
-    });
-
-},3000);
-
-console.log("PART 4A-3.4 READY");
 // =======================================
-// PART 4A-3.5
-// COPY MESSENGER
+// OPEN POPUP
 // =======================================
 
-TTA.copyMessenger=function(time,box,boardName){
+TTA.openSlotPopup = function(
+    time,
+    box,
+    boardName,
+    slotNumber
+){
 
-    const board=
+    const board =
     TTA.getBoardData(
         time,
         box,
@@ -555,147 +469,137 @@ TTA.copyMessenger=function(time,box,boardName){
     );
 
     if(!board){
+        return;
+    }
 
-        alert("Không có dữ liệu.");
+    const slot =
+    board.slots.find(
+        item => item.number == slotNumber
+    );
+
+    if(!slot){
+        return;
+    }
+
+    TTA.currentSlot = {
+        time,
+        box,
+        boardName,
+        slotNumber,
+        slot
+    };
+
+    const popup =
+    document.getElementById("slotPopup");
+
+    if(!popup){
+
+        alert(
+
+`SLOT ${slotNumber}
+
+Team : ${slot.team || "Trống"}
+
+Thanh toán :
+${slot.paid ? "Đã thanh toán" : "Chưa thanh toán"}`
+
+        );
 
         return;
 
     }
 
-    let text="";
+    document.getElementById(
+        "slotPopupTitle"
+    ).innerHTML =
+    `SLOT ${String(slot.number).padStart(2,"0")}`;
 
-    text+=`⏰ ${time} ⏰ 💸 5K 💸 Bảng ${boardName}\n`;
+    document.getElementById(
+        "slotPopupInfo"
+    ).innerHTML =
 
-    text+="👑 5K - 25K / 10K / 5K\n";
-    text+="────────────────\n";
+`
+<div class="popup-row">
 
-    board.slots.forEach(function(slot){
+    <b>Team</b>
 
-        let num=
-        String(slot.number)
-        .padStart(2,"0");
+    <input
+        id="slotTeamInput"
+        value="${slot.team || ""}"
+        placeholder="Tên Team">
 
-        let pay=
+</div>
+
+<div class="popup-row">
+
+    <b>BOX</b>
+
+    ${slot.box || box}
+
+</div>
+
+<div class="popup-row">
+
+    <b>Thanh toán</b>
+
+    ${
         slot.paid
         ?
-        "💸"
+        "💸 Đã thanh toán"
         :
-        "🚫";
+        "🚫 Chưa thanh toán"
+    }
 
-        let team=
-        slot.team
-        ?
-        slot.team
-        :
-        "";
+</div>
 
-        let boxText=
-        slot.box
-        ?
-        ` (BOX ${slot.box})`
-        :
-        "";
+`;
 
-        text+=`${num} ${team}${boxText} ${pay}\n`;
-
-    });
-
-    navigator.clipboard.writeText(text);
-
-    alert("📋 Đã sao chép qua Messenger");
+    popup.classList.remove("hidden");
 
 };
+
 // =======================================
-// PART 4A-3.6
-// SLOT QUICK ACTION
+// CLOSE
 // =======================================
 
-TTA.slotMenu=function(time,box,boardName,slotNumber){
+TTA.closeSlotPopup = function(){
 
-    const board=
-    TTA.getBoardData(
-        time,
-        box,
-        boardName
+    const popup =
+    document.getElementById(
+        "slotPopup"
     );
 
-    if(!board) return;
+    if(popup){
 
-    const slot=
-    board.slots.find(
-        s=>s.number==slotNumber
-    );
-
-    if(!slot) return;
-
-    let choose=
-    prompt(
-
-`===== SLOT ${slotNumber} =====
-
-1 = Đổi tên Team
-2 = 💸 Thanh toán rồi nha
-3 = 🚫 Chưa thanh toán ní ơi
-4 = 💰 Trừ dư nhé
-5 = 🗑️ Xóa Team
-
-Nhập lựa chọn:`
-
-    );
-
-    if(choose==="1"){
-
-        let team=
-        prompt(
-            "Tên Team:",
-            slot.team||""
+        popup.classList.add(
+            "hidden"
         );
 
-        if(team!==null){
-
-            slot.team=team;
-
-        }
-
     }
 
-    else if(choose==="2"){
+    TTA.currentSlot = null;
 
-        slot.paid=true;
+};
 
+// =======================================
+// SAVE TEAM
+// =======================================
+
+TTA.saveSlotTeam = function(){
+
+    if(!TTA.currentSlot){
+        return;
     }
 
-    else if(choose==="3"){
+    const input =
+    document.getElementById(
+        "slotTeamInput"
+    );
 
-        slot.paid=false;
+    if(input){
 
-    }
-
-    else if(choose==="4"){
-
-        slot.paid=true;
-
-        if(TTA.useBalance){
-
-            TTA.useBalance(
-                slot.team,
-                5000
-            );
-
-        }
-
-    }
-
-    else if(choose==="5"){
-
-        if(confirm("Xóa Team?")){
-
-            slot.team="";
-            slot.paid=false;
-            slot.ctv="";
-            slot.salary=0;
-
-        }
+        TTA.currentSlot.slot.team =
+        input.value.trim();
 
     }
 
@@ -705,82 +609,411 @@ Nhập lựa chọn:`
 
     }
 
-    TTA.selectBox(
-        time,
-        box
+    TTA.renderBoards(
+        TTA.currentSlot.time,
+        TTA.currentSlot.box
     );
+
+    TTA.closeSlotPopup();
 
 };
-// =====================================
-// SLOT POPUP
-// PART 4A-3.7
-// =====================================
 
-TTA.currentSlot=null;
+// =======================================
+// PAID
+// =======================================
 
-TTA.openSlotPopup=function(
-time,
-box,
-boardName,
-slotNumber
-){
+TTA.slotPaid = function(){
 
-    const board=
-    TTA.getBoardData(
-        time,
-        box,
-        boardName
+    if(!TTA.currentSlot){
+        return;
+    }
+
+    TTA.currentSlot.slot.paid = true;
+
+    if(TTA.saveSlots){
+
+        TTA.saveSlots();
+
+    }
+
+    TTA.renderBoards(
+        TTA.currentSlot.time,
+        TTA.currentSlot.box
     );
 
-    if(!board) return;
+    TTA.closeSlotPopup();
 
-    const slot=
-    board.slots.find(
-        s=>s.number==slotNumber
+};
+
+// =======================================
+// UNPAID
+// =======================================
+
+TTA.slotUnpaid = function(){
+
+    if(!TTA.currentSlot){
+        return;
+    }
+
+    TTA.currentSlot.slot.paid = false;
+
+    if(TTA.saveSlots){
+
+        TTA.saveSlots();
+
+    }
+
+    TTA.renderBoards(
+        TTA.currentSlot.time,
+        TTA.currentSlot.box
     );
 
-    if(!slot) return;
+    TTA.closeSlotPopup();
 
-    TTA.currentSlot={
-        time,
-        box,
-        boardName,
-        slotNumber,
-        slot
+};
+
+// =======================================
+// USE BALANCE
+// =======================================
+
+TTA.slotUseBalance = function(){
+
+    if(!TTA.currentSlot){
+        return;
+    }
+
+    TTA.currentSlot.slot.paid = true;
+
+    if(
+        typeof TTA.useBalance ===
+        "function"
+    ){
+
+        TTA.useBalance(
+            TTA.currentSlot.slot.team,
+            5000
+        );
+
+    }
+
+    if(TTA.saveSlots){
+
+        TTA.saveSlots();
+
+    }
+
+    TTA.renderBoards(
+        TTA.currentSlot.time,
+        TTA.currentSlot.box
+    );
+
+    TTA.closeSlotPopup();
+
+};
+
+// =======================================
+// DELETE TEAM
+// =======================================
+
+TTA.deleteSlot = function(){
+
+    if(!TTA.currentSlot){
+        return;
+    }
+
+    if(
+        !confirm(
+            "Xóa Team khỏi Slot?"
+        )
+    ){
+        return;
+    }
+
+    const slot =
+    TTA.currentSlot.slot;
+
+    slot.team = "";
+    slot.paid = false;
+    slot.ctv = "";
+    slot.salary = 0;
+
+    if(TTA.saveSlots){
+
+        TTA.saveSlots();
+
+    }
+
+    TTA.renderBoards(
+        TTA.currentSlot.time,
+        TTA.currentSlot.box
+    );
+
+    TTA.closeSlotPopup();
+
+};
+
+console.log(
+    "PART 4A-3.3 READY"
+);
+// =======================================
+// CUSTOM TTA MANAGER
+// SLOT_RENDER.JS
+// PART 4A-3.4
+// AUTO CREATE BOARD A → E
+// =======================================
+
+"use strict";
+
+// =======================================
+// TẠO BOARD MỚI
+// =======================================
+
+TTA.createBoard = function(boxData, boardName, box){
+
+    const board = {
+
+        name: boardName,
+
+        slots: []
+
     };
 
-    document
-    .getElementById("slotPopup")
-    .classList.remove("hidden");
+    for(let i=1;i<=12;i++){
 
-    document
-    .getElementById("slotPopupTitle")
-    .innerHTML=
-    "SLOT "+slotNumber;
+        board.slots.push({
 
-    document
-    .getElementById("slotPopupInfo")
-    .innerHTML=
+            number : i,
 
-`
-<div>
+            team   : "",
 
-<b>Team:</b>
+            paid   : false,
 
-${slot.team||"Trống"}
+            box    : box,
 
-</div>
+            ctv    : "",
 
-<br>
+            salary : 0
 
-<div>
+        });
 
-<b>Thanh toán:</b>
+    }
 
-${slot.paid?"💸 Đã thanh toán":"🚫 Chưa thanh toán"}
+    boxData.boards.push(board);
 
-</div>
-
-`;
+    return board;
 
 };
+
+// =======================================
+// KIỂM TRA BOARD ĐẦY
+// =======================================
+
+TTA.isBoardFull = function(board){
+
+    if(!board){
+
+        return false;
+
+    }
+
+    return board.slots.every(function(slot){
+
+        return (
+            slot.team &&
+            slot.team.trim() !== ""
+        );
+
+    });
+
+};
+
+// =======================================
+// TỰ ĐỘNG TẠO BOARD TIẾP
+// =======================================
+
+TTA.createNextBoard = function(time,box){
+
+    const timeData =
+    TTA.slotData.find(
+        item=>item.time===time
+    );
+
+    if(!timeData){
+
+        return;
+
+    }
+
+    const boxData =
+    timeData.boxes.find(
+        item=>item.box==box
+    );
+
+    if(!boxData){
+
+        return;
+
+    }
+
+    for(
+
+        let i=0;
+
+        i<TTA.BOARD_LIST.length-1;
+
+        i++
+
+    ){
+
+        const currentName =
+        TTA.BOARD_LIST[i];
+
+        const nextName =
+        TTA.BOARD_LIST[i+1];
+
+        const currentBoard =
+        boxData.boards.find(
+            item=>item.name===currentName
+        );
+
+        if(!currentBoard){
+
+            break;
+
+        }
+
+        // chưa đầy
+
+        if(
+            !TTA.isBoardFull(
+                currentBoard
+            )
+        ){
+
+            break;
+
+        }
+
+        // đã có board tiếp
+
+        const nextBoard =
+        boxData.boards.find(
+            item=>item.name===nextName
+        );
+
+        if(nextBoard){
+
+            continue;
+
+        }
+
+        // tạo board
+
+        TTA.createBoard(
+
+            boxData,
+
+            nextName,
+
+            box
+
+        );
+
+        if(TTA.saveSlots){
+
+            TTA.saveSlots();
+
+        }
+
+        if(
+
+            typeof TTA.notify ===
+            "function"
+
+        ){
+
+            TTA.notify(
+
+                `🎉 ${time} | BOX ${box} | Đã tạo bảng ${nextName}`
+
+            );
+
+        }
+
+        console.log(
+
+            "CREATE",
+
+            time,
+
+            box,
+
+            nextName
+
+        );
+
+        break;
+
+    }
+
+};
+
+// =======================================
+// CẬP NHẬT BOARD
+// =======================================
+
+TTA.refreshBoards = function(time,box){
+
+    TTA.createNextBoard(
+
+        time,
+
+        box
+
+    );
+
+    TTA.renderBoards(
+
+        time,
+
+        box
+
+    );
+
+};
+
+// =======================================
+// SAVE + REFRESH
+// =======================================
+
+TTA.updateSlotData = function(){
+
+    if(!TTA.currentSlot){
+
+        return;
+
+    }
+
+    if(TTA.saveSlots){
+
+        TTA.saveSlots();
+
+    }
+
+    TTA.refreshBoards(
+
+        TTA.currentSlot.time,
+
+        TTA.currentSlot.box
+
+    );
+
+};
+
+// =======================================
+// READY
+// =======================================
+
+console.log(
+    "PART 4A-3.4 READY"
+);
