@@ -711,3 +711,76 @@ Nhập lựa chọn:`
     );
 
 };
+// =====================================
+// SLOT POPUP
+// PART 4A-3.7
+// =====================================
+
+TTA.currentSlot=null;
+
+TTA.openSlotPopup=function(
+time,
+box,
+boardName,
+slotNumber
+){
+
+    const board=
+    TTA.getBoardData(
+        time,
+        box,
+        boardName
+    );
+
+    if(!board) return;
+
+    const slot=
+    board.slots.find(
+        s=>s.number==slotNumber
+    );
+
+    if(!slot) return;
+
+    TTA.currentSlot={
+        time,
+        box,
+        boardName,
+        slotNumber,
+        slot
+    };
+
+    document
+    .getElementById("slotPopup")
+    .classList.remove("hidden");
+
+    document
+    .getElementById("slotPopupTitle")
+    .innerHTML=
+    "SLOT "+slotNumber;
+
+    document
+    .getElementById("slotPopupInfo")
+    .innerHTML=
+
+`
+<div>
+
+<b>Team:</b>
+
+${slot.team||"Trống"}
+
+</div>
+
+<br>
+
+<div>
+
+<b>Thanh toán:</b>
+
+${slot.paid?"💸 Đã thanh toán":"🚫 Chưa thanh toán"}
+
+</div>
+
+`;
+
+};
