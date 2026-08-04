@@ -504,6 +504,59 @@ onclick="installPWA()">
 <script src="system_final_check.js"></script>
 
 
+<!-- SLOT POPUP -->
+
+<div id="slotPopup" class="slot-popup hidden">
+
+    <div class="slot-popup-box">
+
+        <h2 id="slotPopupTitle">
+            SLOT
+        </h2>
+
+        <div id="slotPopupInfo"></div>
+
+        <button
+        id="slotBtnRename"
+        class="btn blue">
+            ✏️ Đổi tên Team
+        </button>
+
+        <button
+        id="slotBtnPaid"
+        class="btn green">
+            💸 Thanh toán rồi nha
+        </button>
+
+        <button
+        id="slotBtnUnpaid"
+        class="btn orange">
+            🚫 Chưa thanh toán ní ơi
+        </button>
+
+        <button
+        id="slotBtnBalance"
+        class="btn purple">
+            💰 Trừ dư nhé
+        </button>
+
+        <button
+        id="slotBtnDelete"
+        class="btn red">
+            🗑️ Xóa Team
+        </button>
+
+        <button
+        onclick="TTA.closeSlotPopup()"
+        class="btn gray">
+
+            Đóng
+
+        </button>
+
+    </div>
+
+</div>
 </body>
 
 </html>
